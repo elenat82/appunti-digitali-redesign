@@ -76,7 +76,7 @@ Le aree tematiche iniziali sono:
 
 **RF007.** Il sistema deve consentire l'inserimento di snippet di codice all'interno del body del contenuto.
 
-**RF008.** Il sistema deve consentire l'inserimento di link esterni di approfondimento associati a ciascun contenuto.
+**RF008.** Il sistema deve consentire l'inserimento di link esterni di approfondimento sia associati all'intero articolo sia, quando necessario, contestualmente a specifici passaggi del contenuto.
 
 **RF009.** Il sistema non deve prevedere l'associazione manuale di contenuti correlati ad altri contenuti del sito.
 
@@ -168,79 +168,85 @@ I linguaggi inizialmente supportati devono includere almeno:
 
 **RF034.** Il sistema deve consentire la copia rapida dei comandi, quando riconoscibili come blocchi o righe di codice.
 
-**RF035.** Il sistema deve mostrare i link esterni di approfondimento associati all'articolo.
+**RF035.** Il sistema deve consentire l'inserimento e la visualizzazione di brevi frammenti tecnici inline all'interno del testo degli articoli.
 
-**RF036.** Il sistema non deve mostrare una sezione di contenuti correlati associati all'articolo.
+I frammenti tecnici inline possono includere, per esempio, nomi di chiavi di configurazione, nomi di file, comandi brevi, nomi di funzioni, nomi di metodi, selettori, tag HTML o valori tecnici.
+
+**RF036.** I frammenti tecnici inline devono essere visivamente distinguibili dal testo normale senza interrompere il flusso di lettura.
+
+**RF037.** Il sistema deve mostrare i link esterni di approfondimento associati all'articolo.
+
+**RF038.** Il sistema non deve mostrare una sezione di contenuti correlati associati all'articolo.
 
 La funzionalità è esclusa perché, pur essendo presente nella versione precedente, non è stata utilizzata in modo significativo. La consultazione del sito avviene principalmente tramite ricerca per parola chiave, non tramite navigazione tra contenuti suggeriti manualmente.
 
-**RF037.** Il sistema non deve prevedere un indice laterale obbligatorio dell'articolo.
+**RF039.** Il sistema non deve prevedere un indice laterale obbligatorio dell'articolo.
 
-**RF038.** Il sistema non deve prevedere breadcrumb, poiché non è prevista una struttura di navigazione profonda.
+**RF040.** Il sistema non deve prevedere breadcrumb, poiché non è prevista una struttura di navigazione profonda.
 
 ### Home page
 
-**RF039.** La home page deve dare priorità alla ricerca globale.
+**RF041.** La home page deve dare priorità alla ricerca globale.
 
-**RF040.** La home page deve rendere immediatamente visibili le aree tematiche disponibili nel sito.
+**RF042.** La home page deve rendere immediatamente visibili le aree tematiche disponibili nel sito.
 
 Questa funzionalità ha lo scopo di aiutare i nuovi visitatori a comprendere rapidamente quali argomenti sono trattati, senza dover scorrere l'intera lista degli articoli.
 
-**RF041.** L'elenco delle aree tematiche deve essere una funzione di orientamento e scoperta dei contenuti, senza sostituire la ricerca globale come interazione principale del sito.
+**RF043.** L'elenco delle aree tematiche deve essere una funzione di orientamento e scoperta dei contenuti, senza sostituire la ricerca globale come interazione principale del sito.
 
-**RF043.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
+**RF044.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
 
-**RF043.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
+**RF045.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
 
-**RF044.** La home page deve includere una sezione dedicata ai repository GitHub starred.
+**RF046.** La home page deve includere una sezione dedicata ai repository GitHub starred.
 
-**RF045.** La home page deve includere una sezione dedicata ai link salvati tramite web clipper.
+**RF047.** La home page deve includere una sezione dedicata ai link salvati tramite web clipper.
 
 ### Web clipper
 
-**RF046.** Il sistema deve prevedere una funzionalità web clipper basata su estensione Chrome.
+**RF048.** Il sistema deve prevedere una funzionalità web clipper basata su estensione Chrome.
 
-**RF047.** L'estensione Chrome deve consentire all'amministratore di salvare la pagina web attualmente aperta.
+**RF049.** L'estensione Chrome deve consentire all'amministratore di salvare la pagina web attualmente aperta.
 
-**RF048.** Il sistema deve creare un contenuto Drupal dedicato per ogni pagina salvata tramite web clipper.
+**RF050.** Il sistema deve creare un contenuto Drupal dedicato per ogni pagina salvata tramite web clipper.
 
-**RF049.** Ogni risorsa salvata tramite web clipper deve includere almeno:
+**RF051.** Ogni risorsa salvata tramite web clipper deve includere almeno:
 
 - titolo della pagina;
 - URL della pagina;
 - tag associato.
 
-**RF050.** I tag delle risorse salvate devono essere gestiti tramite tassonomia Drupal.
+**RF052.** I tag delle risorse salvate devono essere gestiti tramite tassonomia Drupal.
 
-**RF051.** I tag delle risorse salvate non devono essere usati come sistema generale di classificazione degli articoli tecnici.
+**RF053.** I tag delle risorse salvate non devono essere usati come sistema generale di classificazione degli articoli tecnici.
 
 ### Amministrazione
 
-**RF052.** Il sistema deve consentire all'amministratore di gestire i contenuti tramite backend Drupal.
+**RF054.** Il sistema deve consentire all'amministratore di gestire i contenuti tramite backend Drupal.
 
-**RF053.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
+**RF055.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
 
-**RF054.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
+**RF056.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
 
-**RF055.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
+**RF057.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
 
 ### Profilo pubblico e contatti
 
-**RF056.** Il sistema deve mostrare all'utente anonimo una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
+**RF058.** Il sistema deve mostrare all'utente anonimo una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
 
-**RF057.** La sezione contatti deve includere almeno le informazioni pubbliche dell'amministratore del sito.
+**RF059.** La sezione contatti deve includere almeno le informazioni pubbliche dell'amministratore del sito.
 
-**RF058.** La sezione contatti deve consentire il download del CV dell'amministratore.
+**RF060.** La sezione contatti deve consentire il download del CV dell'amministratore.
 
-**RF059.** I dati mostrati nella sezione contatti non devono essere inseriti come stringhe fisse nel frontend Angular, ma devono essere recuperati dal backend Drupal.
+**RF061.** I dati mostrati nella sezione contatti non devono essere inseriti come stringhe fisse nel frontend Angular, ma devono essere recuperati dal backend Drupal.
 
-**RF060.** I dati pubblici dell'amministratore e il file CV devono essere gestiti a partire dall'entità User di Drupal o da campi collegati all'utente amministratore.
+**RF062.** I dati pubblici dell'amministratore e il file CV devono essere gestiti a partire dall'entità User di Drupal o da campi collegati all'utente amministratore.
 
-**RF061.** Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.
+**RF063.** Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.
 
-**RF062.** Cliccando sull'indirizzo email nel footer, il sistema deve offrire almeno due azioni: apertura del client email tramite link `mailto:` e copia dell'indirizzo email negli appunti.
+**RF064.** Cliccando sull'indirizzo email nel footer, il sistema deve offrire almeno due azioni: apertura del client email tramite link `mailto:` e copia dell'indirizzo email negli appunti.
 
-**RF063.** Il sistema non deve prevedere una sezione separata "Strumenti utili".
+**RF065.** Il sistema non deve prevedere una sezione separata "Strumenti utili".
 
 Questa funzionalità è presente nella versione precedente, ma non si è rivelata utile nell'uso quotidiano. Eventuali link utili potranno essere gestiti come risorse salvate tramite web clipper.
 
@@ -270,7 +276,7 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 
 **RNF012.** Il sito non deve utilizzare cookie di profilazione.
 
-**RNF013.** Il sito non deve prevedere analytics nella prima release, per evitare complessità non necessarie relative a privacy, cookie e GDPR.
+**RNF013.** Il sito non deve prevedere analytics, per evitare complessità non necessarie relative a privacy, cookie e GDPR.
 
 **RNF014.** Il sito deve essere progettato tenendo conto della SEO, pur mantenendo un'architettura decoupled Drupal + Angular.
 
