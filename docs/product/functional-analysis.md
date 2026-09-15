@@ -187,13 +187,14 @@ Il sistema deve dare particolare importanza a:
 
 Il sistema deve applicare syntax highlighting agli snippet di codice.
 
-I linguaggi inizialmente supportati sono:
+I linguaggi e formati inizialmente supportati sono:
 
 - HTML;
 - CSS;
 - JavaScript;
 - TypeScript;
 - PHP;
+- Twig,
 - YAML;
 - JSON;
 - SQL;

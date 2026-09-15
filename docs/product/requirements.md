@@ -156,13 +156,14 @@ La ricerca deve privilegiare la rapidità di accesso all'informazione, non la cl
 
 **RF033.** Il sistema deve applicare syntax highlighting agli snippet di codice.
 
-I linguaggi inizialmente supportati devono includere almeno:
+I linguaggi e formati inizialmente supportati devono includere almeno:
 
 - HTML;
 - CSS;
 - JavaScript;
 - TypeScript;
 - PHP;
+- Twig;
 - YAML;
 - JSON;
 - SQL;
