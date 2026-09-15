@@ -199,11 +199,35 @@ I linguaggi inizialmente supportati sono:
 - SQL;
 - Bash.
 
+## Frammenti tecnici inline
+
+Oltre ai blocchi di codice separati dal testo, gli articoli devono poter contenere brevi frammenti tecnici inline.
+
+Questi frammenti servono quando un termine tecnico deve essere distinto dal testo normale senza creare un blocco di codice separato.
+
+Esempi di frammenti tecnici inline sono:
+
+- nomi di chiavi di configurazione, come `name`, `type` o `core_version_requirement`;
+- nomi di file, come `.info.yml`;
+- comandi brevi;
+- nomi di funzioni, metodi o proprietà;
+- selettori CSS;
+- tag HTML;
+- brevi esempi di sintassi.
+
+I frammenti inline devono rimanere parte del flusso del paragrafo e devono essere ricercabili come il resto del contenuto.
+
+Non devono avere necessariamente un pulsante di copia dedicato, perché la funzione di copia è prioritaria per i blocchi di codice e per i comandi separati.
+
 ## Link esterni di approfondimento
 
 Ogni articolo può avere link esterni di approfondimento.
 
-I link di approfondimento fanno parte del contenuto utile alla consultazione e possono essere considerati nella ricerca.
+I link di approfondimento possono riferirsi all'intero articolo oppure a uno specifico passaggio del contenuto.
+
+Quando una fonte o una risorsa è strettamente collegata a una determinata spiegazione, il link deve poter essere inserito contestualmente a quel passaggio, senza essere obbligatoriamente separato dal testo in un elenco generale di approfondimenti.
+
+I link di approfondimento fanno parte del contenuto utile alla consultazione e devono essere considerati nella ricerca.
 
 Il sistema deve mostrare i link di approfondimento associati all'articolo in modo chiaro e facilmente consultabile.
 
