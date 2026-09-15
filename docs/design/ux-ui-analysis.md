@@ -374,6 +374,16 @@ I link collegati a una porzione specifica del contenuto possono essere mostrati 
 
 La scelta definitiva sulla resa visiva dei link verrà definita nel design system.
 
+## Tabelle e informazioni di compatibilità
+
+Quando un articolo tratta una funzionalità il cui supporto varia tra browser o ambienti, può essere utile mostrare informazioni di compatibilità vicino alla spiegazione.
+
+Gli embed di compatibilità devono essere usati solo quando aiutano realmente l'utente a prendere una decisione o a comprendere i limiti della funzionalità.
+
+Non devono appesantire visivamente l'articolo quando l'informazione di compatibilità è marginale.
+
+Quando possibile, deve essere disponibile anche un collegamento alla fonte originale.
+
 ## Sezioni informative della home page
 
 Le sezioni informative della home page devono offrire risorse esterne utili senza togliere centralità alla ricerca.
@@ -522,9 +532,9 @@ La sezione dei contenuti correlati manuali non verrà mostrata.
 
 Questa scelta riduce manutenzione e complessità, perché la consultazione reale del sito avviene principalmente tramite ricerca.
 
-### Sezione “Strumenti utili”
+### Sezione "Strumenti utili"
 
-La sezione separata “Strumenti utili” non verrà mantenuta.
+La sezione separata "Strumenti utili" non verrà mantenuta.
 
 Eventuali link utili potranno essere gestiti come risorse salvate tramite web clipper.
 

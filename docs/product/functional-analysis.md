@@ -247,6 +247,19 @@ Il sistema deve mostrare i link di approfondimento associati all'articolo in mod
 
 Questa funzionalità viene mantenuta perché i link esterni, per esempio verso documentazione ufficiale o risorse tecniche autorevoli, sono parte del valore informativo dell'articolo.
 
+## Contenuti esterni incorporati
+
+Gli articoli possono contenere contenuti esterni incorporati quando questi aggiungono informazioni che sarebbe meno efficace riprodurre manualmente.
+
+Gli embed possono avere finalità diverse, per esempio:
+
+- mostrare una demo interattiva con codice e risultato;
+- mostrare informazioni aggiornate sulla compatibilità di una funzionalità web.
+
+Gli embed di compatibilità, come quelli forniti da Can I use, sono utili soprattutto per argomenti HTML, CSS, JavaScript e Web API.
+
+Il loro utilizzo deve essere valutato caso per caso, evitando di inserire embed che non aggiungano un beneficio concreto alla consultazione dell'articolo.
+
 ## Home page
 
 La home page deve dare priorità alla ricerca globale.
