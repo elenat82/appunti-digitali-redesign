@@ -345,6 +345,20 @@ A differenza dei blocchi di codice, i frammenti inline non devono mostrare un’
 
 Il loro aspetto visivo sarà definito nel design system, prestando attenzione a contrasto, leggibilità e coerenza con i blocchi di codice.
 
+## Esempi di codice interattivi
+
+Gli embed CodePen devono essere percepiti come dimostrazioni interattive e non come normali blocchi di codice.
+
+Devono integrarsi visivamente con l'articolo senza interrompere eccessivamente il flusso di lettura e devono rimanere utilizzabili anche quando mostrano contemporaneamente codice e risultato.
+
+Quando disponibile, l'interfaccia può privilegiare un caricamento su richiesta dell'embed, soprattutto negli articoli che contengono molte demo interattive, per evitare di appesantire inutilmente la pagina.
+
+Deve essere sempre disponibile un collegamento alla demo originale qualora il contenuto incorporato non possa essere visualizzato.
+
+La resa su schermi piccoli deve essere valutata separatamente, perché la visualizzazione contemporanea di editor e risultato può richiedere più spazio rispetto a un normale blocco di codice.
+
+Il contenuto interno degli embed CodePen non deve generare risultati di ricerca, per evitare occorrenze duplicate rispetto ai blocchi di codice statici presenti nell'articolo.
+
 ## Link di approfondimento
 
 I link di approfondimento sono parte del contenuto utile dell'articolo.
@@ -597,3 +611,13 @@ Resta da valutare se usare questa funzionalità per organizzare i repository mos
 L'uso delle liste potrebbe essere utile per raggruppare i repository per argomento, per esempio Drupal, Angular, CSS, accessibilità o strumenti di sviluppo.
 
 La decisione non viene fissata in questa fase, perché occorre prima verificare se le liste sono effettivamente utili al modo in cui l'amministratore seleziona e consulta i repository starred.
+
+### Esempi interattivi per altre tecnologie
+
+Oltre agli embed CodePen, si valuterà l'utilizzo di servizi che consentano di mostrare esempi interattivi anche per tecnologie non supportate da CodePen.
+
+In particolare, verrà valutato StackBlitz per gli esempi Angular e un playground PHP embeddabile per gli esempi PHP.
+
+L'obiettivo è mantenere, dove tecnicamente appropriato, lo stesso principio degli esempi CodePen: permettere all'utente di osservare sia il codice sia il relativo risultato senza abbandonare l'articolo.
+
+Per Drupal non viene al momento individuata una soluzione equivalente sufficientemente semplice e affidabile; eventuali demo interattive saranno valutate separatamente.

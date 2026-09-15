@@ -101,7 +101,11 @@ Questa funzionalità era presente nella versione precedente, ma non si è rivela
 
 **RF014.** La ricerca deve supportare parole parziali.
 
-**RF015.** La ricerca deve gestire correttamente termini tecnici e caratteri speciali, per esempio:
+**RF015.** La ricerca non deve indicizzare il contenuto interno degli embed CodePen.
+
+Gli esempi CodePen sono esclusi dalla ricerca perché il relativo codice è generalmente già presente nell'articolo come blocco di codice statico. Indicizzare anche il contenuto dell'embed produrrebbe risultati duplicati senza un beneficio concreto per la consultazione.
+
+**RF016.** La ricerca deve gestire correttamente termini tecnici e caratteri speciali, per esempio:
 
 - `<div>`;
 - `::before`;
@@ -112,45 +116,45 @@ Questa funzionalità era presente nella versione precedente, ma non si è rivela
 - `services.yml`;
 - `hook_theme`.
 
-**RF016.** La ricerca deve restituire tutte le occorrenze della parola cercata, non solo l'elenco degli articoli che la contengono.
+**RF017.** La ricerca deve restituire tutte le occorrenze della parola cercata, non solo l'elenco degli articoli che la contengono.
 
-**RF017.** Ogni occorrenza trovata deve mostrare uno snippet del contenuto in cui compare la parola cercata.
+**RF018.** Ogni occorrenza trovata deve mostrare uno snippet del contenuto in cui compare la parola cercata.
 
-**RF018.** Lo snippet di ogni occorrenza deve evidenziare la parola cercata.
+**RF019.** Lo snippet di ogni occorrenza deve evidenziare la parola cercata.
 
-**RF019.** Le occorrenze devono essere raggruppate per articolo, senza nascondere occorrenze potenzialmente utili.
+**RF020.** Le occorrenze devono essere raggruppate per articolo, senza nascondere occorrenze potenzialmente utili.
 
-**RF020.** Ogni occorrenza deve essere presentata come risultato autonomo e selezionabile.
+**RF021.** Ogni occorrenza deve essere presentata come risultato autonomo e selezionabile.
 
 Non è un requisito mostrare all'utente la sezione dell'articolo in cui si trova l'occorrenza.
 
-**RF021.** Il sistema non deve obbligare l'utente a distinguere i risultati in base alla posizione dell'occorrenza nel contenuto, per esempio titolo, sottotitolo, body, codice, lista o tabella.
+**RF022.** Il sistema non deve obbligare l'utente a distinguere i risultati in base alla posizione dell'occorrenza nel contenuto, per esempio titolo, sottotitolo, body, codice, lista o tabella.
 
 La ricerca deve privilegiare la rapidità di accesso all'informazione, non la classificazione visibile delle occorrenze.
 
-**RF022.** L'utente deve poter scegliere manualmente quale occorrenza aprire.
+**RF023.** L'utente deve poter scegliere manualmente quale occorrenza aprire.
 
-**RF023.** Cliccando su un'occorrenza, il sistema deve aprire l'articolo nel punto esatto in cui si trova l'occorrenza selezionata.
+**RF024.** Cliccando su un'occorrenza, il sistema deve aprire l'articolo nel punto esatto in cui si trova l'occorrenza selezionata.
 
-**RF024.** Dopo l'apertura dell'articolo, il termine cercato deve rimanere evidenziato nel contenuto.
+**RF025.** Dopo l'apertura dell'articolo, il termine cercato deve rimanere evidenziato nel contenuto.
 
-**RF025.** La ricerca non deve richiedere una chiamata al backend a ogni digitazione.
+**RF026.** La ricerca non deve richiedere una chiamata al backend a ogni digitazione.
 
-**RF026.** La ricerca deve aggiornare i risultati progressivamente durante la digitazione, senza richiedere l'apertura di una pagina risultati separata o l'uso obbligatorio di un pulsante di invio.
+**RF027.** La ricerca deve aggiornare i risultati progressivamente durante la digitazione, senza richiedere l'apertura di una pagina risultati separata o l'uso obbligatorio di un pulsante di invio.
 
-**RF027.** Il sistema non deve prevedere filtri avanzati obbligatori per tecnologia, versione, difficoltà, data, stato o tipologia di contenuto.
+**RF028.** Il sistema non deve prevedere filtri avanzati obbligatori per tecnologia, versione, difficoltà, data, stato o tipologia di contenuto.
 
-**RF028.** Il sistema non deve prevedere suggerimenti automatici durante la digitazione, salvo eventuali evoluzioni future.
+**RF029.** Il sistema non deve prevedere suggerimenti automatici durante la digitazione, salvo eventuali evoluzioni future.
 
-**RF029.** Il sistema non deve prevedere cronologia delle ricerche o ricerche salvate.
+**RF030.** Il sistema non deve prevedere cronologia delle ricerche o ricerche salvate.
 
 ### Consultazione degli articoli
 
-**RF030.** Il sistema deve consentire la lettura comoda di articoli lunghi senza obbligare a suddividerli in più pagine.
+**RF031.** Il sistema deve consentire la lettura comoda di articoli lunghi senza obbligare a suddividerli in più pagine.
 
-**RF031.** Il sistema deve visualizzare correttamente titoli, sottotitoli, paragrafi, liste, tabelle e blocchi di codice.
+**RF032.** Il sistema deve visualizzare correttamente titoli, sottotitoli, paragrafi, liste, tabelle e blocchi di codice.
 
-**RF032.** Il sistema deve applicare syntax highlighting agli snippet di codice.
+**RF033.** Il sistema deve applicare syntax highlighting agli snippet di codice.
 
 I linguaggi inizialmente supportati devono includere almeno:
 
@@ -164,89 +168,95 @@ I linguaggi inizialmente supportati devono includere almeno:
 - SQL;
 - Bash.
 
-**RF033.** Il sistema deve consentire la copia rapida dei blocchi di codice.
+**RF034.** Il sistema deve consentire la copia rapida dei blocchi di codice.
 
-**RF034.** Il sistema deve consentire la copia rapida dei comandi, quando riconoscibili come blocchi o righe di codice.
+**RF035.** Il sistema deve consentire la copia rapida dei comandi, quando riconoscibili come blocchi o righe di codice.
 
-**RF035.** Il sistema deve consentire l'inserimento e la visualizzazione di brevi frammenti tecnici inline all'interno del testo degli articoli.
+**RF036.** Il sistema deve consentire l'inserimento e la visualizzazione di brevi frammenti tecnici inline all'interno del testo degli articoli.
 
 I frammenti tecnici inline possono includere, per esempio, nomi di chiavi di configurazione, nomi di file, comandi brevi, nomi di funzioni, nomi di metodi, selettori, tag HTML o valori tecnici.
 
-**RF036.** I frammenti tecnici inline devono essere visivamente distinguibili dal testo normale senza interrompere il flusso di lettura.
+**RF037.** I frammenti tecnici inline devono essere visivamente distinguibili dal testo normale senza interrompere il flusso di lettura.
 
-**RF037.** Il sistema deve mostrare i link esterni di approfondimento associati all'articolo.
+**RF038.** Il sistema deve consentire l'inserimento negli articoli di esempi di codice interattivi provenienti da servizi esterni, inizialmente CodePen.
 
-**RF038.** Il sistema non deve mostrare una sezione di contenuti correlati associati all'articolo.
+**RF039.** Gli esempi interattivi devono consentire, quando supportato dal servizio esterno, di visualizzare sia il codice sia il relativo risultato senza obbligare l'utente ad abbandonare l'articolo.
+
+**RF040.** Se un contenuto interattivo esterno non può essere caricato, l'utente deve poter accedere comunque alla risorsa originale tramite un collegamento diretto.
+
+**RF041.** Il sistema deve mostrare i link esterni di approfondimento associati all'articolo.
+
+**RF042.** Il sistema non deve mostrare una sezione di contenuti correlati associati all'articolo.
 
 La funzionalità è esclusa perché, pur essendo presente nella versione precedente, non è stata utilizzata in modo significativo. La consultazione del sito avviene principalmente tramite ricerca per parola chiave, non tramite navigazione tra contenuti suggeriti manualmente.
 
-**RF039.** Il sistema non deve prevedere un indice laterale obbligatorio dell'articolo.
+**RF043.** Il sistema non deve prevedere un indice laterale obbligatorio dell'articolo.
 
-**RF040.** Il sistema non deve prevedere breadcrumb, poiché non è prevista una struttura di navigazione profonda.
+**RF044.** Il sistema non deve prevedere breadcrumb, poiché non è prevista una struttura di navigazione profonda.
 
 ### Home page
 
-**RF041.** La home page deve dare priorità alla ricerca globale.
+**RF045.** La home page deve dare priorità alla ricerca globale.
 
-**RF042.** La home page deve rendere immediatamente visibili le aree tematiche disponibili nel sito.
+**RF046.** La home page deve rendere immediatamente visibili le aree tematiche disponibili nel sito.
 
 Questa funzionalità ha lo scopo di aiutare i nuovi visitatori a comprendere rapidamente quali argomenti sono trattati, senza dover scorrere l'intera lista degli articoli.
 
-**RF043.** L'elenco delle aree tematiche deve essere una funzione di orientamento e scoperta dei contenuti, senza sostituire la ricerca globale come interazione principale del sito.
+**RF047.** L'elenco delle aree tematiche deve essere una funzione di orientamento e scoperta dei contenuti, senza sostituire la ricerca globale come interazione principale del sito.
 
-**RF044.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
+**RF048.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
 
-**RF045.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
+**RF049.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
 
-**RF046.** La home page deve includere una sezione dedicata ai repository GitHub starred.
+**RF050.** La home page deve includere una sezione dedicata ai repository GitHub starred.
 
-**RF047.** La home page deve includere una sezione dedicata ai link salvati tramite web clipper.
+**RF051.** La home page deve includere una sezione dedicata ai link salvati tramite web clipper.
 
 ### Web clipper
 
-**RF048.** Il sistema deve prevedere una funzionalità web clipper basata su estensione Chrome.
+**RF052.** Il sistema deve prevedere una funzionalità web clipper basata su estensione Chrome.
 
-**RF049.** L'estensione Chrome deve consentire all'amministratore di salvare la pagina web attualmente aperta.
+**RF053.** L'estensione Chrome deve consentire all'amministratore di salvare la pagina web attualmente aperta.
 
-**RF050.** Il sistema deve creare un contenuto Drupal dedicato per ogni pagina salvata tramite web clipper.
+**RF054.** Il sistema deve creare un contenuto Drupal dedicato per ogni pagina salvata tramite web clipper.
 
-**RF051.** Ogni risorsa salvata tramite web clipper deve includere almeno:
+**RF055.** Ogni risorsa salvata tramite web clipper deve includere almeno:
 
 - titolo della pagina;
 - URL della pagina;
 - tag associato.
 
-**RF052.** I tag delle risorse salvate devono essere gestiti tramite tassonomia Drupal.
+**RF056.** I tag delle risorse salvate devono essere gestiti tramite tassonomia Drupal.
 
-**RF053.** I tag delle risorse salvate non devono essere usati come sistema generale di classificazione degli articoli tecnici.
+**RF057.** I tag delle risorse salvate non devono essere usati come sistema generale di classificazione degli articoli tecnici.
 
 ### Amministrazione
 
-**RF054.** Il sistema deve consentire all'amministratore di gestire i contenuti tramite backend Drupal.
+**RF058.** Il sistema deve consentire all'amministratore di gestire i contenuti tramite backend Drupal.
 
-**RF055.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
+**RF059.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
 
-**RF056.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
+**RF060.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
 
-**RF057.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
+**RF061.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
 
 ### Profilo pubblico e contatti
 
-**RF058.** Il sistema deve mostrare all'utente anonimo una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
+**RF062.** Il sistema deve mostrare all'utente anonimo una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
 
-**RF059.** La sezione contatti deve includere almeno le informazioni pubbliche dell'amministratore del sito.
+**RF063.** La sezione contatti deve includere almeno le informazioni pubbliche dell'amministratore del sito.
 
-**RF060.** La sezione contatti deve consentire il download del CV dell'amministratore.
+**RF064.** La sezione contatti deve consentire il download del CV dell'amministratore.
 
-**RF061.** I dati mostrati nella sezione contatti non devono essere inseriti come stringhe fisse nel frontend Angular, ma devono essere recuperati dal backend Drupal.
+**RF065.** I dati mostrati nella sezione contatti non devono essere inseriti come stringhe fisse nel frontend Angular, ma devono essere recuperati dal backend Drupal.
 
-**RF062.** I dati pubblici dell'amministratore e il file CV devono essere gestiti a partire dall'entità User di Drupal o da campi collegati all'utente amministratore.
+**RF066.** I dati pubblici dell'amministratore e il file CV devono essere gestiti a partire dall'entità User di Drupal o da campi collegati all'utente amministratore.
 
-**RF063.** Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.
+**RF067.** Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.
 
-**RF064.** Cliccando sull'indirizzo email nel footer, il sistema deve offrire almeno due azioni: apertura del client email tramite link `mailto:` e copia dell'indirizzo email negli appunti.
+**RF068.** Cliccando sull'indirizzo email nel footer, il sistema deve offrire almeno due azioni: apertura del client email tramite link `mailto:` e copia dell'indirizzo email negli appunti.
 
-**RF065.** Il sistema non deve prevedere una sezione separata "Strumenti utili".
+**RF069.** Il sistema non deve prevedere una sezione separata "Strumenti utili".
 
 Questa funzionalità è presente nella versione precedente, ma non si è rivelata utile nell'uso quotidiano. Eventuali link utili potranno essere gestiti come risorse salvate tramite web clipper.
 

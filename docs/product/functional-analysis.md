@@ -219,6 +219,20 @@ I frammenti inline devono rimanere parte del flusso del paragrafo e devono esser
 
 Non devono avere necessariamente un pulsante di copia dedicato, perché la funzione di copia è prioritaria per i blocchi di codice e per i comandi separati.
 
+## Esempi di codice interattivi
+
+Oltre ai blocchi di codice statici e ai frammenti tecnici inline, gli articoli possono contenere esempi di codice interattivi.
+
+Gli esempi interattivi sono utili quando la comprensione del contenuto beneficia della visualizzazione contemporanea del codice e del relativo risultato, per esempio per dimostrazioni HTML, CSS o JavaScript.
+
+Nella prima release il servizio esterno utilizzato per questo tipo di contenuto è CodePen.
+
+L'utente deve poter consultare la dimostrazione direttamente all'interno dell'articolo e deve poter raggiungere la risorsa originale qualora l'embed non sia disponibile.
+
+Gli esempi CodePen non partecipano alla ricerca globale.
+
+Il codice mostrato negli embed è generalmente già presente nello stesso articolo come blocco di codice statico e ricercabile. Escludere gli embed evita quindi la duplicazione delle occorrenze nei risultati di ricerca.
+
 ## Link esterni di approfondimento
 
 Ogni articolo può avere link esterni di approfondimento.
