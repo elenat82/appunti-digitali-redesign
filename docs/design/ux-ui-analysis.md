@@ -160,65 +160,91 @@ La nuova interfaccia deve:
 
 ## Struttura generale dell'interfaccia
 
-L'interfaccia pubblica del sito deve essere composta da alcune aree principali:
+Nella versione desktop l'interfaccia pubblica è organizzata in quattro aree principali:
 
-- header o area superiore;
-- ricerca globale;
-- orientamento per aree tematiche;
-- lista articoli o risultati di ricerca;
+- pannello laterale di navigazione;
+- header;
 - area principale di contenuto;
-- sezioni informative della home page;
-- sezione contatti;
 - footer.
 
-La ricerca deve essere sempre facilmente raggiungibile.
+Il pannello laterale è dedicato alla navigazione per aree tematiche e articoli.
 
-Non è necessario prevedere più barre di ricerca indipendenti. Se la ricerca compare in più punti dell'interfaccia, deve essere percepita come la stessa funzione globale e deve mantenere un comportamento coerente.
+L'header contiene l'identità del sito e la ricerca globale.
+
+L'area principale cambia contenuto in base allo stato dell'interfaccia e può mostrare:
+
+- la home page;
+- un articolo;
+- l'overlay dei risultati di ricerca.
+
+Il footer contiene informazioni secondarie e le azioni associate all'indirizzo email pubblico.
+
+Questa struttura deve rimanere coerente durante la navigazione, in modo che ricerca e accesso agli argomenti rimangano prevedibili.
+
+## Pannello laterale di navigazione
+
+Il pannello laterale rappresenta la modalità principale di esplorazione dei contenuti per area tematica.
+
+Nello stato espanso mostra il logo del sito e l'elenco completo delle aree tematiche. Ogni area può essere espansa per mostrare gli articoli appartenenti a quell'argomento.
+
+Il pannello può essere collassato quando l'utente desidera lasciare maggiore spazio al contenuto principale.
+
+Nello stato collassato:
+
+- il logo non è necessario, perché l'identità "Appunti Digitali" rimane visibile nell'header;
+- le etichette testuali delle aree vengono nascoste;
+- rimangono visibili le icone delle aree tematiche;
+- l'area tematica dell'articolo corrente rimane evidenziata.
+
+Ogni icona deve avere un nome accessibile. Al passaggio del mouse e al focus da tastiera deve comparire un tooltip con il nome dell'area.
+
+L'area interattiva associata all'icona deve essere più ampia dell'icona stessa, in modo da garantire un target facile da selezionare.
+
+L'apertura e la chiusura del pannello possono essere accompagnate dai feedback sonori descritti nella sezione dedicata.
 
 ## Home page
 
-La home page deve avere una funzione duplice:
+La home page deve permettere all'utente di comprendere immediatamente la natura del sito e accedere rapidamente alle sue funzioni principali.
 
-- permettere all'utente abituale di cercare rapidamente un'informazione;
-- aiutare il nuovo visitatore a capire quali contenuti e risorse sono disponibili.
+Nella versione desktop contiene:
 
-La home page deve contenere:
+- header con titolo del sito e ricerca globale;
+- pannello laterale con le aree tematiche;
+- sezione di presentazione professionale dell'amministratore con contatti e download del CV;
+- sezione Notizie;
+- sezione Stack Overflow;
+- sezione GitHub starred;
+- sezione Risorse salvate;
+- footer.
 
-- ricerca globale;
-- elenco o accesso rapido alle aree tematiche;
-- lista degli articoli o contenuti principali;
-- sezione con notizie da feed RSS;
-- sezione con ultime domande Stack Overflow;
-- sezione con repository GitHub starred;
-- sezione con risorse salvate tramite web clipper.
+La ricerca globale deve mantenere una posizione predominante e deve essere accessibile dall'header.
 
-La ricerca globale deve avere priorità visiva rispetto agli altri elementi.
-
-Le sezioni informative non devono impedire l'uso rapido della ricerca e non devono trasformare la home page in una pagina dispersiva.
+Le aree tematiche non devono essere duplicate nell'area principale della home, perché sono già immediatamente visibili nel pannello laterale.
 
 ## Orientamento per nuovi visitatori
 
-La home page deve rendere immediatamente visibili le aree tematiche disponibili.
+Il pannello laterale deve consentire a un nuovo visitatore di comprendere rapidamente quali aree tematiche sono presenti nel sito.
 
-Le aree iniziali sono:
+A differenza della versione precedente, la nuova interfaccia non mostra inizialmente la lunga lista completa degli articoli. Mostra invece tutte le aree tematiche in forma compatta, lasciando all'utente la possibilità di espandere soltanto quelle che desidera esplorare.
 
-- HTML;
-- CSS;
-- JavaScript;
-- Angular;
-- PHP;
-- Drupal;
-- Varie.
+In questo modo HTML, CSS, JavaScript, Angular, PHP, Drupal e Varie rimangono immediatamente visibili anche quando alcune aree contengono molti articoli.
 
-L'elenco delle aree tematiche serve a comunicare rapidamente l'ampiezza dei contenuti presenti nel sito.
+Questa modalità di orientamento è complementare alla ricerca globale e non introduce una navigazione gerarchica complessa.
 
-Questa funzione non deve sostituire la ricerca globale e non deve diventare un sistema di filtri avanzati.
 
-L'obiettivo è orientare il visitatore, non creare una navigazione complessa.
+## Feedback sonoro
 
-Una possibile soluzione UX è mostrare le aree tematiche come elementi compatti vicino alla ricerca o nella parte alta della home page.
+L'apertura e la chiusura del pannello laterale utilizzano brevi feedback sonori distinti, mantenendo una caratteristica già presente nella versione precedente del sito.
 
-Ogni area può essere selezionabile, purché il comportamento rimanga semplice e comprensibile.
+I suoni devono essere:
+
+- brevi;
+- discreti;
+- chiaramente associati all'azione eseguita;
+- riprodotti solo dopo un'interazione dell'utente;
+- complementari al feedback visivo e non sostitutivi di esso.
+
+Il pannello deve rimanere completamente comprensibile e utilizzabile anche con l'audio disattivato.
 
 ## Ricerca globale
 
@@ -241,33 +267,39 @@ L'interfaccia deve gestire almeno questi stati:
 - nessun risultato;
 - errore nel caricamento dei contenuti necessari alla ricerca.
 
-## Lista articoli e risultati per occorrenze
+## Presentazione dei risultati di ricerca
 
-Quando il campo di ricerca è vuoto, l'interfaccia può mostrare la lista degli articoli o la normale struttura prevista per la pagina.
+Quando l'utente inserisce una query valida, i risultati devono essere mostrati in un overlay opaco che copre l'area principale della pagina, lasciando visibili l'header e il pannello laterale di navigazione.
 
-Quando l'utente digita una parola chiave valida, la lista degli articoli deve lasciare spazio ai risultati della ricerca.
+L'overlay deve permettere all'utente di concentrarsi sui risultati senza essere disturbato dal contenuto sottostante.
 
-I risultati devono essere basati sulle occorrenze trovate, non solo sugli articoli.
+Nella parte iniziale devono essere mostrati:
 
-Ogni occorrenza deve essere presentata come risultato autonomo e selezionabile.
+- la query cercata;
+- il numero complessivo di occorrenze trovate;
+- il numero di articoli nei quali sono state trovate.
 
-I risultati devono essere raggruppati per articolo, in modo che l'utente capisca da quale contenuto provengono.
+I risultati devono essere raggruppati per articolo.
 
-Ogni risultato deve mostrare:
+Per ogni articolo devono essere mostrati:
 
-- titolo dell'articolo;
-- snippet in cui compare la parola cercata;
-- evidenziazione della parola cercata.
+- l'area tematica, rappresentata tramite la relativa icona;
+- il titolo dell'articolo;
+- tutte le occorrenze rilevanti della query.
 
-Non è necessario mostrare all'utente se l'occorrenza proviene da titolo, paragrafo, codice, lista o tabella.
+Ogni occorrenza deve mostrare uno snippet del contenuto in cui compare il termine cercato e deve evidenziare visivamente il termine.
 
-La priorità è permettere all'utente di riconoscere rapidamente lo snippet utile.
+Ogni occorrenza deve essere selezionabile autonomamente.
+
+Non è necessario indicare se l'occorrenza proviene da titolo, paragrafo, codice, lista o tabella, perché questa informazione non è necessaria per individuare rapidamente il risultato utile.
 
 ## Apertura di un risultato di ricerca
 
-Quando l'utente seleziona un'occorrenza, il sistema deve aprire l'articolo corrispondente nel punto esatto in cui si trova l'occorrenza.
+Quando l'utente seleziona un'occorrenza, l'overlay dei risultati deve chiudersi e il sistema deve aprire l'articolo corrispondente direttamente nel punto in cui si trova l'occorrenza selezionata.
 
-Il termine cercato deve rimanere evidenziato all'interno dell'articolo.
+La query deve rimanere visibile nella barra di ricerca e il termine cercato deve rimanere evidenziato nell'articolo.
+
+Quando l'articolo è stato aperto a partire da una ricerca, l'interfaccia deve mostrare l'azione "Torna ai risultati", che consente di riaprire l'overlay mantenendo la ricerca precedente.
 
 L'utente deve poter capire visivamente quale punto dell'articolo è stato raggiunto.
 
@@ -457,11 +489,9 @@ La sezione deve permettere di recuperare rapidamente link utili salvati durante 
 
 ## Profilo pubblico e contatti
 
-L'interfaccia deve prevedere una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
+La home page deve mostrare una sezione dedicata alla presentazione professionale e ai contatti dell'amministratore.
 
-La sezione contatti può essere presentata come modale, purché sia chiara, accessibile e facilmente chiudibile.
-
-La modale contatti deve mostrare informazioni pubbliche dell'amministratore, per esempio:
+La sezione contatti deve mostrare informazioni pubbliche dell'amministratore, per esempio:
 
 - breve presentazione;
 - indirizzo email;
@@ -495,7 +525,6 @@ In particolare:
 - tutti gli elementi interattivi devono essere raggiungibili da tastiera;
 - lo stato di focus deve essere visibile;
 - i link devono essere distinguibili dal testo normale;
-- le modali devono poter essere chiuse facilmente;
 - i pulsanti devono avere etichette comprensibili;
 - l'apertura di link esterni deve essere comunicata in modo chiaro;
 - i feedback di copia devono essere comprensibili;
@@ -558,16 +587,6 @@ L'interfaccia deve privilegiare una modalità chiara, leggibile e coerente con l
 
 Le seguenti decisioni saranno approfondite nelle fasi successive.
 
-### Posizione esatta della ricerca
-
-La ricerca dovrà essere sempre facilmente raggiungibile.
-
-Resta da definire se sarà collocata principalmente:
-
-- nella parte alta della pagina;
-- nella sidebar;
-- in entrambe le aree, mantenendo però un comportamento unico e coerente.
-
 ### Soglia di avvio della ricerca
 
 La ricerca non dovrebbe produrre risultati inutilmente rumorosi fin dalla prima lettera digitata.
@@ -575,20 +594,6 @@ La ricerca non dovrebbe produrre risultati inutilmente rumorosi fin dalla prima 
 Resta da definire se introdurre una soglia minima di caratteri o un messaggio per query troppo generiche.
 
 La decisione dovrà tenere conto anche di termini tecnici brevi.
-
-### Presentazione delle aree tematiche
-
-Resta da definire come mostrare le aree tematiche disponibili.
-
-Possibili soluzioni:
-
-- elenco compatto;
-- chip;
-- card leggere;
-- sezione dedicata nella home page;
-- area nella sidebar.
-
-Resta inoltre da stabilire se le aree saranno solamente informative oppure interattive e, in quest'ultimo caso, quale comportamento avrà la loro selezione.
 
 ### Presentazione dei link di approfondimento
 

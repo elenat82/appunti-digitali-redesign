@@ -33,7 +33,7 @@ Può:
 - copiare blocchi di codice o comandi;
 - consultare link esterni di approfondimento;
 - visualizzare le sezioni della home page;
-- aprire la sezione contatti;
+- visualizzare la sezione contatti;
 - scaricare il CV dell'amministratore;
 - usare le azioni disponibili sull'indirizzo email pubblico.
 
@@ -108,6 +108,39 @@ Ogni articolo può contenere:
 
 Il sistema deve visualizzare correttamente la struttura del contenuto, in particolare titoli, sottotitoli, paragrafi, liste, tabelle e blocchi di codice.
 
+## Navigazione per aree tematiche
+
+Oltre alla ricerca globale, il sistema deve consentire la navigazione diretta dei contenuti attraverso le aree tematiche.
+
+Le aree tematiche devono essere sempre facilmente riconoscibili, in modo che un nuovo visitatore possa comprendere rapidamente quali argomenti sono trattati nel sito senza dover scorrere una lunga lista di articoli.
+
+La navigazione laterale deve mostrare le aree tematiche principali:
+
+- HTML;
+- CSS;
+- JavaScript;
+- Angular;
+- PHP;
+- Drupal;
+- Varie.
+
+Ogni area può essere espansa per mostrare gli articoli appartenenti a quell'argomento.
+
+La navigazione per aree tematiche è complementare alla ricerca globale:
+
+- la ricerca è pensata per l'utente che vuole trovare rapidamente un'informazione specifica;
+- la navigazione laterale è pensata per l'utente che vuole esplorare gli articoli disponibili in una determinata area.
+
+Il pannello laterale può essere collassato per lasciare maggiore spazio al contenuto principale. Anche nello stato collassato le diverse aree devono rimanere riconoscibili attraverso le rispettive icone e deve essere possibile identificare l'area dell'articolo attualmente visualizzato.
+
+### Feedback sonoro
+
+L'apertura e la chiusura del pannello laterale sono accompagnate da due brevi suoni distinti.
+
+Il feedback sonoro ha lo scopo di rendere più riconoscibile e piacevole l'interazione, ma non deve essere necessario per comprendere lo stato del pannello.
+
+L'interfaccia deve quindi comunicare chiaramente anche in modo visivo se il pannello è aperto o chiuso.
+
 ## Ricerca globale
 
 La ricerca è l'interazione principale del sito.
@@ -172,6 +205,8 @@ Dopo l'apertura dell'articolo, il termine cercato deve rimanere evidenziato nel 
 
 Questo comportamento sostituisce il flusso precedente in cui l'utente individuava l'articolo tramite ricerca e poi doveva usare manualmente la ricerca del browser all'interno della pagina.
 
+Quando l'articolo viene aperto a partire da una ricerca, l'utente deve poter tornare ai risultati della ricerca precedente senza dover reinserire la query.
+
 ## Lettura degli articoli
 
 La pagina articolo deve favorire la lettura comoda di contenuti tecnici, anche lunghi.
@@ -194,7 +229,7 @@ I linguaggi e formati inizialmente supportati sono:
 - JavaScript;
 - TypeScript;
 - PHP;
-- Twig,
+- Twig;
 - YAML;
 - JSON;
 - SQL;
@@ -333,7 +368,7 @@ Il web clipper deve essere utilizzabile solo dall'amministratore. Gli utenti ano
 
 ## Profilo pubblico e contatti
 
-Il sistema deve mantenere una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
+La home page deve includere una sezione dedicata al profilo pubblico e ai contatti dell'amministratore.
 
 La sezione contatti deve mostrare le informazioni pubbliche dell'amministratore del sito e deve consentire il download del CV.
 
@@ -350,7 +385,7 @@ Questa funzionalità viene mantenuta perché supporta il valore pubblico e profe
 
 ## Orientamento per nuovi visitatori
 
-Oltre alla ricerca globale, la home page deve aiutare i nuovi visitatori a comprendere rapidamente quali aree tematiche sono presenti nel sito.
+Oltre alla ricerca globale, il pannello laterale di navigazione deve aiutare i nuovi visitatori a comprendere rapidamente quali aree tematiche sono presenti nel sito.
 
 Nella versione attuale, la lista degli articoli può essere molto lunga e un utente che visualizza solo i primi contenuti potrebbe non capire che il sito include anche argomenti collocati più avanti nella lista, per esempio Drupal, PHP o Angular.
 

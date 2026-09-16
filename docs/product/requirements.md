@@ -138,23 +138,25 @@ La ricerca deve privilegiare la rapidità di accesso all'informazione, non la cl
 
 **RF025.** Dopo l'apertura dell'articolo, il termine cercato deve rimanere evidenziato nel contenuto.
 
-**RF026.** La ricerca non deve richiedere una chiamata al backend a ogni digitazione.
+**RF026.** Dopo aver aperto un'occorrenza, l'utente deve poter tornare ai risultati della ricerca precedente mantenendo la query e i risultati già ottenuti.
 
-**RF027.** La ricerca deve aggiornare i risultati progressivamente durante la digitazione, senza richiedere l'apertura di una pagina risultati separata o l'uso obbligatorio di un pulsante di invio.
+**RF027.** La ricerca non deve richiedere una chiamata al backend a ogni digitazione.
 
-**RF028.** Il sistema non deve prevedere filtri avanzati obbligatori per tecnologia, versione, difficoltà, data, stato o tipologia di contenuto.
+**RF028.** La ricerca deve aggiornare i risultati progressivamente durante la digitazione, senza richiedere l'apertura di una pagina risultati separata o l'uso obbligatorio di un pulsante di invio.
 
-**RF029.** Il sistema non deve prevedere suggerimenti automatici durante la digitazione, salvo eventuali evoluzioni future.
+**RF029.** Il sistema non deve prevedere filtri avanzati obbligatori per tecnologia, versione, difficoltà, data, stato o tipologia di contenuto.
 
-**RF030.** Il sistema non deve prevedere cronologia delle ricerche o ricerche salvate.
+**RF030.** Il sistema non deve prevedere suggerimenti automatici durante la digitazione, salvo eventuali evoluzioni future.
+
+**RF031.** Il sistema non deve prevedere cronologia delle ricerche o ricerche salvate.
 
 ### Consultazione degli articoli
 
-**RF031.** Il sistema deve consentire la lettura comoda di articoli lunghi senza obbligare a suddividerli in più pagine.
+**RF032.** Il sistema deve consentire la lettura comoda di articoli lunghi senza obbligare a suddividerli in più pagine.
 
-**RF032.** Il sistema deve visualizzare correttamente titoli, sottotitoli, paragrafi, liste, tabelle e blocchi di codice.
+**RF033.** Il sistema deve visualizzare correttamente titoli, sottotitoli, paragrafi, liste, tabelle e blocchi di codice.
 
-**RF033.** Il sistema deve applicare syntax highlighting agli snippet di codice.
+**RF034.** Il sistema deve applicare syntax highlighting agli snippet di codice.
 
 I linguaggi e formati inizialmente supportati devono includere almeno:
 
@@ -169,97 +171,111 @@ I linguaggi e formati inizialmente supportati devono includere almeno:
 - SQL;
 - Bash.
 
-**RF034.** Il sistema deve consentire la copia rapida dei blocchi di codice.
+**RF035.** Il sistema deve consentire la copia rapida dei blocchi di codice.
 
-**RF035.** Il sistema deve consentire la copia rapida dei comandi, quando riconoscibili come blocchi o righe di codice.
+**RF036.** Il sistema deve consentire la copia rapida dei comandi, quando riconoscibili come blocchi o righe di codice.
 
-**RF036.** Il sistema deve consentire l'inserimento e la visualizzazione di brevi frammenti tecnici inline all'interno del testo degli articoli.
+**RF037.** Il sistema deve consentire l'inserimento e la visualizzazione di brevi frammenti tecnici inline all'interno del testo degli articoli.
 
 I frammenti tecnici inline possono includere, per esempio, nomi di chiavi di configurazione, nomi di file, comandi brevi, nomi di funzioni, nomi di metodi, selettori, tag HTML o valori tecnici.
 
-**RF037.** I frammenti tecnici inline devono essere visivamente distinguibili dal testo normale senza interrompere il flusso di lettura.
+**RF038.** I frammenti tecnici inline devono essere visivamente distinguibili dal testo normale senza interrompere il flusso di lettura.
 
-**RF038.** Il sistema deve consentire l'inserimento negli articoli di esempi di codice interattivi provenienti da servizi esterni, inizialmente CodePen.
+**RF039.** Il sistema deve consentire l'inserimento negli articoli di esempi di codice interattivi provenienti da servizi esterni, inizialmente CodePen.
 
-**RF039.** Gli esempi interattivi devono consentire, quando supportato dal servizio esterno, di visualizzare sia il codice sia il relativo risultato senza obbligare l'utente ad abbandonare l'articolo.
+**RF040.** Gli esempi interattivi devono consentire, quando supportato dal servizio esterno, di visualizzare sia il codice sia il relativo risultato senza obbligare l'utente ad abbandonare l'articolo.
 
-**RF040.** Se un contenuto interattivo esterno non può essere caricato, l'utente deve poter accedere comunque alla risorsa originale tramite un collegamento diretto.
+**RF041.** Se un contenuto interattivo esterno non può essere caricato, l'utente deve poter accedere comunque alla risorsa originale tramite un collegamento diretto.
 
-**RF041.** Il sistema deve mostrare i link esterni di approfondimento associati all'articolo.
+**RF042.** Il sistema deve mostrare i link esterni di approfondimento associati all'articolo.
 
-**RF042.** Il sistema deve consentire di inserire negli articoli contenuti esterni incorporati quando apportano informazioni utili alla comprensione dell'argomento, per esempio tabelle di compatibilità browser o demo interattive.
+**RF043.** Il sistema deve consentire di inserire negli articoli contenuti esterni incorporati quando apportano informazioni utili alla comprensione dell'argomento, per esempio tabelle di compatibilità browser o demo interattive.
 
-**RF043.** Il sistema non deve mostrare una sezione di contenuti correlati associati all'articolo.
+**RF044.** Il sistema non deve mostrare una sezione di contenuti correlati associati all'articolo.
 
 La funzionalità è esclusa perché, pur essendo presente nella versione precedente, non è stata utilizzata in modo significativo. La consultazione del sito avviene principalmente tramite ricerca per parola chiave, non tramite navigazione tra contenuti suggeriti manualmente.
 
-**RF044.** Il sistema non deve prevedere un indice laterale obbligatorio dell'articolo.
+**RF045.** Il sistema non deve prevedere un indice laterale obbligatorio dell'articolo.
 
-**RF045.** Il sistema non deve prevedere breadcrumb, poiché non è prevista una struttura di navigazione profonda.
+**RF046.** Il sistema non deve prevedere breadcrumb, poiché non è prevista una struttura di navigazione profonda.
+
+### Navigazione laterale
+
+**RF047.** Il sistema deve prevedere un pannello laterale di navigazione che renda immediatamente visibili le aree tematiche disponibili nel sito.
+
+Il pannello ha anche una funzione di orientamento e scoperta dei contenuti, in modo che un nuovo visitatore possa comprendere rapidamente quali argomenti sono trattati senza dover scorrere l'intera lista degli articoli.
+
+**RF048.** Ogni area tematica deve poter essere espansa per mostrare gli articoli appartenenti a quell'area.
+
+**RF049.** Il pannello laterale deve poter essere espanso e collassato dall'utente.
+
+**RF050.** Nello stato collassato il pannello deve mantenere visibili le icone associate alle aree tematiche.
+
+**RF051.** Il pannello deve rendere riconoscibile l'area tematica dell'articolo attualmente visualizzato anche nello stato collassato.
+
+**RF052.** Le icone presenti nel pannello collassato devono avere un nome accessibile, un'area interattiva sufficientemente ampia e un tooltip disponibile sia al passaggio del mouse sia al focus da tastiera.
+
+**RF053.** L'apertura e la chiusura del pannello di navigazione laterale devono essere accompagnate da brevi feedback sonori distinti.
+
+I suoni devono essere riprodotti esclusivamente in conseguenza di un'azione esplicita dell'utente e non devono costituire l'unico feedback che comunica lo stato aperto o chiuso del pannello.
 
 ### Home page
 
-**RF046.** La home page deve dare priorità alla ricerca globale.
+**RF054.** La home page deve dare priorità alla ricerca globale.
 
-**RF047.** La home page deve rendere immediatamente visibili le aree tematiche disponibili nel sito.
+**RF055.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
 
-Questa funzionalità ha lo scopo di aiutare i nuovi visitatori a comprendere rapidamente quali argomenti sono trattati, senza dover scorrere l'intera lista degli articoli.
+**RF056.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
 
-**RF048.** L'elenco delle aree tematiche deve essere una funzione di orientamento e scoperta dei contenuti, senza sostituire la ricerca globale come interazione principale del sito.
+**RF057.** La home page deve includere una sezione dedicata ai repository GitHub starred.
 
-**RF049.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
-
-**RF050.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
-
-**RF051.** La home page deve includere una sezione dedicata ai repository GitHub starred.
-
-**RF052.** La home page deve includere una sezione dedicata ai link salvati tramite web clipper.
+**RF058.** La home page deve includere una sezione dedicata ai link salvati tramite web clipper.
 
 ### Web clipper
 
-**RF053.** Il sistema deve prevedere una funzionalità web clipper basata su estensione Chrome.
+**RF059.** Il sistema deve prevedere una funzionalità web clipper basata su estensione Chrome.
 
-**RF054.** L'estensione Chrome deve consentire all'amministratore di salvare la pagina web attualmente aperta.
+**RF060.** L'estensione Chrome deve consentire all'amministratore di salvare la pagina web attualmente aperta.
 
-**RF055.** Il sistema deve creare un contenuto Drupal dedicato per ogni pagina salvata tramite web clipper.
+**RF061.** Il sistema deve creare un contenuto Drupal dedicato per ogni pagina salvata tramite web clipper.
 
-**RF056.** Ogni risorsa salvata tramite web clipper deve includere almeno:
+**RF062.** Ogni risorsa salvata tramite web clipper deve includere almeno:
 
 - titolo della pagina;
 - URL della pagina;
 - tag associato.
 
-**RF057.** I tag delle risorse salvate devono essere gestiti tramite tassonomia Drupal.
+**RF063.** I tag delle risorse salvate devono essere gestiti tramite tassonomia Drupal.
 
-**RF058.** I tag delle risorse salvate non devono essere usati come sistema generale di classificazione degli articoli tecnici.
+**RF064.** I tag delle risorse salvate non devono essere usati come sistema generale di classificazione degli articoli tecnici.
 
 ### Amministrazione
 
-**RF059.** Il sistema deve consentire all'amministratore di gestire i contenuti tramite backend Drupal.
+**RF065.** Il sistema deve consentire all'amministratore di gestire i contenuti tramite backend Drupal.
 
-**RF060.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
+**RF066.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
 
-**RF061.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
+**RF067.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
 
-**RF062.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
+**RF068.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
 
 ### Profilo pubblico e contatti
 
-**RF063.** Il sistema deve mostrare all'utente anonimo una sezione contatti accessibile da un pulsante presente nell'interfaccia principale.
+**RF069.** La home page deve mostrare all'utente anonimo una sezione dedicata al profilo pubblico e ai contatti dell'amministratore.
 
-**RF064.** La sezione contatti deve includere almeno le informazioni pubbliche dell'amministratore del sito.
+**RF070.** La sezione deve includere almeno una breve presentazione e le informazioni pubbliche dell'amministratore del sito.
 
-**RF065.** La sezione contatti deve consentire il download del CV dell'amministratore.
+**RF071.** La sezione contatti deve consentire il download del CV dell'amministratore.
 
-**RF066.** I dati mostrati nella sezione contatti non devono essere inseriti come stringhe fisse nel frontend Angular, ma devono essere recuperati dal backend Drupal.
+**RF072.** I dati mostrati nella sezione contatti non devono essere inseriti come stringhe fisse nel frontend Angular, ma devono essere recuperati dal backend Drupal.
 
-**RF067.** I dati pubblici dell'amministratore e il file CV devono essere gestiti a partire dall'entità User di Drupal o da campi collegati all'utente amministratore.
+**RF073.** I dati pubblici dell'amministratore e il file CV devono essere gestiti a partire dall'entità User di Drupal o da campi collegati all'utente amministratore.
 
-**RF068.** Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.
+**RF074.** Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.
 
-**RF069.** Cliccando sull'indirizzo email nel footer, il sistema deve offrire almeno due azioni: apertura del client email tramite link `mailto:` e copia dell'indirizzo email negli appunti.
+**RF075.** Cliccando sull'indirizzo email nel footer, il sistema deve offrire almeno due azioni: apertura del client email tramite link `mailto:` e copia dell'indirizzo email negli appunti.
 
-**RF070.** Il sistema non deve prevedere una sezione separata "Strumenti utili".
+**RF076.** Il sistema non deve prevedere una sezione separata "Strumenti utili".
 
 Questa funzionalità è presente nella versione precedente, ma non si è rivelata utile nell'uso quotidiano. Eventuali link utili potranno essere gestiti come risorse salvate tramite web clipper.
 
@@ -321,7 +337,7 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 
 - rendering pubblico del sito;
 - recupero dei contenuti da Drupal;
-- visualizzazione della modale contatti;
+- visualizzazione dei contatti;
 - download del CV;
 - gestione delle azioni email nel footer;
 - ricerca client-side;
@@ -380,7 +396,7 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 
 **RT018.** Drupal deve esporre al frontend i dati pubblici dell'amministratore necessari alla sezione contatti, al footer e al download del CV.
 
-**RT019.** Angular deve recuperare i dati pubblici dell'amministratore da Drupal e usarli per popolare la modale contatti, il pulsante di download del CV e l'indirizzo email nel footer.
+**RT019.** Angular deve recuperare i dati pubblici dell'amministratore da Drupal e usarli per popolare la sezione contatti, il pulsante di download del CV e l'indirizzo email nel footer.
 
 **RT020.** Il sistema deve prevedere una strategia tecnica per recuperare e mostrare nella home page notizie da feed RSS, ultime domande Stack Overflow, repository GitHub starred e risorse salvate tramite web clipper.
 
