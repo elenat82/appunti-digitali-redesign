@@ -207,13 +207,13 @@ Il pannello ha anche una funzione di orientamento e scoperta dei contenuti, in m
 
 **RF048.** Ogni area tematica deve poter essere espansa per mostrare gli articoli appartenenti a quell'area.
 
-**RF049.** Il pannello laterale deve poter essere espanso e collassato dall'utente.
+**RF049.** Nella versione desktop, il pannello laterale deve poter essere espanso e collassato dall'utente.
 
-**RF050.** Nello stato collassato il pannello deve mantenere visibili le icone associate alle aree tematiche.
+**RF050.** Nello stato desktop collassato il pannello deve mantenere visibili le icone associate alle aree tematiche.
 
-**RF051.** Il pannello deve rendere riconoscibile l'area tematica dell'articolo attualmente visualizzato anche nello stato collassato.
+**RF051.** Il pannello deve rendere riconoscibile l'area tematica dell'articolo attualmente visualizzato anche nello stato desktop collassato.
 
-**RF052.** Le icone presenti nel pannello collassato devono avere un nome accessibile, un'area interattiva sufficientemente ampia e un tooltip disponibile sia al passaggio del mouse sia al focus da tastiera.
+**RF052.** Le icone presenti nel pannello desktop collassato devono avere un nome accessibile, un'area interattiva sufficientemente ampia e un tooltip disponibile sia al passaggio del mouse sia al focus da tastiera.
 
 **RF053.** L'apertura e la chiusura del pannello di navigazione laterale devono essere accompagnate da brevi feedback sonori distinti.
 

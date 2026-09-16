@@ -200,7 +200,19 @@ Ogni icona deve avere un nome accessibile. Al passaggio del mouse e al focus da 
 
 L'area interattiva associata all'icona deve essere più ampia dell'icona stessa, in modo da garantire un target facile da selezionare.
 
-L'apertura e la chiusura del pannello possono essere accompagnate dai feedback sonori descritti nella sezione dedicata.
+L'apertura e la chiusura del pannello devono essere accompagnate dai feedback sonori descritti nella sezione dedicata.
+
+Su dispositivi mobili il pannello laterale deve essere presentato come drawer sovrapposto al contenuto della pagina.
+
+Quando il drawer è aperto:
+
+- il contenuto sottostante deve essere oscurato tramite backdrop e non deve essere interagibile;
+- deve essere disponibile un controllo visibile e accessibile per chiudere il pannello;
+- il tap o click sul backdrop può chiudere il pannello, ma non deve essere l'unico metodo disponibile;
+- l'interazione deve rimanere accessibile anche quando il dispositivo viene utilizzato tramite tastiera o tecnologie assistive;
+- dopo la chiusura, il contesto di interazione deve tornare al controllo che ha aperto il drawer.
+
+Il controllo che apre il drawer deve comunicare in modo accessibile lo stato aperto o chiuso del pannello.
 
 ## Home page
 
@@ -269,7 +281,9 @@ L'interfaccia deve gestire almeno questi stati:
 
 ## Presentazione dei risultati di ricerca
 
-Quando l'utente inserisce una query valida, i risultati devono essere mostrati in un overlay opaco che copre l'area principale della pagina, lasciando visibili l'header e il pannello laterale di navigazione.
+Quando l'utente inserisce una query valida, i risultati devono essere mostrati in un overlay opaco che copre l'area principale della pagina.
+
+Nella versione desktop l'overlay lascia visibili l'header e il pannello laterale di navigazione. Su mobile occupa l'area disponibile sotto l'header, mentre il drawer di navigazione rimane normalmente chiuso.
 
 L'overlay deve permettere all'utente di concentrarsi sui risultati senza essere disturbato dal contenuto sottostante.
 
@@ -526,6 +540,7 @@ In particolare:
 - lo stato di focus deve essere visibile;
 - i link devono essere distinguibili dal testo normale;
 - i pulsanti devono avere etichette comprensibili;
+- i pannelli sovrapposti devono gestire correttamente focus, chiusura e interazione con il contenuto sottostante;
 - l'apertura di link esterni deve essere comunicata in modo chiaro;
 - i feedback di copia devono essere comprensibili;
 - le animazioni non necessarie devono essere evitate;
@@ -547,7 +562,7 @@ Su schermi piccoli l'interfaccia deve:
 - non rendere impossibile la lettura degli articoli;
 - gestire correttamente blocchi di codice e tabelle;
 - evitare sovrapposizioni tra sidebar, risultati e contenuto;
-- rendere utilizzabili pulsanti, link e modali.
+- rendere utilizzabili pulsanti, link, drawer e altri pannelli sovrapposti.
 
 I blocchi di codice non devono essere rimossi su mobile. Potranno essere gestiti con soluzioni dedicate, per esempio scorrimento orizzontale, visualizzazione compatta o apertura controllata, da definire nel design system.
 

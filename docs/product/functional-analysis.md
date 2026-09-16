@@ -131,7 +131,7 @@ La navigazione per aree tematiche è complementare alla ricerca globale:
 - la ricerca è pensata per l'utente che vuole trovare rapidamente un'informazione specifica;
 - la navigazione laterale è pensata per l'utente che vuole esplorare gli articoli disponibili in una determinata area.
 
-Il pannello laterale può essere collassato per lasciare maggiore spazio al contenuto principale. Anche nello stato collassato le diverse aree devono rimanere riconoscibili attraverso le rispettive icone e deve essere possibile identificare l'area dell'articolo attualmente visualizzato.
+Nella versione desktop, il pannello laterale può essere collassato per lasciare maggiore spazio al contenuto principale. Anche nello stato desktop collassato le diverse aree devono rimanere riconoscibili attraverso le rispettive icone e deve essere possibile identificare l'area dell'articolo attualmente visualizzato.
 
 ### Feedback sonoro
 
@@ -173,7 +173,7 @@ Esempi di parole o espressioni ricercabili:
 
 La ricerca deve aggiornare i risultati progressivamente durante la digitazione. Non deve essere necessario premere un pulsante di invio e non deve essere obbligatoria l'apertura di una pagina separata dedicata ai risultati.
 
-Quando il campo di ricerca è vuoto, il sistema mostra la normale lista dei contenuti o lo stato previsto per la pagina corrente.
+Quando il campo di ricerca è vuoto, il sistema mostra il normale contenuto previsto per la pagina corrente.
 
 Quando l'utente digita una parola chiave, il sistema mostra progressivamente i risultati corrispondenti.
 
