@@ -34,15 +34,15 @@ decisioni del design system.
 
 ### Foundations
 
-![Design system - Foundations](design-system/foundations.jpg)
+![Design system - Foundations](design-system/foundations.JPG)
 
 ### Content
 
-![Design system - Content](design-system/content.jpg)
+![Design system - Content](design-system/content.JPG)
 
 ### Components
 
-![Design system - Components](design-system/components.jpg)
+![Design system - Components](design-system/components.JPG)
 
 ## Logo
 
