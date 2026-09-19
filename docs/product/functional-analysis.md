@@ -372,6 +372,8 @@ La home page deve includere una sezione dedicata al profilo pubblico e ai contat
 
 La sezione contatti deve mostrare le informazioni pubbliche dell'amministratore del sito e deve consentire il download del CV.
 
+La sezione può mostrare anche l'avatar pubblico dell'amministratore, utilizzato come rappresentazione visiva al posto di una fotografia personale.
+
 Le informazioni mostrate nella sezione contatti non devono essere gestite come stringhe statiche nel frontend.
 
 Il footer deve mostrare l'indirizzo email pubblico dell'amministratore.

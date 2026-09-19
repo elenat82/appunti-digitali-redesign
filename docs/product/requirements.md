@@ -263,7 +263,7 @@ I suoni devono essere riprodotti esclusivamente in conseguenza di un'azione espl
 
 **RF069.** La home page deve mostrare all'utente anonimo una sezione dedicata al profilo pubblico e ai contatti dell'amministratore.
 
-**RF070.** La sezione deve includere almeno una breve presentazione e le informazioni pubbliche dell'amministratore del sito.
+**RF070.** La sezione deve includere almeno l'avatar associato all'aministratore, una breve presentazione e le informazioni pubbliche dell'amministratore del sito.
 
 **RF071.** La sezione contatti deve consentire il download del CV dell'amministratore.
 
