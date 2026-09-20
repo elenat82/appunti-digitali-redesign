@@ -1,0 +1,13 @@
+/vendor/
+
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/
+/web/profiles/contrib/
+
+/web/sites/*/files/
+/web/sites/*/private/
+/web/sites/*/settings.local.php
+/web/sites/*/settings.ddev.php
+
+.phpunit.result.cache
