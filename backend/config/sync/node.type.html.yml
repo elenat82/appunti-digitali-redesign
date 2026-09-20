@@ -1,0 +1,17 @@
+uuid: 240d75c8-54bc-43f0-817a-d9eaeb7c617d
+langcode: it
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: HTML
+type: html
+description: null
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: false
