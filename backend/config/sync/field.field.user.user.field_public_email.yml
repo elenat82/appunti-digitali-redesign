@@ -1,0 +1,20 @@
+uuid: 92669f39-a431-4927-ab2b-348b3c1fe487
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_public_email
+  module:
+    - user
+id: user.user.field_public_email
+field_name: field_public_email
+entity_type: user
+bundle: user
+label: 'Email pubblica'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email
