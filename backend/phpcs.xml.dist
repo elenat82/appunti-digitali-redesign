@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<ruleset name="Appunti Digitali">
+  <description>PHP_CodeSniffer rules for the Appunti Digitali Drupal backend.</description>
+
+  <!-- Check only custom Drupal code. -->
+  <file>web/modules/custom</file>
+
+  <!-- Drupal-related file extensions handled by Coder. -->
+  <arg name="extensions" value="php,module,inc,install,test,profile,theme,yml"/>
+
+  <!-- Improve CLI output. -->
+  <arg name="colors"/>
+  <arg name="basepath" value="."/>
+
+  <!-- Drupal coding standards and Drupal-specific best practices. -->
+  <rule ref="Drupal"/>
+  <rule ref="DrupalPractice"/>
+</ruleset>
