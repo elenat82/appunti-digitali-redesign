@@ -1,0 +1,22 @@
+uuid: 3cdb53b0-b61d-44bd-a1b6-5f28aef62597
+langcode: it
+status: true
+dependencies:
+  module:
+    - appunti_digitali
+    - menu_ui
+third_party_settings:
+  appunti_digitali:
+    area: true
+    icon: php.svg
+    weight: 4
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: PHP
+type: php
+description: null
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: false

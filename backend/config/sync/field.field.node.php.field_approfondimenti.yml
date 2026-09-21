@@ -1,0 +1,23 @@
+uuid: 5c4b99ad-9cbc-45a0-869f-b188e852cf90
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_approfondimenti
+    - node.type.php
+  module:
+    - link
+id: node.php.field_approfondimenti
+field_name: field_approfondimenti
+entity_type: node
+bundle: php
+label: Approfondimenti
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 16
+field_type: link

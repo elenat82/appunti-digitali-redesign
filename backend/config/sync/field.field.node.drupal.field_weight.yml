@@ -1,0 +1,22 @@
+uuid: a3cc9990-78d1-4787-9aa5-8ff8fb6c4bec
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_weight
+    - node.type.drupal
+  module:
+    - weight
+id: node.drupal.field_weight
+field_name: field_weight
+entity_type: node
+bundle: drupal
+label: Peso
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  range: '100'
+field_type: weight

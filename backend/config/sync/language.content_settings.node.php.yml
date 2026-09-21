@@ -1,0 +1,11 @@
+uuid: cf098f44-1842-4c13-9620-9b1d5625c12c
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.php
+id: node.php
+target_entity_type_id: node
+target_bundle: php
+default_langcode: site_default
+language_alterable: false

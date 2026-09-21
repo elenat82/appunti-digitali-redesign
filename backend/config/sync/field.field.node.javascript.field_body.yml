@@ -1,0 +1,24 @@
+uuid: 1673cc0b-fb8a-4235-8aeb-2636ea31dfbd
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_body
+    - filter.format.full_html
+    - node.type.javascript
+  module:
+    - text
+id: node.javascript.field_body
+field_name: field_body
+entity_type: node
+bundle: javascript
+label: Body
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - full_html
+field_type: text_long

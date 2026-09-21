@@ -1,0 +1,11 @@
+uuid: c5797b79-f06b-448e-91bd-7585c81d2d7d
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.angular
+id: node.angular
+target_entity_type_id: node
+target_bundle: angular
+default_langcode: site_default
+language_alterable: false

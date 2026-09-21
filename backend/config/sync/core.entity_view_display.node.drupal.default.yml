@@ -1,0 +1,53 @@
+uuid: f6a7aab2-1809-4bc0-9afc-9cdd5493f66d
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.drupal.field_approfondimenti
+    - field.field.node.drupal.field_body
+    - field.field.node.drupal.field_weight
+    - node.type.drupal
+  module:
+    - link
+    - text
+    - user
+id: node.drupal.default
+targetEntityType: node
+bundle: drupal
+mode: default
+content:
+  field_approfondimenti:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_body:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 102
+    region: content
+  field_weight:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

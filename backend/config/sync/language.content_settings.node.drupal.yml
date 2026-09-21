@@ -1,0 +1,11 @@
+uuid: fcf32e14-7548-4c78-8a4c-8abc20a42f68
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.drupal
+id: node.drupal
+target_entity_type_id: node
+target_bundle: drupal
+default_langcode: site_default
+language_alterable: false

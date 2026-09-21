@@ -1,0 +1,22 @@
+uuid: 56b2af6b-6d00-447e-b8e5-712d3a673822
+langcode: it
+status: true
+dependencies:
+  module:
+    - appunti_digitali
+    - menu_ui
+third_party_settings:
+  appunti_digitali:
+    area: true
+    icon: drupal.svg
+    weight: 5
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Drupal
+type: drupal
+description: null
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: false

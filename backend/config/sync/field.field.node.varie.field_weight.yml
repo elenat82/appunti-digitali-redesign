@@ -1,0 +1,22 @@
+uuid: d3eafcec-4f6b-48ab-9319-748a46069455
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_weight
+    - node.type.varie
+  module:
+    - weight
+id: node.varie.field_weight
+field_name: field_weight
+entity_type: node
+bundle: varie
+label: Peso
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  range: '100'
+field_type: weight

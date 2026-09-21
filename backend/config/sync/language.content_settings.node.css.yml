@@ -1,0 +1,11 @@
+uuid: 64a86056-fe67-4a7b-b488-a6153bad7868
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.css
+id: node.css
+target_entity_type_id: node
+target_bundle: css
+default_langcode: site_default
+language_alterable: false

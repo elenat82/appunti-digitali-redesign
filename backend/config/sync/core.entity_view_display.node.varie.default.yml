@@ -1,0 +1,53 @@
+uuid: b0891c6d-a3e1-4aae-a35a-d06b61f3f783
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.varie.field_approfondimenti
+    - field.field.node.varie.field_body
+    - field.field.node.varie.field_weight
+    - node.type.varie
+  module:
+    - link
+    - text
+    - user
+id: node.varie.default
+targetEntityType: node
+bundle: varie
+mode: default
+content:
+  field_approfondimenti:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_body:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 102
+    region: content
+  field_weight:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

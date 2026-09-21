@@ -1,0 +1,22 @@
+uuid: 82bfa3a4-5039-4777-92f7-99a08226172f
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_weight
+    - node.type.php
+  module:
+    - weight
+id: node.php.field_weight
+field_name: field_weight
+entity_type: node
+bundle: php
+label: Peso
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  range: '100'
+field_type: weight

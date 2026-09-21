@@ -1,0 +1,23 @@
+uuid: 2794aa7a-c5a3-424d-b91d-11e2b2a4e5d9
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_approfondimenti
+    - node.type.css
+  module:
+    - link
+id: node.css.field_approfondimenti
+field_name: field_approfondimenti
+entity_type: node
+bundle: css
+label: Approfondimenti
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 16
+field_type: link

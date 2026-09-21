@@ -1,0 +1,22 @@
+uuid: 1db65829-fe0a-45d4-aad1-1bf0ca7484c9
+langcode: it
+status: true
+dependencies:
+  module:
+    - appunti_digitali
+    - menu_ui
+third_party_settings:
+  appunti_digitali:
+    area: true
+    icon: javascript.svg
+    weight: 2
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: JavaScript
+type: javascript
+description: null
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: false

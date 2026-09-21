@@ -1,0 +1,23 @@
+uuid: fd3bc5a4-31aa-466c-bafe-4e9490780d8b
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_approfondimenti
+    - node.type.javascript
+  module:
+    - link
+id: node.javascript.field_approfondimenti
+field_name: field_approfondimenti
+entity_type: node
+bundle: javascript
+label: Approfondimenti
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 16
+field_type: link

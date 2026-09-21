@@ -1,0 +1,24 @@
+uuid: 05ada1b7-922d-471d-ba38-8fbe545944fa
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_body
+    - filter.format.full_html
+    - node.type.php
+  module:
+    - text
+id: node.php.field_body
+field_name: field_body
+entity_type: node
+bundle: php
+label: Body
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - full_html
+field_type: text_long

@@ -1,0 +1,53 @@
+uuid: 54dbd848-51f6-40dc-9701-d78da09fb024
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.javascript.field_approfondimenti
+    - field.field.node.javascript.field_body
+    - field.field.node.javascript.field_weight
+    - node.type.javascript
+  module:
+    - link
+    - text
+    - user
+id: node.javascript.default
+targetEntityType: node
+bundle: javascript
+mode: default
+content:
+  field_approfondimenti:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  field_body:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 102
+    region: content
+  field_weight:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

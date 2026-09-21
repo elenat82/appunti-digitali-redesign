@@ -1,0 +1,22 @@
+uuid: dc0e5002-73a4-4525-bc96-70378687fd33
+langcode: it
+status: true
+dependencies:
+  module:
+    - appunti_digitali
+    - menu_ui
+third_party_settings:
+  appunti_digitali:
+    area: true
+    icon: varie.svg
+    weight: 6
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Varie
+type: varie
+description: null
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: false

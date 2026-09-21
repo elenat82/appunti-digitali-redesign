@@ -1,0 +1,22 @@
+uuid: 2936aa7d-f06c-4189-b1ed-d51b4a794b31
+langcode: it
+status: true
+dependencies:
+  module:
+    - appunti_digitali
+    - menu_ui
+third_party_settings:
+  appunti_digitali:
+    area: true
+    icon: angular.svg
+    weight: 3
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Angular
+type: angular
+description: null
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: false
