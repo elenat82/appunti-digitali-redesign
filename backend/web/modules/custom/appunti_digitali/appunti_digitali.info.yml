@@ -1,0 +1,7 @@
+name: 'Appunti Digitali'
+type: module
+description: 'Provides custom functionality for Appunti Digitali.'
+package: Custom
+core_version_requirement: ^11
+dependencies:
+  - drupal:node

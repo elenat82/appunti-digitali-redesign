@@ -1,0 +1,13 @@
+node.type.*.third_party.appunti_digitali:
+  type: mapping
+  label: 'Appunti Digitali area settings'
+  mapping:
+    area:
+      type: boolean
+      label: 'Use as thematic area'
+    icon:
+      type: string
+      label: 'Area icon'
+    weight:
+      type: integer
+      label: 'Area weight'

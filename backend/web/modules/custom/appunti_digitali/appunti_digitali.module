@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @file
+ * Provides custom functionality for Appunti Digitali.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeTypeInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter() for node_type_form.
+ */
+function appunti_digitali_form_node_type_form_alter(
+  array &$form,
+  FormStateInterface $form_state,
+): void {
+  /** @var \Drupal\node\NodeTypeInterface $node_type */
+  $node_type = $form_state->getFormObject()->getEntity();
+
+  $form['appunti_digitali'] = [
+    '#type' => 'details',
+    '#title' => t('Appunti Digitali'),
+    '#open' => TRUE,
+    '#tree' => TRUE,
+  ];
+
+  $form['appunti_digitali']['area'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Use as thematic area'),
+    '#default_value' => $node_type->getThirdPartySetting(
+      'appunti_digitali',
+      'area',
+      FALSE,
+    ),
+  ];
+
+  $form['appunti_digitali']['icon'] = [
+    '#type' => 'textfield',
+    '#title' => t('Icon'),
+    '#description' => t('Icon filename, for example html.svg.'),
+    '#default_value' => $node_type->getThirdPartySetting(
+      'appunti_digitali',
+      'icon',
+      '',
+    ),
+    '#states' => [
+      'visible' => [
+        ':input[name="appunti_digitali[area]"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+
+  $form['appunti_digitali']['weight'] = [
+    '#type' => 'number',
+    '#title' => t('Area weight'),
+    '#default_value' => $node_type->getThirdPartySetting(
+      'appunti_digitali',
+      'weight',
+      0,
+    ),
+    '#states' => [
+      'visible' => [
+        ':input[name="appunti_digitali[area]"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+
+  $form['#entity_builders'][] = 'appunti_digitali_node_type_form_builder';
+}
+
+/**
+ * Stores Appunti Digitali settings on the node type.
+ */
+function appunti_digitali_node_type_form_builder(
+  string $entity_type_id,
+  NodeTypeInterface $node_type,
+  array $form,
+  FormStateInterface $form_state,
+): void {
+  $values = $form_state->getValue('appunti_digitali');
+
+  $node_type
+    ->setThirdPartySetting(
+      'appunti_digitali',
+      'area',
+      (bool) $values['area'],
+    )
+    ->setThirdPartySetting(
+      'appunti_digitali',
+      'icon',
+      $values['icon'],
+    )
+    ->setThirdPartySetting(
+      'appunti_digitali',
+      'weight',
+      (int) $values['weight'],
+    );
+}

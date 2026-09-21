@@ -3,11 +3,16 @@ langcode: it
 status: true
 dependencies:
   module:
+    - appunti_digitali
     - menu_ui
 third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
+  appunti_digitali:
+    area: true
+    icon: html.svg
+    weight: 0
 name: HTML
 type: html
 description: null
