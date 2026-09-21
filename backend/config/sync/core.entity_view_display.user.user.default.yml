@@ -8,6 +8,7 @@ dependencies:
     - field.field.user.user.field_github
     - field.field.user.user.field_linkedin
     - field.field.user.user.field_phone
+    - field.field.user.user.field_presentation
     - field.field.user.user.field_professional_role
     - field.field.user.user.field_public_email
     - field.field.user.user.user_picture
@@ -16,6 +17,7 @@ dependencies:
     - file
     - image
     - link
+    - text
     - user
 _core:
   default_config_hash: SULWJMy7nHcntPqaIZ7FlQPf_XzIiC5tnUCKattDCEI
@@ -71,6 +73,13 @@ content:
     settings: {  }
     third_party_settings: {  }
     weight: 9
+    region: content
+  field_presentation:
+    type: text_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 13
     region: content
   field_professional_role:
     type: string

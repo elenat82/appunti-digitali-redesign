@@ -9,6 +9,7 @@ dependencies:
     - field.field.user.user.field_github
     - field.field.user.user.field_linkedin
     - field.field.user.user.field_phone
+    - field.field.user.user.field_presentation
     - field.field.user.user.field_professional_role
     - field.field.user.user.field_public_email
     - field.field.user.user.user_picture
@@ -40,6 +41,7 @@ hidden:
   field_github: true
   field_linkedin: true
   field_phone: true
+  field_presentation: true
   field_professional_role: true
   field_public_email: true
   langcode: true

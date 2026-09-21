@@ -1,0 +1,19 @@
+uuid: 9b4025b0-5bed-4461-bced-4eb144416ec8
+langcode: it
+status: true
+dependencies:
+  module:
+    - text
+    - user
+id: user.field_presentation
+field_name: field_presentation
+entity_type: user
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

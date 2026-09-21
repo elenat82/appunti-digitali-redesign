@@ -1,0 +1,24 @@
+uuid: f3e7542a-bc06-4dd6-a4d5-0b993c3f794f
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_presentation
+    - filter.format.full_html
+  module:
+    - text
+    - user
+id: user.user.field_presentation
+field_name: field_presentation
+entity_type: user
+bundle: user
+label: Presentazione
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats:
+    - full_html
+field_type: text_long
