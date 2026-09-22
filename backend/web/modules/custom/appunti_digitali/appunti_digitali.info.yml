@@ -5,3 +5,5 @@ package: Custom
 core_version_requirement: ^11
 dependencies:
   - drupal:node
+'interface translation project': appunti_digitali
+'interface translation server pattern': 'modules/custom/appunti_digitali/translations/appunti_digitali.%language.po'

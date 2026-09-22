@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Appunti Digitali\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Use as thematic area"
+msgstr "Usa come area tematica"
+
+msgid "Icon"
+msgstr "Icona"
+
+msgid "Icon filename, for example html.svg."
+msgstr "Nome del file dell'icona, per esempio html.svg."
+
+msgid "Area weight"
+msgstr "Peso dell'area"
