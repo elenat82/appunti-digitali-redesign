@@ -92,7 +92,7 @@ I contenuti sono organizzati per area tematica. Le aree tematiche iniziali sono:
 - Drupal;
 - Varie.
 
-Il sistema deve consentire l'aggiunta futura di nuove aree tematiche, per esempio Java, Flutter, SQL, Symfony, Ionic o UI/UX.
+Il sistema deve consentire l'aggiunta futura di nuove aree tematiche, per esempio Java, Flutter, SQL, Symfony, Ionic o UI/UX. Quando viene aggiunta una nuova area tematica, questa deve diventare disponibile nella navigazione pubblica e deve poter contenere articoli consultabili e ricercabili come quelli delle aree già esistenti.
 
 Gli articoli possono essere lunghi e non devono essere suddivisi artificialmente in più pagine. La lunghezza dell'articolo non è considerata un problema funzionale, perché il sito è pensato per raccogliere in un'unica pagina informazioni correlate sullo stesso argomento.
 
@@ -114,7 +114,11 @@ Oltre alla ricerca globale, il sistema deve consentire la navigazione diretta de
 
 Le aree tematiche devono essere sempre facilmente riconoscibili, in modo che un nuovo visitatore possa comprendere rapidamente quali argomenti sono trattati nel sito senza dover scorrere una lunga lista di articoli.
 
-La navigazione laterale deve mostrare le aree tematiche principali:
+La navigazione laterale deve riflettere automaticamente l'insieme delle aree tematiche attualmente disponibili nel sistema.
+
+L'ordine delle aree deve poter essere definito dall'amministratore e deve essere rispettato nella navigazione pubblica.
+
+Le aree tematiche iniziali mostrate nella navigazione laterale sono:
 
 - HTML;
 - CSS;
@@ -370,9 +374,7 @@ Il web clipper deve essere utilizzabile solo dall'amministratore. Gli utenti ano
 
 La home page deve includere una sezione dedicata al profilo pubblico e ai contatti dell'amministratore.
 
-La sezione contatti deve mostrare le informazioni pubbliche dell'amministratore del sito e deve consentire il download del CV.
-
-La sezione può mostrare anche l'avatar pubblico dell'amministratore, utilizzato come rappresentazione visiva al posto di una fotografia personale.
+La sezione contatti deve mostrare almeno una breve presentazione, le informazioni pubbliche dell'amministratore e l'avatar pubblico dell'amministratore, e deve consentire il download del CV.
 
 Le informazioni mostrate nella sezione contatti non devono essere gestite come stringhe statiche nel frontend.
 

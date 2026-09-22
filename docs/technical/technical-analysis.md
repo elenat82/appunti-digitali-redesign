@@ -276,6 +276,20 @@ Le aree iniziali sono:
 - Drupal;
 - Varie.
 
+Le aree tematiche non sono codificate staticamente nel frontend.
+
+Ogni content type tecnico può essere identificato come area tematica tramite configurazione aggiunta dal modulo custom `appunti_digitali`.
+
+La configurazione dell'area viene memorizzata come third-party settings della config entity del content type e comprende:
+
+- `area`, che indica se il content type deve essere esposto come area tematica;
+- `icon`, che contiene il nome del file SVG associato all'area;
+- `weight`, che determina l'ordine dell'area nella navigazione.
+
+Le icone delle aree sono file SVG statici distribuiti con il modulo custom `appunti_digitali` nella directory `assets/icons`.
+
+Il frontend non mantiene quindi una propria lista statica delle aree o delle relative icone. Una nuova area che utilizza lo stesso modello può essere aggiunta lato Drupal senza richiedere una modifica al codice Angular.
+
 I content type hanno attualmente la stessa struttura, ma vengono mantenuti separati per lasciare la possibilità futura di differenziarli senza dover modificare il modello editoriale esistente.
 
 Dal punto di vista del frontend, i diversi content type vengono comunque normalizzati in un unico modello di articolo.
@@ -284,7 +298,7 @@ Ogni content type tecnico contiene i seguenti campi.
 
 #### Title
 
-Titolo dell'articolo.
+Campo base `title` del nodo Drupal.
 
 Il titolo viene utilizzato:
 
@@ -295,7 +309,7 @@ Il titolo viene utilizzato:
 
 #### Body
 
-Contenuto principale dell'articolo.
+Campo custom `field_body` di tipo testo formattato lungo.
 
 Il campo utilizza attualmente il text format `Full HTML` e può contenere:
 
@@ -315,9 +329,7 @@ La configurazione definitiva del text format e degli elementi HTML consentiti ve
 
 #### Approfondimenti
 
-Campo multivalore contenente link esterni associati all'articolo.
-
-Il numero di elementi è illimitato.
+Campo custom `field_approfondimenti` di tipo Link, multivalore e senza limite prefissato di elementi.
 
 Gli approfondimenti fanno parte del contenuto pubblico e devono essere esposti al frontend e inclusi nella ricerca.
 
@@ -325,11 +337,37 @@ Il modello deve inoltre permettere di mantenere link inseriti contestualmente di
 
 #### Weight
 
-Campo numerico utilizzato per controllare manualmente l'ordinamento degli articoli.
+Il campo `field_weight` utilizza il tipo di campo fornito dal modulo contrib Weight.
+
+Il peso determina l'ordinamento degli articoli all'interno della relativa area tematica.
+
+Il modulo Weight viene utilizzato anche per fornire all'amministratore un'interfaccia di riordinamento drag-and-drop, evitando di dover modificare manualmente i valori di più contenuti quando cambia la loro posizione.
 
 L'ordinamento non deve dipendere necessariamente dalla data di creazione, perché la sequenza degli articoli può essere stabilita in base alla logica dell'argomento o alle preferenze dell'amministratore.
 
 Il valore deve quindi essere disponibile al frontend per la costruzione della navigazione laterale.
+
+### Profilo pubblico dell'amministratore
+
+Le informazioni pubbliche dell'amministratore vengono mantenute sull'entità Drupal `User`.
+
+L'account utilizza i seguenti campi pubblici:
+
+- `field_full_name`: nome pubblico;
+- `field_professional_role`: ruolo professionale;
+- `field_presentation`: breve presentazione;
+- `field_public_email`: indirizzo email pubblico;
+- `field_phone`: numero di telefono opzionale;
+- `field_linkedin`: profilo LinkedIn;
+- `field_github`: profilo GitHub;
+- `field_cv`: file PDF del CV;
+- `user_picture`: avatar.
+
+L'indirizzo email pubblico viene mantenuto separato dall'indirizzo email tecnico dell'account Drupal, anche quando i due valori coincidono.
+
+In questo modo il dato utilizzato per autenticazione, notifiche e gestione dell'account rimane distinto dal dato esplicitamente destinato alla pubblicazione.
+
+Il frontend deve tollerare l'assenza dei campi opzionali senza considerare invalido l'intero profilo.
 
 ### Campi rimossi
 
@@ -367,9 +405,11 @@ Le API utilizzate dal frontend pubblico hanno principalmente lo scopo di fornire
 
 Angular non necessita di costruire dinamicamente query verso Drupal: non sono previsti filtri, ordinamenti o selezioni dei campi inviati dal client.
 
-Per gli articoli, ad esempio, il frontend recupera l'intera collezione necessaria alla navigazione e alla costruzione dell'indice di ricerca locale.
+Per gli articoli, il frontend recupera per ciascuna area l'intera collezione degli articoli appartenenti a quell'area.
 
-Per questo motivo viene preferito l'utilizzo di Views REST per le API pubbliche in sola lettura.
+Le Views REST vengono preferite per dataset basati direttamente su contenuti Drupal, come le collezioni degli articoli.
+
+Gli endpoint custom vengono utilizzati quando la response richiede logica applicativa o dati che non corrispondono direttamente a una View di entità, come il discovery delle aree tematiche e le operazioni del web clipper.
 
 Le Views permettono di definire lato Drupal:
 
@@ -382,36 +422,69 @@ Le Views permettono di definire lato Drupal:
 
 JSON:API è stato valutato ma, nel contesto attuale, offrirebbe funzionalità di interrogazione generica delle entità che il frontend non necessita.
 
-Gli endpoint custom vengono riservati alle operazioni per le quali una View REST non è sufficiente, come le richieste di scrittura provenienti dal web clipper.
+### Discovery delle aree tematiche
 
-### Recupero degli articoli
+Angular non mantiene un elenco statico dei content type tecnici.
 
-Gli articoli vengono recuperati dal frontend come collezione completa.
+Il caricamento inizia tramite un endpoint di discovery:
 
-La stessa collezione viene utilizzata per più funzionalità:
+    GET /api/areas
 
-- costruzione della navigazione laterale;
+L'endpoint restituisce le aree tematiche abilitate in Drupal, ordinate secondo
+il relativo weight.
+
+Ogni area contiene almeno:
+
+    Area
+    ├── id
+    ├── label
+    ├── iconUrl
+    └── weight
+
+`id` corrisponde all'identificativo dell'area utilizzato per richiedere i
+relativi articoli.
+
+`label` contiene il nome pubblico dell'area.
+
+`iconUrl` contiene l'URL pubblico dell'icona SVG associata all'area.
+
+`weight` determina l'ordine dell'area nella navigazione laterale.
+
+L'URL dell'icona non viene memorizzato come URL assoluto nella configurazione
+Drupal. Nei third-party settings viene conservato soltanto il nome del file,
+mentre l'API costruisce l'URL pubblico in base all'ambiente e alla richiesta
+corrente.
+
+### Recupero degli articoli per area
+
+Dopo aver recuperato l'elenco delle aree, Angular effettua una richiesta indipendente per ciascuna area, concettualmente:
+
+    GET /api/articles/html
+    GET /api/articles/css
+    GET /api/articles/javascript
+    ...
+
+L'elenco delle richieste viene quindi determinato dinamicamente dalla risposta di `/api/areas`.
+
+Una nuova area può essere aggiunta in Drupal senza dover aggiungere il relativo identificativo al codice Angular.
+
+Ogni risposta contiene la collezione completa degli articoli pubblicati appartenenti alla relativa area.
+
+Ogni articolo contiene almeno:
+
+    Article
+    ├── id
+    ├── title
+    ├── area
+    ├── body
+    ├── externalLinks
+    └── weight
+
+Una volta recuperati, gli articoli delle diverse aree vengono normalizzati nel modello frontend comune e utilizzati per:
+
+- navigazione laterale;
 - costruzione dell'indice di ricerca;
 - visualizzazione delle pagine articolo.
-
-Non viene prevista una separazione tra un endpoint contenente i metadati degli articoli e un endpoint dedicato al contenuto completo del singolo articolo.
-
-La ricerca client-side richiede infatti già il contenuto completo degli articoli, perché una query può produrre occorrenze:
-
-- nel titolo;
-- nel body;
-- nei link di approfondimento.
-
-Ogni articolo esposto dall'API deve quindi contenere almeno:
-
-- identificativo;
-- titolo;
-- area tematica;
-- body completo;
-- link di approfondimento;
-- weight.
-
-Una volta caricata la collezione, Angular utilizza gli stessi dati sia per la ricerca sia per la consultazione degli articoli, evitando richieste aggiuntive al backend durante la normale navigazione.
 
 ## Rendering sicuro del body HTML
 
@@ -454,7 +527,8 @@ La ricerca viene eseguita interamente nel browser.
 
 La digitazione di una query non genera richieste HTTP verso Drupal o verso altri servizi.
 
-Drupal fornisce ad Angular il dataset completo degli articoli; a partire da questi dati il frontend costruisce una struttura locale utilizzata per tutte le ricerche della sessione.
+Drupal fornisce ad Angular i dataset degli articoli suddivisi per area.
+Angular li aggrega in memoria nel dataset completo utilizzato per la ricerca.
 
 ### Flusso generale
 
@@ -1064,11 +1138,11 @@ Durante l'esecuzione dell'applicazione il dataset viene mantenuto in memoria, in
 
 ### Persistenza degli articoli
 
-Per evitare di scaricare inutilmente l'intera collezione degli articoli a ogni accesso, il frontend mantiene anche una copia persistente del dataset nel browser.
+Per evitare di recuperare nuovamente a ogni accesso le aree tematiche e i relativi dataset di articoli, il frontend mantiene nel browser anche una copia persistente di questi dati.
 
 La versione attuale del sito utilizza `localStorage`.
 
-Nella nuova versione viene preferito IndexedDB per la persistenza degli articoli, perché il dataset comprende il body HTML completo e può quindi raggiungere dimensioni non adatte a essere gestite tramite `localStorage`.
+Nella nuova versione viene utilizzato IndexedDB per la persistenza delle aree e degli articoli, perché il dataset comprende il body HTML completo e può quindi raggiungere dimensioni non adatte a essere gestite tramite `localStorage`.
 
 IndexedDB permette inoltre di memorizzare i dati in modo asincrono senza utilizzare un'API sincrona durante il caricamento dell'applicazione.
 
@@ -1078,23 +1152,24 @@ La copia presente in IndexedDB costituisce esclusivamente una cache locale: Drup
 
 All'avvio dell'applicazione viene seguito, quando possibile, questo flusso:
 
-1. viene verificata la presenza di una copia degli articoli in IndexedDB;
-2. se disponibile, la copia locale viene utilizzata per rendere rapidamente disponibili navigazione, articoli e costruzione dell'indice di ricerca;
-3. in parallelo viene verificato se il dataset disponibile su Drupal è cambiato;
-4. se non sono presenti modifiche, la copia locale continua a essere utilizzata;
-5. se Drupal espone una versione più recente, il nuovo dataset sostituisce quello presente in memoria e in IndexedDB e l'indice di ricerca viene ricostruito.
+1. viene verificata la presenza in IndexedDB delle aree tematiche e dei relativi dataset di articoli;
+2. se disponibili, i dati locali vengono utilizzati per rendere rapidamente disponibili navigazione, articoli e costruzione dell'indice di ricerca;
+3. in parallelo viene verificata la versione corrente delle aree tramite `/api/areas`;
+4. per ciascuna area vengono verificati e, quando necessario, aggiornati i relativi articoli;
+5. i dataset aggiornati sostituiscono soltanto le rispettive copie presenti in memoria e in IndexedDB;
+6. quando cambiano gli articoli utilizzati dalla ricerca, l'indice viene ricostruito.
 
-Al primo accesso, quando non è ancora presente una cache locale, gli articoli vengono recuperati interamente da Drupal e successivamente salvati in IndexedDB.
+Al primo accesso, quando non è ancora presente una cache locale, Angular recupera le aree da Drupal e successivamente i relativi dataset di articoli, salvandoli in IndexedDB.
 
 ### Invalidazione della cache
 
 La cache non deve basarsi esclusivamente su una durata temporale arbitraria.
 
-La verifica della presenza di nuovi contenuti deve utilizzare, quando possibile, i normali meccanismi HTTP di validazione della cache, come `ETag` o `Last-Modified`.
+La verifica della presenza di nuovi dati deve utilizzare, quando possibile, i normali meccanismi HTTP di validazione della cache, come `ETag` o `Last-Modified`.
 
-In questo modo il frontend può verificare se il dataset è cambiato senza dover trasferire nuovamente tutti gli articoli quando la versione disponibile nel browser è ancora valida.
+La validazione deve poter essere effettuata indipendentemente per il discovery delle aree e per i dataset degli articoli delle singole aree, evitando di trasferire nuovamente dati che non sono cambiati.
 
-La strategia definitiva dipenderà dalla configurazione dell'endpoint Drupal e verrà verificata durante l'implementazione delle API.
+La strategia definitiva dipenderà dalla configurazione effettiva degli endpoint Drupal e verrà verificata durante l'implementazione delle API.
 
 ### Indice di ricerca
 
@@ -1449,7 +1524,7 @@ Questi contenuti non richiedono aggiornamento in tempo reale.
 
 Angular può mantenere in memoria i dati già recuperati durante la sessione, ma non viene prevista inizialmente la loro persistenza in IndexedDB.
 
-IndexedDB rimane dedicato principalmente al dataset degli articoli necessario alla ricerca e alla consultazione del sito.
+IndexedDB rimane dedicato principalmente alle aree tematiche e ai dataset degli articoli necessari alla ricerca e alla consultazione del sito.
 
 ### Rate limit
 
@@ -1758,6 +1833,18 @@ Se non è disponibile né il backend né una copia locale utilizzabile, la parte
 
 Anche in questo caso l'application shell deve rimanere disponibile e non deve essere sostituita da una pagina di errore tecnica.
 
+Le richieste degli articoli delle diverse aree sono indipendenti.
+
+Il fallimento del caricamento di una singola area non deve invalidare i dati recuperati correttamente per le altre aree.
+
+Quando possibile, ogni area mantiene una propria copia valida in IndexedDB.
+
+Se, ad esempio, la richiesta relativa a JavaScript fallisce ma le altre aree sono disponibili, il frontend continua a utilizzare normalmente HTML, CSS, Angular, PHP, Drupal e Varie.
+
+Se per l'area non raggiungibile è disponibile una copia precedentemente valida in IndexedDB, questa può essere utilizzata come fallback.
+
+Il retry riguarda soltanto la richiesta dell'area che ha prodotto l'errore.
+
 ### Retry
 
 Il retry deve essere limitato alla richiesta che ha prodotto l'errore.
@@ -1767,7 +1854,7 @@ Ad esempio:
 - errore GitHub → viene ripetuta solo la richiesta relativa alla sezione GitHub;
 - errore Stack Overflow → viene ripetuta solo la richiesta relativa alla sezione Stack Overflow;
 - errore feed RSS → viene ripetuto solo il recupero del feed;
-- errore articoli → viene ripetuto solo il recupero del dataset degli articoli.
+- errore articoli di un'area → viene ripetuta soltanto la richiesta relativa all'area interessata.
 
 Non viene normalmente effettuato un reload completo dell'applicazione per recuperare da un errore locale.
 
@@ -1864,7 +1951,7 @@ Le principali strategie previste sono:
 
 - application shell disponibile il prima possibile;
 - caricamento indipendente delle diverse sezioni;
-- utilizzo della cache IndexedDB per il dataset degli articoli;
+- - utilizzo della cache IndexedDB per le aree tematiche e i dataset degli articoli;
 - validazione della cache tramite meccanismi HTTP quando disponibili;
 - costruzione dell'indice di ricerca una sola volta per ogni versione del dataset;
 - nessuna richiesta al backend durante la digitazione nella ricerca;
@@ -1876,7 +1963,9 @@ Le principali strategie previste sono:
 
 La dimensione effettiva del dataset completo degli articoli deve essere misurata sui contenuti reali.
 
-Il recupero di tutti i body in una singola collezione rimane la soluzione preferita finché peso del trasferimento, uso della memoria e tempo di parsing rimangono compatibili con una buona esperienza d'uso.
+Il recupero del contenuto completo degli articoli rimane la soluzione preferita, ma avviene tramite dataset separati per area.
+
+Devono essere misurati sia il peso complessivo dei dati sia il peso e i tempi di caricamento delle singole aree.
 
 Anche costruzione dell'indice e tempi di ricerca devono essere misurati sul dataset reale prima di introdurre ottimizzazioni più complesse.
 
@@ -2172,6 +2261,48 @@ Nel frontend Angular deve essere considerato che qualsiasi valore incluso nel bu
 
 Le configurazioni specifiche del deploy verranno approfondite nel documento dedicato al deploy.
 
+### Configurazione Drupal locale
+
+La configurazione Drupal distingue tra impostazioni condivise e impostazioni specifiche dell'ambiente.
+
+`settings.php` contiene la configurazione condivisa e viene versionato.
+
+`settings.ddev.php` contiene la configurazione generata automaticamente da DDEV per l'ambiente locale e non viene versionato.
+
+`settings.local.php` contiene gli override destinati esclusivamente allo sviluppo locale e non viene versionato.
+
+`settings.php` carica `settings.local.php` quando il file è presente.
+
+L'ambiente locale può utilizzare logging più dettagliato e disabilitare l'aggregazione CSS/JavaScript, senza propagare tali impostazioni alla produzione.
+
+Le cache Drupal non vengono disabilitate permanentemente come configurazione generale dello sviluppo. Quando necessario vengono utilizzati gli strumenti di sviluppo Drupal e la ricostruzione esplicita delle cache.
+
+Credenziali, token e altri dati sensibili devono rimanere in configurazioni specifiche dell'ambiente e non devono essere esportati tramite Configuration Management.
+
+Gli URL assoluti dipendenti dall'ambiente non devono essere salvati nella configurazione dei contenuti o delle aree quando possono essere derivati dalla richiesta corrente.
+
+Ad esempio, la configurazione di un'area conserva `html.svg`, non `https://cms.appunti-digitali.it/.../html.svg`.
+
+L'URL pubblico completo viene costruito dall'API a runtime, permettendo allo stesso codice di funzionare sia con il dominio DDEV locale sia con il dominio di produzione.
+
+### Coding standards e qualità del codice Drupal
+
+Il codice custom Drupal deve rispettare gli standard `Drupal` e `DrupalPractice`.
+
+Il progetto utilizza `drupal/coder` come dipendenza di sviluppo e mantiene un ruleset condiviso nel file `backend/phpcs.xml.dist`.
+
+PHP_CodeSniffer viene utilizzato per individuare violazioni degli standard:
+
+    ddev exec ./vendor/bin/phpcs
+
+PHP Code Beautifier and Fixer viene utilizzato per correggere automaticamente le violazioni supportate:
+
+    ddev exec ./vendor/bin/phpcbf
+
+I controlli vengono applicati al codice presente in `web/modules/custom`.
+
+Un eventuale generatore automatico della documentazione PHP non viene introdotto in questa fase. La sua utilità verrà rivalutata quando il modulo custom conterrà un numero sufficiente di controller, servizi e altre classi da rendere utile una documentazione API generata.
+
 ### Testing
 
 Il progetto prevede test a livelli differenti in base alla responsabilità della funzionalità.
@@ -2230,7 +2361,13 @@ Devono essere verificati almeno:
 - creazione delle risorse salvate;
 - eventuali trasformazioni custom dei dati;
 - accessibilità pubblica delle API previste;
-- impossibilità di eseguire operazioni non autorizzate.
+- impossibilità di eseguire operazioni non autorizzate;
+- salvataggio corretto dei third-party settings `area`, `icon` e `weight`;
+- esclusione dei content type con `area = false`;
+- ordinamento delle aree tramite `weight`;
+- esposizione corretta di `id` e `label`;
+- generazione corretta di `iconUrl`;
+- corretto contratto della response dell'endpoint `/api/areas`.
 
 Le Views REST e le configurazioni Drupal standard non richiedono necessariamente test custom per ogni dettaglio, salvo presenza di logica specifica del progetto.
 
@@ -2378,11 +2515,12 @@ Devono inoltre essere verificati sui linguaggi realmente utilizzati:
 
 Sul dataset reale devono essere verificati:
 
-- dimensione occupata dagli articoli in IndexedDB;
+- dimensione occupata dalle aree e dagli articoli in IndexedDB;
 - tempo di lettura e scrittura della cache;
 - tempo necessario per costruire l'indice a partire dalla copia locale;
 - comportamento con cache assente, non disponibile o corrotta;
-- sostituzione della cache dopo il recupero di una nuova versione del dataset.
+- aggiornamento della cache delle aree;
+- aggiornamento indipendente della cache degli articoli delle singole aree.
 
 Non viene inizialmente persistito l'indice di ricerca.
 
@@ -2390,7 +2528,7 @@ La persistenza dell'indice viene valutata solo se la sua ricostruzione risulta s
 
 ### Validazione HTTP della cache
 
-Deve essere verificato il comportamento dell'endpoint Drupal degli articoli rispetto ai meccanismi HTTP di validazione della cache.
+Deve essere verificato il comportamento dell'endpoint `/api/areas` e degli endpoint Drupal degli articoli per area rispetto ai meccanismi HTTP di validazione della cache.
 
 In particolare deve essere valutato il supporto effettivo di:
 
@@ -2403,19 +2541,22 @@ La strategia viene adattata alla configurazione realmente disponibile senza intr
 
 ### API Drupal
 
-Durante l'implementazione delle Views REST devono essere verificati:
+Durante l'implementazione devono essere verificati:
 
-- struttura effettiva delle response;
+- struttura della response di `/api/areas`;
+- esposizione di id, label, iconUrl e weight;
+- ordinamento delle aree;
+- costruzione dell'URL dell'icona nei diversi ambienti;
+- recupero degli articoli separato per area;
 - esposizione di tutti i campi necessari;
 - normalizzazione dei diversi content type nel modello `Article`;
-- ordinamento tramite `weight`;
+- ordinamento degli articoli tramite `field_weight`;
 - formato del body HTML;
 - struttura dei link di approfondimento;
-- comportamento con tutti gli articoli restituiti in una singola response.
+- comportamento quando una singola area non è disponibile.
 
-Deve inoltre essere misurata la dimensione effettiva della response completa.
-
-Se il volume dei contenuti dovesse crescere abbastanza da rendere inefficiente il recupero dell'intero dataset, l'architettura potrà essere rivalutata sulla base di misurazioni reali.
+Devono inoltre essere misurate la dimensione complessiva dei dati e la
+dimensione delle singole response per area.
 
 ### Rendering HTML
 

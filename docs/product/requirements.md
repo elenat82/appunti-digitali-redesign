@@ -60,6 +60,8 @@ Le aree tematiche iniziali sono:
 
 **RF004.** Il sistema deve consentire l'aggiunta futura di nuove aree tematiche, per esempio Java, Flutter, SQL, Symfony, Ionic o UI/UX.
 
+L'aggiunta di una nuova area tematica che utilizza il modello previsto dal sistema deve poter essere gestita lato Drupal senza richiedere una modifica al codice Angular.
+
 **RF005.** Il sistema deve consentire all'utente amministratore di scrivere liberamente il contenuto principale dell'articolo tramite editor HTML.
 
 **RF006.** Il sistema deve supportare contenuti strutturati con tag HTML semantici, in particolare:
@@ -263,7 +265,7 @@ I suoni devono essere riprodotti esclusivamente in conseguenza di un'azione espl
 
 **RF069.** La home page deve mostrare all'utente anonimo una sezione dedicata al profilo pubblico e ai contatti dell'amministratore.
 
-**RF070.** La sezione deve includere almeno l'avatar associato all'aministratore, una breve presentazione e le informazioni pubbliche dell'amministratore del sito.
+**RF070.** La sezione deve includere almeno l'avatar associato all'amministratore, una breve presentazione e le informazioni pubbliche dell'amministratore del sito.
 
 **RF071.** La sezione contatti deve consentire il download del CV dell'amministratore.
 
@@ -324,6 +326,8 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 **RT004.** Drupal deve gestire:
 
 - content type;
+- configurazione delle aree tematiche;
+- icone e ordinamento delle aree tematiche;
 - campi;
 - contenuti;
 - link di approfondimento;
@@ -365,7 +369,7 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 
 **RT010.** Ogni occorrenza deve contenere le informazioni necessarie per generare snippet, evidenziazione e navigazione al punto esatto dell'articolo.
 
-**RT011.** Il sistema deve valutare una strategia di cache locale più robusta del semplice localStorage, per esempio IndexedDB, se necessaria alla crescita dei contenuti.
+**RT011.** Il frontend deve utilizzare IndexedDB come cache locale persistente per le aree tematiche e i relativi dataset di articoli. Drupal rimane la sorgente autorevole dei dati.
 
 **RT012.** Drupal deve esporre al frontend solo contenuti pubblicati.
 
@@ -399,6 +403,12 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 **RT019.** Angular deve recuperare i dati pubblici dell'amministratore da Drupal e usarli per popolare la sezione contatti, il pulsante di download del CV e l'indirizzo email nel footer.
 
 **RT020.** Il sistema deve prevedere una strategia tecnica per recuperare e mostrare nella home page notizie da feed RSS, ultime domande Stack Overflow, repository GitHub starred e risorse salvate tramite web clipper.
+
+**RT021.** Drupal deve esporre al frontend le aree tematiche disponibili, includendo almeno identificativo, nome pubblico, icona e ordinamento.
+
+**RT022.** Angular deve determinare dinamicamente le aree tematiche disponibili a partire dai dati esposti da Drupal e non deve mantenerne un elenco statico nel codice frontend.
+
+**RT023.** Gli articoli devono poter essere recuperati separatamente per area tematica, in modo che il mancato caricamento di una singola area non impedisca l'utilizzo delle altre aree disponibili.
 
 ## Vincoli
 
