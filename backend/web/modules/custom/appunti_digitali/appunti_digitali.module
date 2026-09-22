@@ -15,8 +15,11 @@ function appunti_digitali_form_node_type_form_alter(
   array &$form,
   FormStateInterface $form_state,
 ): void {
+  /** @var \Drupal\Core\Entity\EntityFormInterface $form_object */
+  $form_object = $form_state->getFormObject();
+
   /** @var \Drupal\node\NodeTypeInterface $node_type */
-  $node_type = $form_state->getFormObject()->getEntity();
+  $node_type = $form_object->getEntity();
 
   $form['appunti_digitali'] = [
     '#type' => 'details',

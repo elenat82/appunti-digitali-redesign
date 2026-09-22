@@ -11,3 +11,4 @@
 /web/sites/*/settings.ddev.php
 
 .phpunit.result.cache
+/web/sites/simpletest/

@@ -1,0 +1,8 @@
+appunti_digitali.areas:
+  path: '/api/areas'
+  defaults:
+    _controller: '\Drupal\appunti_digitali\Controller\AreasController::get'
+  requirements:
+    # Public read-only endpoint used to expose thematic areas to the frontend.
+    _access: 'TRUE'
+  methods: [GET]
