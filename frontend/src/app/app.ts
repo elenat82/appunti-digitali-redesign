@@ -1,12 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+
+import { AreasService } from './features/areas/data-access/areas.service';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
   templateUrl: './app.html',
+  styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('frontend');
+  private readonly areasService = inject(AreasService);
+
+  protected readonly areas = toSignal(
+    this.areasService.getAreas(),
+    { initialValue: [] }
+  );
 }
