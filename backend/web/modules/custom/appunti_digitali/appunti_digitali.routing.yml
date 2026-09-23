@@ -6,3 +6,12 @@ appunti_digitali.areas:
     # Public read-only endpoint used to expose thematic areas to the frontend.
     _access: 'TRUE'
   methods: [GET]
+
+appunti_digitali.articles:
+  path: '/api/articles/{area}'
+  defaults:
+    _controller: '\Drupal\appunti_digitali\Controller\ArticlesController::get'
+  requirements:
+    # Public read-only endpoint used to expose published articles to the frontend.
+    _access: 'TRUE'
+  methods: [GET]

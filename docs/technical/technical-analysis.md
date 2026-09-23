@@ -8,8 +8,7 @@ La nuova versione di Appunti Digitali mantiene un'architettura decoupled compost
 - Angular come frontend pubblico;
 - API HTTP come canale di comunicazione tra backend e frontend.
 
-Il frontend verrà realizzato con una versione moderna e supportata di Angular.
-La versione esatta verrà scelta al momento dell'inizializzazione del progetto, tenendo conto della versione stabile disponibile e della compatibilità delle dipendenze necessarie.
+Il frontend è realizzato con Angular 22, versione stabile disponibile al momento dell'inizializzazione del progetto.
 
 Drupal e Angular devono rimanere applicazioni separate e devono poter essere sviluppati e pubblicati indipendentemente, mantenendo stabile il contratto API condiviso.
 
@@ -399,28 +398,21 @@ La comunicazione tra Drupal e Angular avviene tramite API HTTP.
 
 Il contratto API deve permettere al frontend di utilizzare modelli applicativi indipendenti dalla struttura interna delle entità Drupal.
 
-### Scelta tra JSON:API e Views REST
+### Scelta del meccanismo API
 
 Le API utilizzate dal frontend pubblico hanno principalmente lo scopo di fornire dataset completi e predefiniti.
 
 Angular non necessita di costruire dinamicamente query verso Drupal: non sono previsti filtri, ordinamenti o selezioni dei campi inviati dal client.
 
-Per gli articoli, il frontend recupera per ciascuna area l'intera collezione degli articoli appartenenti a quell'area.
-
-Le Views REST vengono preferite per dataset basati direttamente su contenuti Drupal, come le collezioni degli articoli.
-
-Gli endpoint custom vengono utilizzati quando la response richiede logica applicativa o dati che non corrispondono direttamente a una View di entità, come il discovery delle aree tematiche e le operazioni del web clipper.
-
-Le Views permettono di definire lato Drupal:
-
-- quali entità includere;
-- quali campi esporre;
-- eventuali filtri fissi;
-- l'ordinamento;
-- la struttura del dataset;
-- il recupero dell'intera collezione senza richiedere parametri al frontend.
+Per ogni tipo di dato viene utilizzato il meccanismo più adatto al relativo contratto applicativo.
 
 JSON:API è stato valutato ma, nel contesto attuale, offrirebbe funzionalità di interrogazione generica delle entità che il frontend non necessita.
+
+Le Views REST possono essere utilizzate quando il dataset corrisponde direttamente a una selezione di entità e campi Drupal.
+
+Gli endpoint custom vengono invece utilizzati quando la response richiede validazione, normalizzazione o altra logica applicativa specifica.
+
+Gli endpoint `/api/areas` e `/api/articles/{area}` sono quindi implementati dal modulo custom `appunti_digitali`.
 
 ### Discovery delle aree tematiche
 
@@ -465,6 +457,14 @@ Dopo aver recuperato l'elenco delle aree, Angular effettua una richiesta indipen
     ...
 
 L'elenco delle richieste viene quindi determinato dinamicamente dalla risposta di `/api/areas`.
+
+L'endpoint verifica che l'identificativo richiesto corrisponda a un content type configurato come area tematica tramite il third-party setting `appunti_digitali.area`.
+
+Un content type esistente ma non configurato come area non viene esposto dall'endpoint.
+
+La response contiene esclusivamente nodi pubblicati appartenenti all'area richiesta, ordinati tramite `field_weight`.
+
+Il controller normalizza la struttura Drupal nel modello applicativo comune `Article`, evitando che il frontend dipenda direttamente dai nomi e dalla struttura interna dei campi Drupal.
 
 Una nuova area può essere aggiunta in Drupal senza dover aggiungere il relativo identificativo al codice Angular.
 
@@ -1951,7 +1951,7 @@ Le principali strategie previste sono:
 
 - application shell disponibile il prima possibile;
 - caricamento indipendente delle diverse sezioni;
-- - utilizzo della cache IndexedDB per le aree tematiche e i dataset degli articoli;
+- utilizzo della cache IndexedDB per le aree tematiche e i dataset degli articoli;
 - validazione della cache tramite meccanismi HTTP quando disponibili;
 - costruzione dell'indice di ricerca una sola volta per ogni versione del dataset;
 - nessuna richiesta al backend durante la digitazione nella ricerca;
@@ -2033,7 +2033,8 @@ Non viene scelto come strategia principale il prerendering statico di tutti gli 
 
 Il server-side rendering permette invece di generare la versione HTML corrente dell'articolo al momento della richiesta senza richiedere un nuovo build Angular dopo ogni modifica editoriale.
 
-La configurazione definitiva delle route SSR verrà effettuata in base alla versione Angular scelta per il progetto.
+Le route pubbliche principali utilizzano il server-side rendering di Angular 22.
+La configurazione corrente utilizza il rendering server-side dinamico, senza prerendering statico delle route.
 
 ### SEO
 
@@ -2367,9 +2368,15 @@ Devono essere verificati almeno:
 - ordinamento delle aree tramite `weight`;
 - esposizione corretta di `id` e `label`;
 - generazione corretta di `iconUrl`;
-- corretto contratto della response dell'endpoint `/api/areas`.
+- corretto contratto della response dell'endpoint `/api/areas`;
+- validazione dell'area richiesta da `/api/articles/{area}`;
+- esclusione dei content type non configurati come area tematica;
+- esclusione degli articoli non pubblicati;
+- ordinamento degli articoli tramite `field_weight`;
+- normalizzazione di body e link di approfondimento;
+- corretto contratto della response di `/api/articles/{area}`.
 
-Le Views REST e le configurazioni Drupal standard non richiedono necessariamente test custom per ogni dettaglio, salvo presenza di logica specifica del progetto.
+Le configurazioni Drupal standard non richiedono necessariamente test custom per ogni dettaglio, salvo presenza di logica specifica del progetto.
 
 #### Contratto API
 
@@ -2386,6 +2393,14 @@ I test automatici devono poter essere eseguiti tramite i normali comandi dei ris
 L'eventuale introduzione di una pipeline CI dovrà eseguire almeno i controlli automatici considerati essenziali prima dell'integrazione delle modifiche.
 
 La configurazione concreta della CI verrà definita durante l'implementazione e non costituisce una decisione necessaria per questa analisi.
+
+### Documentazione del codice Angular
+
+Il frontend utilizza Compodoc per generare la documentazione tecnica a partire dal codice TypeScript e dai relativi docblock.
+
+I nomi tecnici e gli identificatori del codice rimangono in inglese, mentre docblock e spiegazioni destinate alla documentazione vengono scritti in italiano.
+
+La documentazione generata viene salvata in `frontend/documentation` e non viene versionata nel repository, perché può essere rigenerata dal codice sorgente.
 
 ### Confini dell'analisi tecnica
 
@@ -2614,7 +2629,7 @@ Deve inoltre essere definito il comportamento in presenza di una risorsa con URL
 
 ### Server-side rendering
 
-La configurazione SSR deve essere verificata con la versione Angular scelta per il progetto.
+Il server-side rendering configurato in Angular 22 deve essere verificato sull'applicazione reale.
 
 Devono essere controllati in particolare:
 
