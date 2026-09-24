@@ -1148,28 +1148,36 @@ IndexedDB permette inoltre di memorizzare i dati in modo asincrono senza utilizz
 
 La copia presente in IndexedDB costituisce esclusivamente una cache locale: Drupal rimane la sorgente autorevole dei contenuti.
 
+I dati presenti in IndexedDB possono essere utilizzati immediatamente per rendere disponibile l'interfaccia, ma vengono successivamente aggiornati in background tramite le API Drupal.
+
+La persistenza locale non sostituisce quindi il recupero dei dati dal backend e non determina autonomamente se una copia sia aggiornata.
+
 ### Caricamento iniziale
 
 All'avvio dell'applicazione viene seguito, quando possibile, questo flusso:
 
 1. viene verificata la presenza in IndexedDB delle aree tematiche e dei relativi dataset di articoli;
-2. se disponibili, i dati locali vengono utilizzati per rendere rapidamente disponibili navigazione, articoli e costruzione dell'indice di ricerca;
-3. in parallelo viene verificata la versione corrente delle aree tramite `/api/areas`;
-4. per ciascuna area vengono verificati e, quando necessario, aggiornati i relativi articoli;
-5. i dataset aggiornati sostituiscono soltanto le rispettive copie presenti in memoria e in IndexedDB;
-6. quando cambiano gli articoli utilizzati dalla ricerca, l'indice viene ricostruito.
+2. se disponibili, i dati locali vengono utilizzati immediatamente per rendere disponibili navigazione, articoli e costruzione dell'indice di ricerca;
+3. in background Angular recupera `/api/areas`;
+4. per ciascuna area restituita vengono recuperati indipendentemente i relativi articoli;
+5. le response ricevute aggiornano le rispettive copie presenti in memoria e in IndexedDB;
+6. quando cambia il dataset utilizzato dalla ricerca, l'indice viene ricostruito.
+
+Le richieste HTTP utilizzano normalmente la cache del browser configurata dal backend Drupal.
 
 Al primo accesso, quando non è ancora presente una cache locale, Angular recupera le aree da Drupal e successivamente i relativi dataset di articoli, salvandoli in IndexedDB.
 
-### Invalidazione della cache
+### Aggiornamento della cache locale
 
-La cache non deve basarsi esclusivamente su una durata temporale arbitraria.
+La copia presente in IndexedDB viene utilizzata come dato immediatamente disponibile e viene aggiornata tramite le normali richieste alle API Drupal.
 
-La verifica della presenza di nuovi dati deve utilizzare, quando possibile, i normali meccanismi HTTP di validazione della cache, come `ETag` o `Last-Modified`.
+Il discovery delle aree e i dataset degli articoli vengono aggiornati indipendentemente. Il recupero di una nuova response per un'area sostituisce soltanto la relativa copia presente in memoria e in IndexedDB.
 
-La validazione deve poter essere effettuata indipendentemente per il discovery delle aree e per i dataset degli articoli delle singole aree, evitando di trasferire nuovamente dati che non sono cambiati.
+La cache IndexedDB non implementa autonomamente `ETag`, `Last-Modified` o richieste condizionali e non modifica i validator HTTP ricevuti dal server.
 
-La strategia definitiva dipenderà dalla configurazione effettiva degli endpoint Drupal e verrà verificata durante l'implementazione delle API.
+La cache HTTP del browser rimane un livello separato e può evitare o ridurre il trasferimento dei dati secondo gli header restituiti da Drupal.
+
+Questa strategia evita di legare la persistenza applicativa a dettagli specifici dell'infrastruttura HTTP mantenendo Drupal come sorgente autorevole dei contenuti.
 
 ### Indice di ricerca
 
@@ -1952,7 +1960,7 @@ Le principali strategie previste sono:
 - application shell disponibile il prima possibile;
 - caricamento indipendente delle diverse sezioni;
 - utilizzo della cache IndexedDB per le aree tematiche e i dataset degli articoli;
-- validazione della cache tramite meccanismi HTTP quando disponibili;
+- utilizzo della cache HTTP del browser e del backend secondo gli header restituiti da Drupal;
 - costruzione dell'indice di ricerca una sola volta per ogni versione del dataset;
 - nessuna richiesta al backend durante la digitazione nella ricerca;
 - lazy loading degli embed esterni quando possibile;
@@ -2543,16 +2551,21 @@ La persistenza dell'indice viene valutata solo se la sua ricostruzione risulta s
 
 ### Validazione HTTP della cache
 
-Deve essere verificato il comportamento dell'endpoint `/api/areas` e degli endpoint Drupal degli articoli per area rispetto ai meccanismi HTTP di validazione della cache.
+Il comportamento HTTP di `/api/areas` e `/api/articles/{area}` è stato verificato durante l'implementazione.
 
-In particolare deve essere valutato il supporto effettivo di:
+Con `system.performance:cache.page.max_age` impostato a `300`, Drupal espone le response pubbliche con una durata massima di cache HTTP di 5 minuti.
 
-- `ETag`;
-- `Last-Modified`;
-- richieste condizionali;
-- risposta `304 Not Modified`.
+Le response espongono inoltre `ETag` e `Last-Modified`.
 
-La strategia viene adattata alla configurazione realmente disponibile senza introdurre un meccanismo custom se i normali strumenti HTTP risultano sufficienti.
+È stato verificato anche il comportamento delle richieste condizionali. Nello stack locale il client riceve un weak ETag (`W/...`), mentre Drupal Page Cache effettua internamente il confronto con l'ETag privo del prefisso weak. Il validator restituito normalmente al client non produce quindi una risposta `304 Not Modified` quando viene reinviato senza modifiche.
+
+La risposta `304 Not Modified` è stata verificata rimuovendo manualmente il prefisso weak dall'ETag, ma questo comportamento non viene utilizzato dall'applicazione come meccanismo custom di validazione.
+
+Angular non modifica quindi gli ETag ricevuti e non implementa manualmente richieste condizionali.
+
+La cache HTTP viene lasciata al normale comportamento del browser e del backend, mentre IndexedDB viene gestito separatamente come cache applicativa persistente aggiornata in background.
+
+Per la prima versione viene utilizzato un `max-age` HTTP di 300 secondi. Un ritardo massimo di alcuni minuti nella disponibilità di un contenuto appena pubblicato è compatibile con le caratteristiche editoriali del sito.
 
 ### API Drupal
 
