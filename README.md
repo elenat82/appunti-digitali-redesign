@@ -72,6 +72,19 @@ ddev exec ./vendor/bin/phpunit -c phpunit.xml \
 
 I comandi frontend devono essere eseguiti dalla directory `frontend/`.
 
+#### Server di sviluppo
+
+```bash
+npm start
+```
+L'applicazione è disponibile tramite `http://localhost:4200`.
+
+In ambiente WSL, quando il rendering server-side deve comunicare con il backend DDEV tramite HTTPS, il server può essere avviato utilizzando i certificati CA installati nel sistema:
+
+```bash
+NODE_OPTIONS=--use-system-ca npm start
+```
+
 #### Test
 
 ```bash
