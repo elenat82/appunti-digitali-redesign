@@ -4,6 +4,7 @@ import { vi } from 'vitest';
 
 import { App } from './app';
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
+import { SearchIndexService } from './features/search/services/search-index.service';
 
 describe('App', () => {
   const contentRepositoryMock = {
@@ -26,6 +27,10 @@ describe('App', () => {
     getArticlesByArea: vi.fn(() => of([]))
   };
 
+  const searchIndexMock = {
+    rebuild: vi.fn()
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -35,6 +40,10 @@ describe('App', () => {
         {
           provide: ContentRepositoryService,
           useValue: contentRepositoryMock
+        },
+        {
+          provide: SearchIndexService,
+          useValue: searchIndexMock
         }
       ]
     }).compileComponents();
@@ -81,4 +90,14 @@ describe('App', () => {
     expect(contentRepositoryMock.getArticlesByArea).toHaveBeenCalledWith('html');
     expect(contentRepositoryMock.getArticlesByArea).toHaveBeenCalledWith('css');
   });
+
+  it('should build the search index when all article areas are available', async () => {
+    const fixture = TestBed.createComponent(App);
+
+    await fixture.whenStable();
+
+    expect(searchIndexMock.rebuild).toHaveBeenCalledTimes(1);
+    expect(searchIndexMock.rebuild).toHaveBeenCalledWith([]);
+  });
+
 });

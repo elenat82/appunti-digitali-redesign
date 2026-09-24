@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   catchError,
@@ -14,6 +14,7 @@ import {
 
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
 import { Article } from './core/models/article.model';
+import { SearchIndexService } from './features/search/services/search-index.service';
 
 @Component({
   selector: 'app-root',
@@ -22,9 +23,17 @@ import { Article } from './core/models/article.model';
 })
 export class App {
   private readonly contentRepository = inject(ContentRepositoryService);
+  private readonly searchIndex = inject(SearchIndexService);
 
   private readonly areas$ = this.contentRepository.getAreas().pipe(
     shareReplay({ bufferSize: 1, refCount: true })
+  );
+
+  private readonly areasLoaded = toSignal(
+    this.areas$.pipe(
+      map(() => true)
+    ),
+    { initialValue: false }
   );
 
   /**
@@ -89,4 +98,26 @@ export class App {
       (area) => this.articlesByArea()[area.id] ?? []
     )
   );
+
+  private readonly updateSearchIndex = effect(() => {
+    if (!this.areasLoaded()) {
+      return;
+    }
+
+    const areas = this.areas();
+    const articlesByArea = this.articlesByArea();
+
+    const allAreasLoaded = areas.every((area) =>
+      Object.prototype.hasOwnProperty.call(
+        articlesByArea,
+        area.id
+      )
+    );
+
+    if (!allAreasLoaded) {
+      return;
+    }
+
+    this.searchIndex.rebuild(this.articles());
+  });
 }
