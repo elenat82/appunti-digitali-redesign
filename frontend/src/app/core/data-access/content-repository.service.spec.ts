@@ -49,6 +49,7 @@ describe('ContentRepositoryService', () => {
     {
       id: 1,
       title: 'HTML cached',
+      path: 'html/html-cached',
       area: 'html',
       body: '<p>Cached</p>',
       externalLinks: [],
@@ -60,6 +61,7 @@ describe('ContentRepositoryService', () => {
     {
       id: 1,
       title: 'HTML',
+      path: 'html/html',
       area: 'html',
       body: '<p>Remote</p>',
       externalLinks: [],

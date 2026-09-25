@@ -12,6 +12,7 @@ describe('SearchIndexService', () => {
   ): Article => ({
     id,
     title,
+    path: 'drupal/',
     area: 'drupal',
     body,
     externalLinks: [],

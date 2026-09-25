@@ -35,6 +35,7 @@ describe('ArticlesService', () => {
       {
         id: 1,
         title: 'Primo articolo HTML',
+        path: 'html/primo-articolo-html',
         area: 'html',
         body: '<p>Lorem ipsum</p>',
         externalLinks: [],
@@ -43,6 +44,7 @@ describe('ArticlesService', () => {
       {
         id: 2,
         title: 'Secondo articolo HTML',
+        path: 'html/secondo-articolo-html',
         area: 'html',
         body: '<p>Lorem ipsum 2</p>',
         externalLinks: [],

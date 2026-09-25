@@ -102,6 +102,7 @@ describe('ContentCacheService', () => {
       {
         id: 1,
         title: 'HTML',
+        path: 'html/html',
         area: 'html',
         body: '<p>HTML</p>',
         externalLinks: [],
@@ -113,6 +114,7 @@ describe('ContentCacheService', () => {
       {
         id: 2,
         title: 'CSS',
+        path: 'css/css',
         area: 'css',
         body: '<p>CSS</p>',
         externalLinks: [],

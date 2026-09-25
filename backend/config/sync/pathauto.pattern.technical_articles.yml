@@ -1,0 +1,35 @@
+uuid: da27c8b5-0753-41a5-bbb9-17843699f803
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.angular
+    - node.type.css
+    - node.type.drupal
+    - node.type.html
+    - node.type.javascript
+    - node.type.php
+    - node.type.varie
+  module:
+    - node
+id: technical_articles
+label: 'Technical articles'
+type: 'canonical_entities:node'
+pattern: '/[node:content-type]/[node:title]'
+selection_criteria:
+  c95d3035-7980-40eb-bb3c-2b5cb941528e:
+    id: 'entity_bundle:node'
+    negate: false
+    context_mapping:
+      node: node
+    bundles:
+      angular: angular
+      css: css
+      drupal: drupal
+      html: html
+      javascript: javascript
+      php: php
+      varie: varie
+selection_logic: and
+weight: -5
+relationships: {  }

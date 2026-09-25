@@ -12,12 +12,15 @@ use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\Tests\BrowserTestBase;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Drupal\Tests\Traits\Core\PathAliasTestTrait;
 
 /**
  * Verifica l'endpoint pubblico degli articoli per area.
  */
 #[RunTestsInSeparateProcesses]
 final class ArticlesEndpointTest extends BrowserTestBase {
+
+  use PathAliasTestTrait;
 
   /**
    * {@inheritdoc}
@@ -124,6 +127,10 @@ final class ArticlesEndpointTest extends BrowserTestBase {
       'field_weight' => 10,
     ]);
     $article_weight_10->save();
+    $this->createPathAlias(
+      '/node/' . $article_weight_10->id(),
+      '/html/articolo-html-di-prova',
+    );
 
     $article_weight_5 = Node::create([
       'type' => 'html',
@@ -136,6 +143,10 @@ final class ArticlesEndpointTest extends BrowserTestBase {
       'field_weight' => 5,
     ]);
     $article_weight_5->save();
+    $this->createPathAlias(
+      '/node/' . $article_weight_5->id(),
+      '/html/secondo-articolo-html',
+    );
 
     Node::create([
       'type' => 'html',
@@ -163,6 +174,10 @@ final class ArticlesEndpointTest extends BrowserTestBase {
 
     $this->assertSame((int) $article_weight_5->id(), $articles[0]['id']);
     $this->assertSame('Secondo articolo HTML', $articles[0]['title']);
+    $this->assertSame(
+      '/html/secondo-articolo-html',
+      $articles[0]['path'],
+    );
     $this->assertSame('html', $articles[0]['area']);
     $this->assertSame(
       '<p>Secondo articolo di prova.</p>',
@@ -173,6 +188,10 @@ final class ArticlesEndpointTest extends BrowserTestBase {
 
     $this->assertSame((int) $article_weight_10->id(), $articles[1]['id']);
     $this->assertSame('Articolo HTML di prova', $articles[1]['title']);
+    $this->assertSame(
+      '/html/articolo-html-di-prova',
+      $articles[1]['path'],
+    );
     $this->assertSame('html', $articles[1]['area']);
     $this->assertSame(
       '<h2>Introduzione</h2><p>Primo articolo.</p>',

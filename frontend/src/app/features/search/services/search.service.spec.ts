@@ -62,6 +62,7 @@ describe('SearchService', () => {
     return {
       id,
       title,
+      path: `/${area}/article-${id}`,
       area,
       body: '',
       externalLinks: [],

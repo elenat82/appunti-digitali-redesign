@@ -5,6 +5,7 @@ describe('buildArticleSearchSegments', () => {
   const createArticle = (body: string): Article => ({
     id: 42,
     title: 'Titolo Drupal',
+    path: 'drupal/titolo-drupal',
     area: 'drupal',
     body,
     externalLinks: [],

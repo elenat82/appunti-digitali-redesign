@@ -37,6 +37,11 @@ export interface Article {
   area: string;
 
   /**
+   * Path pubblico dell'articolo.
+   */
+  path: string;
+
+  /**
    * Contenuto HTML dell'articolo processato da Drupal.
    */
   body: string;

@@ -1,0 +1,42 @@
+@switch (state().status) {
+  @case ('loading') {
+    <p>Caricamento articolo...</p>
+  }
+
+  @case ('ready') {
+    @if (state().article; as article) {
+      <article>
+        <h1>{{ article.title }}</h1>
+
+        <div
+          class="article-body"
+          [innerHTML]="article.body"
+        ></div>
+
+        @if (article.externalLinks.length > 0) {
+          <section>
+            <h2>Approfondimenti</h2>
+
+            <ul>
+              @for (link of article.externalLinks; track link.url) {
+                <li>
+                  <a [href]="link.url">
+                    {{ link.title || link.url }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      </article>
+    }
+  }
+
+  @case ('not-found') {
+    <h1>Articolo non trovato</h1>
+  }
+
+  @case ('error') {
+    <h1>Impossibile caricare l'articolo</h1>
+  }
+}

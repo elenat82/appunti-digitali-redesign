@@ -118,6 +118,7 @@ final class ArticlesController implements ContainerInjectionInterface {
         'id' => (int) $node->id(),
         'title' => $node->label(),
         'area' => $area,
+        'path' => $node->toUrl()->toString(),
         'body' => $body,
         'externalLinks' => $external_links,
         'weight' => (int) ($node->get('field_weight')->value ?? 0),

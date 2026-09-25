@@ -8,6 +8,7 @@ describe('buildSearchResultGroups', () => {
     {
       id: 1,
       title: 'Articolo Drupal',
+      path: 'drpal/articolo-drupal',
       area: 'drupal',
       body: '',
       externalLinks: [],
@@ -16,6 +17,7 @@ describe('buildSearchResultGroups', () => {
     {
       id: 2,
       title: 'Articolo Angular',
+      path: 'angular/articolo-angular',
       area: 'angular',
       body: '',
       externalLinks: [],
