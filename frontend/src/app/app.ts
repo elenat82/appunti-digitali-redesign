@@ -14,7 +14,7 @@ import {
 
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
 import { Article } from './core/models/article.model';
-import { SearchIndexService } from './features/search/services/search-index.service';
+import { SearchService } from './features/search/services/search.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +23,7 @@ import { SearchIndexService } from './features/search/services/search-index.serv
 })
 export class App {
   private readonly contentRepository = inject(ContentRepositoryService);
-  private readonly searchIndex = inject(SearchIndexService);
+  private readonly search = inject(SearchService);
 
   private readonly areas$ = this.contentRepository.getAreas().pipe(
     shareReplay({ bufferSize: 1, refCount: true })
@@ -118,6 +118,7 @@ export class App {
       return;
     }
 
-    this.searchIndex.rebuild(this.articles());
+    this.search.updateArticles(this.articles());
   });
+
 }

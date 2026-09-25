@@ -44,7 +44,7 @@ export class SearchIndexService {
    *
    * @param articles Dataset corrente degli articoli.
    */
-  rebuild(articles: Article[]): void {
+  rebuild(articles: readonly Article[]): void {
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
