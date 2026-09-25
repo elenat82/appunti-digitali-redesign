@@ -1,0 +1,65 @@
+@if (search.query().trim()) {
+<section aria-live="polite">
+  @if (search.indexStatus() === 'preparing') {
+  <p>Preparazione della ricerca...</p>
+  } @else if (search.occurrenceCount() === 0) {
+  <p>
+    Nessun risultato per
+    <strong>{{ search.query() }}</strong>
+  </p>
+  } @else {
+  <p>
+    <strong>{{ search.query() }}</strong>:
+    {{ search.occurrenceCount() }} occorrenze in
+    {{ search.articleCount() }} articoli
+  </p>
+
+  <div class="search-results">
+    @for (
+    group of search.resultGroups();
+    track group.articleId
+    ) {
+    <section class="search-result-group">
+      <h2>{{ group.articleTitle }}</h2>
+
+      <ul>
+        @for (
+        occurrence of group.occurrences;
+        track occurrence.segmentId
+        + '-'
+        + occurrence.startOffset
+        ) {
+        <li>
+          <p [class.search-result-code]="
+      occurrence.segmentType === 'code-block'
+    ">
+            @if (occurrence.segmentType === 'title') {
+            <span class="search-result-source">
+              Titolo ·
+            </span>
+            }
+
+            @if (occurrence.snippet.isStartTruncated) {
+            <span aria-hidden="true">…</span>
+            }
+
+            {{ occurrence.snippet.beforeMatch
+            }}<mark>{{
+              occurrence.snippet.match
+              }}</mark>{{
+            occurrence.snippet.afterMatch
+            }}
+
+            @if (occurrence.snippet.isEndTruncated) {
+            <span aria-hidden="true">…</span>
+            }
+          </p>
+        </li>
+        }
+      </ul>
+    </section>
+    }
+  </div>
+  }
+</section>
+}

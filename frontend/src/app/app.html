@@ -1,15 +1,8 @@
-<h1>Appunti Digitali</h1>
+<header>
+  <app-search-bar />
+  <app-search-results />
+</header>
 
-<ul>
-  @for (area of areas(); track area.id) {
-    <li>
-      <img
-        [src]="area.iconUrl"
-        [alt]="area.label"
-        width="24"
-        height="24"
-      >
-      {{ area.label }}
-    </li>
-  }
-</ul>
+<main>
+  <router-outlet />
+</main>

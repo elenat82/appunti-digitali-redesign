@@ -11,13 +11,21 @@ import {
   shareReplay,
   switchMap
 } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
 import { Article } from './core/models/article.model';
 import { SearchService } from './features/search/services/search.service';
+import { SearchBar } from './features/search/components/search-bar/search-bar';
+import { SearchResults } from './features/search/components/search-results/search-results';
 
 @Component({
   selector: 'app-root',
+  imports: [
+    RouterOutlet,
+    SearchBar,
+    SearchResults
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

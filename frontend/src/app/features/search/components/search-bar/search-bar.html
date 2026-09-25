@@ -1,0 +1,11 @@
+<label for="global-search">
+  Cerca negli appunti
+</label>
+
+<input
+  id="global-search"
+  type="search"
+  [value]="search.query()"
+  (input)="onInput($event)"
+  autocomplete="off"
+/>

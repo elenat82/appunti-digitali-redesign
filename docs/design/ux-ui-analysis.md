@@ -305,7 +305,11 @@ Ogni occorrenza deve mostrare uno snippet del contenuto in cui compare il termin
 
 Ogni occorrenza deve essere selezionabile autonomamente.
 
-Non è necessario indicare se l'occorrenza proviene da titolo, paragrafo, codice, lista o tabella, perché questa informazione non è necessaria per individuare rapidamente il risultato utile.
+Non è necessario indicare in modo generale se l'occorrenza proviene da paragrafo, codice, lista o tabella, perché questa informazione non è necessaria per individuare rapidamente il risultato utile.
+
+Le occorrenze provenienti dal titolo dell'articolo costituiscono un'eccezione: vengono identificate con una breve etichetta Titolo, perché il titolo dell'articolo è già mostrato come intestazione del gruppo e la sua ripetizione tra le occorrenze potrebbe risultare ambigua.
+
+Questa soluzione viene adottata inizialmente e sarà rivalutata durante la definizione e la verifica della grafica definitiva dei risultati di ricerca.
 
 ## Apertura di un risultato di ricerca
 

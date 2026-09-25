@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+import { signal } from '@angular/core';
 
 import { App } from './app';
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
@@ -27,11 +28,18 @@ describe('App', () => {
     getArticlesByArea: vi.fn(() => of([]))
   };
 
+  const queryState = signal('');
+
   const searchMock = {
+    query: queryState.asReadonly(),
+    setQuery: vi.fn((query: string) => {
+      queryState.set(query);
+    }),
     updateArticles: vi.fn()
   };
 
   beforeEach(async () => {
+    queryState.set('');
     vi.clearAllMocks();
 
     await TestBed.configureTestingModule({
@@ -54,31 +62,6 @@ describe('App', () => {
     const app = fixture.componentInstance;
 
     expect(app).toBeTruthy();
-  });
-
-  it('should render the title', async () => {
-    const fixture = TestBed.createComponent(App);
-
-    await fixture.whenStable();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Appunti Digitali'
-    );
-  });
-
-  it('should render the thematic areas', async () => {
-    const fixture = TestBed.createComponent(App);
-
-    await fixture.whenStable();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const items = compiled.querySelectorAll('li');
-
-    expect(items).toHaveLength(2);
-    expect(items[0].textContent).toContain('HTML');
-    expect(items[1].textContent).toContain('CSS');
   });
 
   it('should load articles for each thematic area', async () => {
