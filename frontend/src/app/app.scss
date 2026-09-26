@@ -25,8 +25,14 @@
   background-color: var(--color-background);
 }
 
+.app-title {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
 app-search-bar {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
 }
 

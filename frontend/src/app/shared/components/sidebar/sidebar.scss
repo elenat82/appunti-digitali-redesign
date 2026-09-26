@@ -43,3 +43,21 @@ summary {
 summary::-webkit-details-marker {
   display: none;
 }
+
+.sidebar-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar-logo-image {
+  display: block;
+  width: 7rem;
+  max-width: 100%;
+  height: auto;
+  transition: width 0.2s ease;
+}
+
+.sidebar--collapsed .sidebar-logo-image {
+  width: 2.5rem;
+}

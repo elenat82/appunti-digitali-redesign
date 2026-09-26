@@ -1,1 +1,92 @@
-<p>Home</p>
+<section
+  class="home-contact"
+  aria-labelledby="profile-name"
+>
+  @switch (profileState().status) {
+    @case ('loading') {
+      <p>Caricamento...</p>
+    }
+
+    @case ('not-found') {
+      <p>Profilo non disponibile.</p>
+    }
+
+    @case ('error') {
+      <p>
+        Impossibile caricare i contatti.
+      </p>
+    }
+
+    @case ('ready') {
+      @if (profileState().profile; as profile) {
+        <div class="profile-identity">
+          <img
+            class="profile-picture"
+            [src]="profile.pictureUrl"
+            [alt]="profile.fullName"
+          >
+
+          <div>
+            <h1 id="profile-name">
+              {{ profile.fullName }}
+            </h1>
+
+            <p class="profile-role">
+              {{ profile.professionalRole }}
+            </p>
+          </div>
+        </div>
+
+        <div class="profile-content">
+          <div
+            class="profile-presentation"
+            [innerHTML]="profile.presentation"
+          ></div>
+
+          <div class="profile-links">
+            <div class="profile-links-column">
+              <a
+                [href]="'mailto:' + profile.email"
+              >
+                {{ profile.email }}
+              </a>
+
+              <a
+                [href]="'tel:' + profile.phone"
+              >
+                {{ profile.phone }}
+              </a>
+            </div>
+
+            <div class="profile-links-column">
+              <a
+                [href]="profile.linkedin"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+
+              <a
+                [href]="profile.github"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a
+          class="profile-cv"
+          [href]="profile.cvUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download CV
+        </a>
+      }
+    }
+  }
+</section>

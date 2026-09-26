@@ -1,0 +1,62 @@
+.home-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem 2rem;
+
+  min-width: 0;
+  padding: 1.5rem 2rem;
+
+  background-color: lightgreen;
+}
+
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.profile-picture {
+  flex: 0 0 auto;
+
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+}
+
+.profile-identity h1 {
+  margin: 0;
+}
+
+.profile-role {
+  margin: 0.25rem 0 0;
+}
+
+.profile-content {
+  flex: 1 1 22rem;
+  min-width: 0;
+}
+
+.profile-presentation {
+  margin-bottom: 1rem;
+}
+
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+
+.profile-links-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-cv {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
