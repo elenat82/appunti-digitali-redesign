@@ -41,13 +41,14 @@ describe('App', () => {
       queryState.set(query);
     }),
 
+    openResults: vi.fn(),
+
     closeResults: vi.fn(() => {
       resultsOpenState.set(false);
     }),
 
     updateArticles: vi.fn()
   };
-
   beforeEach(async () => {
     queryState.set('');
     resultsOpenState.set(false);
@@ -73,6 +74,58 @@ describe('App', () => {
     const app = fixture.componentInstance;
 
     expect(app).toBeTruthy();
+  });
+
+  it('should not show return to results without a search query', () => {
+    const fixture = TestBed.createComponent(App);
+
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement | null =
+      fixture.nativeElement.querySelector(
+        '.return-to-results'
+      );
+
+    expect(button).toBeNull();
+  });
+
+  it('should show return to results when search results are closed', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(false);
+
+    const fixture = TestBed.createComponent(App);
+
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement | null =
+      fixture.nativeElement.querySelector(
+        '.return-to-results'
+      );
+
+    expect(button).not.toBeNull();
+    expect(button?.textContent?.trim()).toBe(
+      'Torna ai risultati'
+    );
+  });
+
+  it('should reopen search results from the header', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(false);
+
+    const fixture = TestBed.createComponent(App);
+
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement =
+      fixture.nativeElement.querySelector(
+        '.return-to-results'
+      );
+
+    button.click();
+
+    expect(
+      searchMock.openResults
+    ).toHaveBeenCalledTimes(1);
   });
 
   it('should load articles for each thematic area', async () => {

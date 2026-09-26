@@ -33,7 +33,7 @@ import { Sidebar } from './shared/components/sidebar/sidebar';
 })
 export class App {
   private readonly contentRepository = inject(ContentRepositoryService);
-  private readonly search = inject(SearchService);
+  protected readonly search = inject(SearchService);
 
   private readonly areas$ = this.contentRepository.getAreas().pipe(
     shareReplay({ bufferSize: 1, refCount: true })

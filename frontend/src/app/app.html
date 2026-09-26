@@ -1,13 +1,19 @@
 <div class="app-shell">
   <header class="app-header">
     <app-search-bar />
+
+    @if (
+    search.query().trim() &&
+    !search.isResultsOpen()
+    ) {
+    <button type="button" class="return-to-results" (click)="search.openResults()">
+      Torna ai risultati
+    </button>
+    }
   </header>
 
   <div class="app-layout">
-    <app-sidebar
-      [areas]="areas()"
-      [articlesByArea]="articlesByArea()"
-    />
+    <app-sidebar [areas]="areas()" [articlesByArea]="articlesByArea()" />
 
     <main class="app-main">
       <router-outlet />
