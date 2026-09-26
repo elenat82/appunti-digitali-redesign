@@ -1,0 +1,39 @@
+<aside class="sidebar" [class.sidebar--collapsed]="!isOpen()">
+  <nav id="sidebar-navigation" aria-label="Argomenti">
+    @for (area of areas(); track area.id) {
+    <details>
+      <summary>
+        <img [src]="area.iconUrl" alt="" width="24" height="24">
+
+        @if (isOpen()) {
+        <span>{{ area.label }}</span>
+        }
+      </summary>
+
+      @if (isOpen()) {
+      <ul>
+        @for (
+        article of articlesByArea()[area.id] ?? [];
+        track article.id
+        ) {
+        <li>
+          <a [routerLink]="article.path">
+            {{ article.title }}
+          </a>
+        </li>
+        }
+      </ul>
+      }
+    </details>
+    }
+  </nav>
+
+  <button type="button" class="sidebar-toggle" aria-controls="sidebar-navigation" [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="
+      isOpen()
+        ? 'Chiudi barra laterale'
+        : 'Apri barra laterale'
+    " (click)="toggle()">
+    {{ isOpen() ? '‹' : '›' }}
+  </button>
+</aside>

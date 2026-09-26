@@ -1,8 +1,15 @@
-<header>
-  <app-search-bar />
-  <app-search-results />
-</header>
+<div class="app-shell">
+  <header class="app-header">
+    <app-search-bar />
+  </header>
 
-<main>
-  <router-outlet />
-</main>
+  <div class="app-layout">
+    <app-sidebar [areas]="areas()" [articlesByArea]="articlesByArea()" />
+
+    <main class="app-main">
+      <router-outlet />
+    </main>
+  </div>
+
+  <app-search-results />
+</div>

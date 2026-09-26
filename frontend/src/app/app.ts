@@ -18,13 +18,15 @@ import { Article } from './core/models/article.model';
 import { SearchService } from './features/search/services/search.service';
 import { SearchBar } from './features/search/components/search-bar/search-bar';
 import { SearchResults } from './features/search/components/search-results/search-results';
+import { Sidebar } from './shared/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     SearchBar,
-    SearchResults
+    SearchResults,
+    Sidebar
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
