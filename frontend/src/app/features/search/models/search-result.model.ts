@@ -1,5 +1,8 @@
 import { SearchOccurrence } from './search-occurrence.model';
-import { SearchSegmentType } from './search-segment.model';
+import {
+  SearchSegmentLocator,
+  SearchSegmentType
+} from './search-segment.model';
 
 /**
  * Contenuto testuale mostrato per una singola occorrenza nei risultati di ricerca.
@@ -36,6 +39,7 @@ export interface SearchSnippet {
  */
 export interface SearchResultOccurrence extends SearchOccurrence {
   segmentType: SearchSegmentType;
+  locator: SearchSegmentLocator;
   snippet: SearchSnippet;
 }
 
@@ -45,6 +49,7 @@ export interface SearchResultOccurrence extends SearchOccurrence {
 export interface SearchResultGroup {
   articleId: number;
   articleTitle: string;
+  articlePath: string;
   areaId: string;
   occurrences: SearchResultOccurrence[];
 }

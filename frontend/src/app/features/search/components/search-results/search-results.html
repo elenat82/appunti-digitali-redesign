@@ -30,30 +30,37 @@
         + occurrence.startOffset
         ) {
         <li>
-          <p [class.search-result-code]="
-      occurrence.segmentType === 'code-block'
-    ">
-            @if (occurrence.segmentType === 'title') {
-            <span class="search-result-source">
-              Titolo ·
-            </span>
-            }
+          <a class="search-result-link" [routerLink]="group.articlePath" [queryParams]="{
+            source: occurrence.locator.source,
+            index: occurrence.locator.index,
+            start: occurrence.startOffset,
+            end: occurrence.endOffset
+          }">
+            <p [class.search-result-code]="
+              occurrence.segmentType === 'code-block'
+            ">
+              @if (occurrence.segmentType === 'title') {
+              <span class="search-result-source">
+                Titolo ·
+              </span>
+              }
 
-            @if (occurrence.snippet.isStartTruncated) {
-            <span aria-hidden="true">…</span>
-            }
+              @if (occurrence.snippet.isStartTruncated) {
+              <span aria-hidden="true">…</span>
+              }
 
-            {{ occurrence.snippet.beforeMatch
-            }}<mark>{{
-              occurrence.snippet.match
-              }}</mark>{{
-            occurrence.snippet.afterMatch
-            }}
+              {{ occurrence.snippet.beforeMatch
+              }}<mark>{{
+                occurrence.snippet.match
+                }}</mark>{{
+              occurrence.snippet.afterMatch
+              }}
 
-            @if (occurrence.snippet.isEndTruncated) {
-            <span aria-hidden="true">…</span>
-            }
-          </p>
+              @if (occurrence.snippet.isEndTruncated) {
+              <span aria-hidden="true">…</span>
+              }
+            </p>
+          </a>
         </li>
         }
       </ul>

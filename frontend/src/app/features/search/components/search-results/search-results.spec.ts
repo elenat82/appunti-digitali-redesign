@@ -3,6 +3,7 @@ import {
   TestBed
 } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
 import { SearchService } from '../../services/search.service';
 import { SearchResults } from './search-results';
@@ -39,6 +40,7 @@ describe('SearchResults', () => {
     await TestBed.configureTestingModule({
       imports: [SearchResults],
       providers: [
+        provideRouter([]),
         {
           provide: SearchService,
           useValue: searchMock
@@ -105,6 +107,7 @@ describe('SearchResults', () => {
       {
         articleId: 1,
         articleTitle: 'Articolo Drupal',
+        articlePath: '/drupal/articolo-drupal',
         areaId: 'drupal',
         occurrences: [
           {
@@ -113,6 +116,10 @@ describe('SearchResults', () => {
             startOffset: 0,
             endOffset: 6,
             segmentType: 'paragraph',
+            locator: {
+              source: 'body',
+              index: 0
+            },
             snippet: {
               beforeMatch: '',
               match: 'Drupal',
@@ -153,6 +160,7 @@ describe('SearchResults', () => {
       {
         articleId: 1,
         articleTitle: 'Articolo Drupal',
+        articlePath: '/drupal/articolo-drupal',
         areaId: 'drupal',
         occurrences: [
           {
@@ -161,6 +169,10 @@ describe('SearchResults', () => {
             startOffset: 9,
             endOffset: 14,
             segmentType: 'code-block',
+            locator: {
+              source: 'body',
+              index: 0
+            },
             snippet: {
               beforeMatch: '$queue = ',
               match: '$this',
@@ -181,5 +193,52 @@ describe('SearchResults', () => {
         '.search-result-code'
       )
     ).toBeTruthy();
+  });
+
+  it('collega ogni occorrenza all\'articolo corrispondente', () => {
+    queryState.set('Drupal');
+    indexStatusState.set('ready');
+    occurrenceCountState.set(1);
+    articleCountState.set(1);
+
+    resultGroupsState.set([
+      {
+        articleId: 1,
+        articleTitle: 'Articolo Drupal',
+        articlePath: '/drupal/articolo-drupal',
+        areaId: 'drupal',
+        occurrences: [
+          {
+            articleId: 1,
+            segmentId: 'article-1-segment-1',
+            startOffset: 0,
+            endOffset: 6,
+            segmentType: 'paragraph',
+            locator: {
+              source: 'body',
+              index: 0
+            },
+            snippet: {
+              beforeMatch: '',
+              match: 'Drupal',
+              afterMatch: ' utilizza i servizi.',
+              isStartTruncated: false,
+              isEndTruncated: false
+            }
+          }
+        ]
+      }
+    ]);
+
+    fixture.detectChanges();
+
+    const link: HTMLAnchorElement =
+      fixture.nativeElement.querySelector(
+        '.search-result-link'
+      );
+
+    expect(link.getAttribute('href')).toBe(
+      '/drupal/articolo-drupal?source=body&index=0&start=0&end=6'
+    );
   });
 });

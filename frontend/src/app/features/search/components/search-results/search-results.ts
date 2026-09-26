@@ -3,6 +3,7 @@ import {
   Component,
   inject
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { SearchService } from '../../services/search.service';
 
@@ -11,6 +12,7 @@ import { SearchService } from '../../services/search.service';
  */
 @Component({
   selector: 'app-search-results',
+  imports: [RouterLink],
   templateUrl: './search-results.html',
   styleUrl: './search-results.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

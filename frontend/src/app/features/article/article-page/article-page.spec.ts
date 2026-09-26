@@ -17,6 +17,8 @@ import { vi } from 'vitest';
 import { Article } from '../../../core/models/article.model';
 import { ContentRepositoryService } from '../../../core/data-access/content-repository.service';
 import { ArticlePage } from './article-page';
+import { signal } from '@angular/core';
+import { SearchService } from '../../search/services/search.service';
 
 describe('ArticlePage', () => {
   let fixture: ComponentFixture<ArticlePage>;
@@ -24,6 +26,10 @@ describe('ArticlePage', () => {
 
   const contentRepositoryMock = {
     getArticlesByArea: vi.fn()
+  };
+
+  const searchMock = {
+    resultGroups: signal([])
   };
 
   const article: Article = {
@@ -46,18 +52,29 @@ describe('ArticlePage', () => {
 
     routeParamMap = new ReplaySubject<ParamMap>(1);
 
+    const emptyQueryParamMap =
+      convertToParamMap({});
+
     await TestBed.configureTestingModule({
       imports: [ArticlePage],
       providers: [
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: routeParamMap.asObservable()
+            paramMap: routeParamMap.asObservable(),
+            queryParamMap: of(emptyQueryParamMap),
+            snapshot: {
+              queryParamMap: emptyQueryParamMap
+            }
           }
         },
         {
           provide: ContentRepositoryService,
           useValue: contentRepositoryMock
+        },
+        {
+          provide: SearchService,
+          useValue: searchMock
         }
       ]
     }).compileComponents();

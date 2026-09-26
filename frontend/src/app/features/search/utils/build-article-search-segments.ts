@@ -4,20 +4,10 @@ import {
   SearchSegmentType
 } from '../models/search-segment.model';
 import { normalizeSearchText } from './normalize-search-text';
-
-const SEARCHABLE_SELECTOR = [
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'p',
-  'li',
-  'th',
-  'td',
-  'pre'
-].join(',');
+import {
+  getSearchableBodyElements,
+  getSearchableElementText
+} from './article-search-dom';
 
 /**
  * Costruisce i segmenti ricercabili derivati dal titolo e dal body di un articolo.
@@ -45,18 +35,12 @@ export function buildArticleSearchSegments(
   const parser = new DOMParser();
   const document = parser.parseFromString(article.body, 'text/html');
 
-  let bodyIndex = 0;
+  const bodyElements =
+    getSearchableBodyElements(document.body);
 
-  for (const element of document.body.querySelectorAll(SEARCHABLE_SELECTOR)) {
-    if (!shouldCreateSegment(element)) {
-      continue;
-    }
-
-    const text = getElementText(element);
-
-    if (!text.trim()) {
-      continue;
-    }
+  for (const [bodyIndex, element] of bodyElements.entries()) {
+    const text =
+      getSearchableElementText(element);
 
     segments.push(
       createSegment(
@@ -70,8 +54,6 @@ export function buildArticleSearchSegments(
         }
       )
     );
-
-    bodyIndex++;
   }
 
   article.externalLinks.forEach((link, index) => {
@@ -119,47 +101,6 @@ function createSegment(
     searchText: normalizeSearchText(text),
     locator
   };
-}
-
-/**
- * Determina se l'elemento deve produrre un segmento autonomo.
- *
- * Paragrafi e heading contenuti in elementi che costituiscono già un segmento vengono assorbiti dal contenitore per evitare duplicazioni.
- */
-function shouldCreateSegment(element: Element): boolean {
-  const tagName = element.tagName.toLowerCase();
-
-  if (tagName === 'p' || isHeading(tagName)) {
-    return !element.parentElement?.closest('li, th, td, pre');
-  }
-
-  if (tagName === 'li') {
-    return !element.parentElement?.closest('pre');
-  }
-
-  if (tagName === 'th' || tagName === 'td') {
-    return !element.parentElement?.closest('pre');
-  }
-
-  return tagName === 'pre';
-}
-
-/**
- * Restituisce il testo appartenente al segmento senza includere il contenuto di eventuali segmenti autonomi annidati.
- */
-function getElementText(element: Element): string {
-  const clone = element.cloneNode(true) as Element;
-  const tagName = element.tagName.toLowerCase();
-
-  if (tagName === 'li') {
-    clone.querySelectorAll('ul, ol, pre').forEach((child) => child.remove());
-  }
-
-  if (tagName === 'th' || tagName === 'td') {
-    clone.querySelectorAll('ul, ol, pre').forEach((child) => child.remove());
-  }
-
-  return clone.textContent ?? '';
 }
 
 /**

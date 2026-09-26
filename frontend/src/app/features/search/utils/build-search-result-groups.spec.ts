@@ -8,7 +8,7 @@ describe('buildSearchResultGroups', () => {
     {
       id: 1,
       title: 'Articolo Drupal',
-      path: 'drpal/articolo-drupal',
+      path: '/drupal/articolo-drupal',
       area: 'drupal',
       body: '',
       externalLinks: [],
@@ -17,7 +17,7 @@ describe('buildSearchResultGroups', () => {
     {
       id: 2,
       title: 'Articolo Angular',
-      path: 'angular/articolo-angular',
+      path: '/angular/articolo-angular',
       area: 'angular',
       body: '',
       externalLinks: [],
@@ -89,8 +89,18 @@ describe('buildSearchResultGroups', () => {
     expect(groups[0].articleTitle).toBe(
       'Articolo Drupal'
     );
+    expect(groups[0].articlePath).toBe(
+      '/drupal/articolo-drupal'
+    );
     expect(groups[0].areaId).toBe('drupal');
     expect(groups[0].occurrences).toHaveLength(2);
+
+    expect(
+      groups[0].occurrences[0].locator
+    ).toEqual({
+      source: 'body',
+      index: 0
+    });
 
     expect(groups[1].articleId).toBe(2);
     expect(groups[1].occurrences).toHaveLength(1);

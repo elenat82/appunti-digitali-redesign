@@ -37,6 +37,7 @@ export function buildSearchResultGroups(
     const resultOccurrence: SearchResultOccurrence = {
       ...occurrence,
       segmentType: segment.type,
+      locator: segment.locator,
       snippet: buildSearchSnippet(
         segment,
         occurrence
@@ -66,6 +67,7 @@ export function buildSearchResultGroups(
       {
         articleId: article.id,
         articleTitle: article.title,
+        articlePath: article.path,
         areaId: article.area,
         occurrences: articleOccurrences
       }

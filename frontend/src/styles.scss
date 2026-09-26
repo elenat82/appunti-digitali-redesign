@@ -1,1 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
+::highlight(search-occurrence) {
+  background-color: rgb(244 143 177 / 30%);
+  color: inherit;
+}
+
+::highlight(selected-search-occurrence) {
+  background-color: rgb(244 143 177 / 75%);
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
