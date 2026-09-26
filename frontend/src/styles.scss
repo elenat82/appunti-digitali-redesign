@@ -1,11 +1,52 @@
+:root {
+  --color-primary: #284283;
+  --color-accent-green: #008b8b;
+  --color-accent-pink: #ffbdde;
+  --color-highlight:
+    color-mix(
+      in srgb,
+      var(--color-accent-pink) 30%,
+      transparent
+    );
+  --color-highlight-selected:
+    color-mix(
+      in srgb,
+      var(--color-accent-pink) 75%,
+      transparent
+    );
+
+  --color-text: rgb(51 51 51 / 87%);
+  --color-background: #fff;
+}
+
 ::highlight(search-occurrence) {
-  background-color: rgb(244 143 177 / 30%);
+  background-color: var(--color-highlight);
   color: inherit;
 }
 
 ::highlight(selected-search-occurrence) {
-  background-color: rgb(244 143 177 / 75%);
+  background-color: var(--color-highlight-selected);
   color: inherit;
   text-decoration: underline;
   text-decoration-thickness: 2px;
+}
+
+.article-body {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.article-body pre {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.article-body table {
+  max-width: 100%;
 }

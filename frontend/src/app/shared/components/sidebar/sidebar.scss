@@ -1,12 +1,20 @@
 :host {
   display: block;
-  height: 100%;
 }
 
 .sidebar {
   box-sizing: border-box;
+
+  position: sticky;
+  top: var(--app-header-height);
+
   width: 18rem;
-  height: 100%;
+
+  max-height: calc(
+    100dvh - var(--app-header-height)
+  );
+
+  overflow-y: auto;
 }
 
 .sidebar--collapsed {

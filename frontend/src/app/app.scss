@@ -1,10 +1,24 @@
 :host {
+  --app-header-height: 3rem;
   display: block;
   min-height: 100dvh;
 }
 
 .app-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 100dvh;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  box-sizing: border-box;
+  min-height: var(--app-header-height);
+
+  background-color: var(--color-background);
 }
 
 .app-layout {
