@@ -4,12 +4,15 @@
   </header>
 
   <div class="app-layout">
-    <app-sidebar [areas]="areas()" [articlesByArea]="articlesByArea()" />
+    <app-sidebar
+      [areas]="areas()"
+      [articlesByArea]="articlesByArea()"
+    />
 
     <main class="app-main">
       <router-outlet />
     </main>
-  </div>
 
-  <app-search-results />
+    <app-search-results class="search-overlay" />
+  </div>
 </div>

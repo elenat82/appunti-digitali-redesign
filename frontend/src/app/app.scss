@@ -27,6 +27,30 @@
   min-height: 0;
 }
 
-.app-main {
+.app-main,
+.search-overlay {
+  grid-column: 2;
+  grid-row: 1;
   min-width: 0;
+}
+
+.app-main {
+  z-index: 0;
+}
+
+.search-overlay {
+  position: sticky;
+  top: var(--app-header-height);
+  z-index: 5;
+
+  align-self: start;
+  height: calc(
+    100dvh - var(--app-header-height)
+  );
+
+  overflow: hidden;
+
+  // L'host non deve bloccare la pagina quando
+  // non contiene risultati visibili.
+  pointer-events: none;
 }

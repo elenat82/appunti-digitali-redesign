@@ -29,17 +29,28 @@ describe('App', () => {
   };
 
   const queryState = signal('');
+  const resultsOpenState = signal(false);
 
   const searchMock = {
     query: queryState.asReadonly(),
+
+    isResultsOpen:
+      resultsOpenState.asReadonly(),
+
     setQuery: vi.fn((query: string) => {
       queryState.set(query);
     }),
+
+    closeResults: vi.fn(() => {
+      resultsOpenState.set(false);
+    }),
+
     updateArticles: vi.fn()
   };
 
   beforeEach(async () => {
     queryState.set('');
+    resultsOpenState.set(false);
     vi.clearAllMocks();
 
     await TestBed.configureTestingModule({

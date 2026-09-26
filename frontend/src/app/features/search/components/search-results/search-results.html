@@ -1,5 +1,8 @@
-@if (search.query().trim()) {
-<section aria-live="polite">
+@if (
+  search.isResultsOpen() &&
+  search.query().trim()
+) {
+<section aria-live="polite" class="search-results-panel" aria-label="Risultati della ricerca">
   @if (search.indexStatus() === 'preparing') {
   <p>Preparazione della ricerca...</p>
   } @else if (search.occurrenceCount() === 0) {
@@ -30,12 +33,15 @@
         + occurrence.startOffset
         ) {
         <li>
-          <a class="search-result-link" [routerLink]="group.articlePath" [queryParams]="{
+          <a class="search-result-link"
+            [routerLink]="group.articlePath"
+            [queryParams]="{
             source: occurrence.locator.source,
             index: occurrence.locator.index,
             start: occurrence.startOffset,
             end: occurrence.endOffset
-          }">
+          }"
+          (click)="search.closeResults()">
             <p [class.search-result-code]="
               occurrence.segmentType === 'code-block'
             ">

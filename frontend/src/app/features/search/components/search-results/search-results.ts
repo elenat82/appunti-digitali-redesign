@@ -18,5 +18,5 @@ import { SearchService } from '../../services/search.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchResults {
-  readonly search = inject(SearchService);
+  protected readonly search = inject(SearchService);
 }

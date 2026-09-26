@@ -1,3 +1,22 @@
+:host {
+  display: block;
+}
+
+.search-results-panel {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 100%;
+
+  overflow-y: auto;
+
+  background-color: var(--color-background);
+
+  // Ripristina l'interazione, disabilitata
+  // sull'host dell'overlay.
+  pointer-events: auto;
+}
+
 .search-result-code {
   white-space: pre-wrap;
   font-family: monospace;

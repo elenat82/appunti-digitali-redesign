@@ -19,6 +19,8 @@ describe('SearchResults', () => {
   const articleCountState = signal(0);
   const resultGroupsState = signal<SearchResultGroup[]>([]);
 
+  const resultsOpenState = signal(false);
+
   const searchMock = {
     query: queryState.asReadonly(),
     indexStatus: indexStatusState.asReadonly(),
@@ -27,10 +29,17 @@ describe('SearchResults', () => {
     articleCount:
       articleCountState.asReadonly(),
     resultGroups:
-      resultGroupsState.asReadonly()
+      resultGroupsState.asReadonly(),
+    isResultsOpen:
+      resultsOpenState.asReadonly(),
+    closeResults: vi.fn(() => {
+      resultsOpenState.set(false);
+    })
   };
 
   beforeEach(async () => {
+    resultsOpenState.set(false);
+    vi.clearAllMocks();
     queryState.set('');
     indexStatusState.set('preparing');
     occurrenceCountState.set(0);
@@ -64,6 +73,7 @@ describe('SearchResults', () => {
 
   it('mostra lo stato di preparazione', () => {
     queryState.set('Drupal');
+    resultsOpenState.set(true);
     fixture.detectChanges();
 
     expect(
@@ -73,6 +83,7 @@ describe('SearchResults', () => {
 
   it('mostra lo stato senza risultati', () => {
     queryState.set('Drupal');
+    resultsOpenState.set(true);
     indexStatusState.set('ready');
 
     fixture.detectChanges();
@@ -84,6 +95,7 @@ describe('SearchResults', () => {
 
   it('mostra il numero di occorrenze e articoli', () => {
     queryState.set('Drupal');
+    resultsOpenState.set(true);
     indexStatusState.set('ready');
     occurrenceCountState.set(12);
     articleCountState.set(3);
@@ -99,6 +111,7 @@ describe('SearchResults', () => {
 
   it('mostra i risultati raggruppati per articolo', () => {
     queryState.set('Drupal');
+    resultsOpenState.set(true);
     indexStatusState.set('ready');
     occurrenceCountState.set(1);
     articleCountState.set(1);
@@ -152,6 +165,7 @@ describe('SearchResults', () => {
 
   it('preserva il tipo dei risultati di codice', () => {
     queryState.set('$this');
+    resultsOpenState.set(true);
     indexStatusState.set('ready');
     occurrenceCountState.set(1);
     articleCountState.set(1);
@@ -197,6 +211,7 @@ describe('SearchResults', () => {
 
   it('collega ogni occorrenza all\'articolo corrispondente', () => {
     queryState.set('Drupal');
+    resultsOpenState.set(true);
     indexStatusState.set('ready');
     occurrenceCountState.set(1);
     articleCountState.set(1);
@@ -240,5 +255,61 @@ describe('SearchResults', () => {
     expect(link.getAttribute('href')).toBe(
       '/drupal/articolo-drupal?source=body&index=0&start=0&end=6'
     );
+  });
+
+  it('chiude i risultati quando viene selezionata un\'occorrenza', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(true);
+    indexStatusState.set('ready');
+    occurrenceCountState.set(1);
+    articleCountState.set(1);
+
+    resultGroupsState.set([
+      {
+        articleId: 1,
+        articleTitle: 'Articolo Drupal',
+        articlePath: '/drupal/articolo-drupal',
+        areaId: 'drupal',
+        occurrences: [
+          {
+            articleId: 1,
+            segmentId: 'article-1-segment-1',
+            startOffset: 0,
+            endOffset: 6,
+            segmentType: 'paragraph',
+            locator: {
+              source: 'body',
+              index: 0
+            },
+            snippet: {
+              beforeMatch: '',
+              match: 'Drupal',
+              afterMatch: ' utilizza i servizi.',
+              isStartTruncated: false,
+              isEndTruncated: false
+            }
+          }
+        ]
+      }
+    ]);
+
+    fixture.detectChanges();
+
+    const link: HTMLAnchorElement =
+      fixture.nativeElement.querySelector(
+        '.search-result-link'
+      );
+
+    link.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        ctrlKey: true
+      })
+    );
+
+    expect(
+      searchMock.closeResults
+    ).toHaveBeenCalled();
   });
 });

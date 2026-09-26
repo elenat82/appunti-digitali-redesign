@@ -22,6 +22,13 @@ export class SearchService {
   private readonly searchIndex = inject(SearchIndexService);
 
   private readonly queryState = signal('');
+  private readonly resultsOpenState = signal(false);
+
+  /**
+   * Indica se il pannello dei risultati è visibile.
+   */
+  readonly isResultsOpen = this.resultsOpenState.asReadonly();
+
   private readonly articlesState = signal<readonly Article[]>([]);
 
   /**
@@ -113,5 +120,26 @@ export class SearchService {
    */
   setQuery(query: string): void {
     this.queryState.set(query);
+
+    this.resultsOpenState.set(
+      query.trim().length > 0
+    );
+  }
+
+  /**
+ * Mostra il pannello dei risultati se esiste una query.
+ */
+  openResults(): void {
+    if (this.query().trim()) {
+      this.resultsOpenState.set(true);
+    }
+  }
+
+  /**
+   * Nasconde il pannello dei risultati senza perdere
+   * lo stato della ricerca corrente.
+   */
+  closeResults(): void {
+    this.resultsOpenState.set(false);
   }
 }
