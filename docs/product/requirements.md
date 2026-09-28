@@ -30,11 +30,12 @@ L'amministratore può:
 - pubblicare o non pubblicare contenuti;
 - gestire eventuali nuove aree tematiche;
 - gestire link esterni di approfondimento;
+- gestire i tag utilizzati per la sezione Stack Overflow;
 - gestire i termini di tassonomia usati per le risorse salvate tramite web clipper.
 
 ## Ambito della prima release
 
-La prima release pubblica del progetto deve includere sia le funzionalità principali di ricerca e consultazione degli articoli, sia le sezioni previste per la home page: notizie da feed RSS, ultime domande Stack Overflow, repository GitHub starred e risorse salvate tramite web clipper.
+La prima release pubblica del progetto deve includere sia le funzionalità principali di ricerca e consultazione degli articoli, sia le sezioni previste per la home page: notizie da feed RSS, domande Stack Overflow, repository GitHub starred e risorse salvate tramite web clipper.
 
 Lo sviluppo potrà procedere per incrementi tecnici successivi, ma il design dell'interfaccia deve considerare fin dall'inizio tutti gli elementi previsti per la prima release, in modo da evitare riprogettazioni successive del layout.
 
@@ -227,7 +228,11 @@ I suoni devono essere riprodotti esclusivamente in conseguenza di un'azione espl
 
 **RF055.** La home page deve includere una sezione dedicata alle notizie provenienti da feed RSS selezionati.
 
-**RF056.** La home page deve includere una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
+**RF056.** La home page deve includere una sezione dedicata a domande Stack Overflow relative a tag configurati dall'amministratore.
+
+I tag utilizzati per interrogare Stack Overflow devono essere gestibili tramite Drupal e devono rimanere indipendenti dalle aree tematiche degli articoli.
+
+Le domande devono essere ordinate privilegiando quelle con attività più recente.
 
 **RF057.** La home page deve includere una sezione dedicata ai repository GitHub starred.
 
@@ -257,7 +262,7 @@ I suoni devono essere riprodotti esclusivamente in conseguenza di un'azione espl
 
 **RF066.** Il sistema deve consentire all'amministratore di pubblicare e non pubblicare contenuti.
 
-**RF067.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia usati per le risorse salvate.
+**RF067.** Il sistema deve consentire all'amministratore di gestire i termini di tassonomia utilizzati per l'integrazione Stack Overflow e per le risorse salvate.
 
 **RF068.** Il sistema non deve consentire agli utenti anonimi di creare contenuti, commentare, registrarsi o accedere ad aree private.
 
@@ -333,6 +338,7 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 - link di approfondimento;
 - dati pubblici dell'amministratore;
 - file CV dell'amministratore;
+- tassonomia per i tag utilizzati dall'integrazione Stack Overflow;
 - tassonomia per le risorse salvate;
 - API per il frontend;
 - endpoint per il web clipper.
@@ -402,7 +408,7 @@ Questa funzionalità è presente nella versione precedente, ma non si è rivelat
 
 **RT019.** Angular deve recuperare i dati pubblici dell'amministratore da Drupal e usarli per popolare la sezione contatti, il pulsante di download del CV e l'indirizzo email nel footer.
 
-**RT020.** Il sistema deve prevedere una strategia tecnica per recuperare e mostrare nella home page notizie da feed RSS, ultime domande Stack Overflow, repository GitHub starred e risorse salvate tramite web clipper.
+**RT020.** Il sistema deve prevedere una strategia tecnica per recuperare e mostrare nella home page notizie da feed RSS, domande Stack Overflow, repository GitHub starred e risorse salvate tramite web clipper.
 
 **RT021.** Drupal deve esporre al frontend le aree tematiche disponibili, includendo almeno identificativo, nome pubblico, icona e ordinamento.
 

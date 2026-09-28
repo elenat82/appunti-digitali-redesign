@@ -1483,17 +1483,82 @@ Il recupero dei feed non deve essere eseguito nuovamente per ogni visita alla ho
 
 ### Stack Overflow
 
-Drupal recupera da Stack Overflow i dati necessari alla relativa sezione della home.
+L'integrazione con Stack Overflow viene gestita dal backend Drupal tramite il modulo custom `appunti_digitali_integrations`, dedicato alle integrazioni con servizi esterni.
 
-L'integrazione deve tenere conto delle quote e dei meccanismi di throttling previsti dall'API.
+Angular non interroga direttamente Stack Exchange, ma utilizza esclusivamente l'endpoint esposto da Drupal.
 
-Le richieste non devono quindi essere effettuate a ogni caricamento della pagina, ma devono utilizzare una cache lato backend.
+Il flusso è quindi:
 
-Drupal espone ad Angular soltanto i campi effettivamente necessari all'interfaccia.
+    tassonomia Drupal
+        ↓
+    StackOverflowClient
+        ↓
+    Stack Exchange API
+        ↓
+    filtro e normalizzazione
+        ↓
+    cache Drupal
+        ↓
+    GET /api/stackoverflow
+        ↓
+    Angular
 
-La cache viene aggiornata periodicamente tramite cron Drupal.
+#### Configurazione dei tag
 
-Se l'aggiornamento fallisce, viene mantenuto l'ultimo risultato valido disponibile.
+I tag utilizzati per interrogare Stack Overflow sono gestiti tramite un vocabolario Drupal dedicato.
+
+Ogni termine contiene il valore del corrispondente tag Stack Overflow e può essere pubblicato o non pubblicato. Soltanto i termini pubblicati partecipano alla richiesta verso Stack Exchange.
+
+Questa configurazione rimane indipendente dalle aree tematiche degli articoli. È quindi possibile, per esempio, seguire un tag Stack Overflow anche quando non esiste una corrispondente area tematica nel sito.
+
+#### Recupero e selezione delle domande
+
+Drupal interroga l'endpoint di ricerca di Stack Exchange utilizzando tutti i tag attualmente configurati.
+
+La richiesta utilizza:
+
+- `site=stackoverflow`;
+- i tag pubblicati del vocabolario dedicato;
+- ordinamento per attività più recente;
+- un massimo di 50 risultati.
+
+Dalla risposta vengono eliminate le domande con score inferiore a `0`.
+
+Tra quelle rimanenti vengono conservate al massimo le prime 20 domande.
+
+Drupal normalizza quindi i dati ricevuti prima di esporli al frontend, in modo che Angular non dipenda direttamente dal contratto dell'API Stack Exchange.
+
+#### Cache
+
+Le richieste verso Stack Exchange non vengono eseguite a ogni caricamento della home.
+
+Il risultato normalizzato viene memorizzato nella cache Drupal con una durata di 30 minuti.
+
+Finché l'entry è valida, le richieste successive utilizzano i dati presenti in cache. Dopo la scadenza, la prima nuova richiesta provoca un nuovo recupero da Stack Exchange e aggiorna la cache.
+
+La chiave della cache dipende dall'insieme dei tag utilizzati. Una modifica della configurazione dei tag determina quindi l'utilizzo di una nuova entry, senza riutilizzare i risultati ottenuti con la configurazione precedente.
+
+Questa strategia riduce il numero di richieste verso Stack Exchange e permette di limitare l'impatto di quote e meccanismi di throttling del servizio esterno.
+
+#### API Drupal → Angular
+
+Drupal espone le domande attraverso:
+
+    GET /api/stackoverflow
+
+La response contiene una collezione di oggetti normalizzati secondo il modello:
+
+    StackOverflowQuestion
+    ├── id
+    ├── title
+    ├── url
+    ├── tags
+    ├── score
+    ├── answerCount
+    ├── isAnswered
+    └── lastActivityDate
+
+Il frontend utilizza questi dati senza conoscere la struttura originale della response Stack Exchange.
 
 ### GitHub
 
@@ -2382,7 +2447,13 @@ Devono essere verificati almeno:
 - esclusione degli articoli non pubblicati;
 - ordinamento degli articoli tramite `field_weight`;
 - normalizzazione di body e link di approfondimento;
-- corretto contratto della response di `/api/articles/{area}`.
+- corretto contratto della response di `/api/articles/{area}`;
+- lettura dei soli tag pubblicati nel vocabolario dedicato a Stack Overflow;
+- assenza di chiamate alle API Stack Exchange in assenza di tag configurati;
+- normalizzazione delle domande ricevute da Stack Exchange nel modello applicativo;
+- esclusione delle domande con score inferiore a `0`;
+- limite massimo di 20 domande restituite;
+- riutilizzo dei risultati presenti in cache evitando richieste HTTP duplicate.
 
 Le configurazioni Drupal standard non richiedono necessariamente test custom per ogni dettaglio, salvo presenza di logica specifica del progetto.
 
@@ -2622,7 +2693,8 @@ Per Stack Overflow, GitHub e le sorgenti RSS devono essere verificati:
 - eventuali rate limit, quote o meccanismi di throttling;
 - eventuali requisiti di autenticazione;
 - comportamento in caso di indisponibilità del servizio;
-- frequenza appropriata di aggiornamento dei dati memorizzati in cache.
+- adeguatezza della frequenza di aggiornamento di 30 minuti per le domande Stack Overflow;
+- frequenza appropriata di aggiornamento dei dati memorizzati in cache per Github e sorgenti RSS.
 
 Le integrazioni rimangono opzionali e un loro errore non deve compromettere la consultazione degli articoli.
 

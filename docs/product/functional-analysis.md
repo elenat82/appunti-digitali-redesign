@@ -59,6 +59,7 @@ Può:
 - pubblicare o non pubblicare contenuti;
 - gestire le aree tematiche;
 - gestire i link esterni di approfondimento;
+- gestire i tag utilizzati per selezionare le domande Stack Overflow;
 - gestire i termini di tassonomia usati dalle risorse salvate;
 - aggiornare le informazioni pubbliche del profilo;
 - aggiornare il file CV;
@@ -307,7 +308,7 @@ La home page deve dare priorità alla ricerca globale.
 La prima release pubblica deve includere anche le sezioni previste per la home page:
 
 - notizie provenienti da feed RSS selezionati;
-- ultime domande Stack Overflow relative agli argomenti trattati dal sito;
+- domande Stack Overflow relative ai tag configurati dall'amministratore;
 - repository GitHub starred;
 - risorse salvate tramite web clipper.
 
@@ -323,13 +324,15 @@ Questa sezione ha lo scopo di raccogliere aggiornamenti da fonti esterne legate 
 
 Le notizie devono essere presentate come contenuti consultabili rapidamente, senza diventare l'elemento principale della pagina.
 
-## Ultime domande Stack Overflow
+## Domande Stack Overflow
 
-Il sistema deve mostrare una sezione dedicata alle ultime domande pubblicate su Stack Overflow relative agli argomenti trattati dal sito.
+Il sistema deve mostrare una sezione dedicata a domande Stack Overflow relative a un insieme di tag configurato dall'amministratore.
 
-Questa sezione ha lo scopo di esporre problemi, dubbi e discussioni tecniche recenti collegate alle tecnologie presenti in Appunti Digitali.
+I tag Stack Overflow sono gestiti separatamente dalle aree tematiche degli articoli. Questo permette di seguire tecnologie di interesse anche quando non corrispondono a una specifica area del sito.
 
-Le domande devono essere presentate come risorse esterne e non come contenuti editoriali interni del sito.
+Le domande vengono presentate privilegiando quelle con attività più recente.
+
+Le domande sono risorse esterne e non contenuti editoriali interni del sito.
 
 ## Repository GitHub starred
 
@@ -407,6 +410,7 @@ Dal backend deve poter:
 - pubblicare o non pubblicare contenuti;
 - gestire aree tematiche;
 - gestire link esterni di approfondimento;
+- gestire i tag utilizzati per selezionare le domande Stack Overflow;
 - gestire i tag delle risorse salvate;
 - aggiornare le informazioni pubbliche del profilo;
 - aggiornare il CV.

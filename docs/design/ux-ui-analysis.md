@@ -191,7 +191,7 @@ Il pannello può essere collassato quando l'utente desidera lasciare maggiore sp
 
 Nello stato collassato:
 
-- il logo non è necessario, perché l'identità "Appunti Digitali" rimane visibile nell'header;
+- il logo del sito rimane visibile in forma ridotta e continua a funzionare come collegamento alla home;
 - le etichette testuali delle aree vengono nascoste;
 - rimangono visibili le icone delle aree tematiche;
 - l'area tematica dell'articolo corrente rimane evidenziata.
@@ -441,7 +441,7 @@ Le sezioni informative della home page devono offrire risorse esterne utili senz
 Le sezioni previste sono:
 
 - notizie da feed RSS;
-- ultime domande Stack Overflow;
+- domande Stack Overflow;
 - repository GitHub starred;
 - risorse salvate tramite web clipper.
 
@@ -465,14 +465,16 @@ L'obiettivo della sezione è offrire aggiornamenti tecnici consultabili rapidame
 
 Le notizie non devono diventare il contenuto principale della home page.
 
-## Ultime domande Stack Overflow
+## Domande Stack Overflow
 
-La sezione dedicata a Stack Overflow deve mostrare domande recenti relative agli argomenti trattati dal sito.
+La sezione dedicata a Stack Overflow deve mostrare domande relative ai tag configurati dall'amministratore, privilegiando quelle con attività più recente.
 
-Ogni domanda dovrebbe mostrare almeno:
+Ogni domanda mostra:
 
 - titolo;
-- eventuali tag, se utili alla comprensione;
+- tag;
+- score;
+- numero di risposte;
 - collegamento alla domanda originale.
 
 I tag possono aiutare a capire rapidamente l'argomento della domanda, ma non devono appesantire la sezione.
@@ -630,7 +632,6 @@ Resta da definire la soluzione migliore per rendere i blocchi di codice leggibil
 Resta da definire quali eventuali metadati aggiuntivi mostrare per:
 
 - notizie RSS;
-- domande Stack Overflow;
 - repository GitHub starred;
 - risorse salvate.
 
