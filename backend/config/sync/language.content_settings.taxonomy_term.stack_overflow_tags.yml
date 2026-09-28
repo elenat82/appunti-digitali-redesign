@@ -1,0 +1,11 @@
+uuid: 636d1a03-a725-495b-867d-b3a35f0018ef
+langcode: it
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.stack_overflow_tags
+id: taxonomy_term.stack_overflow_tags
+target_entity_type_id: taxonomy_term
+target_bundle: stack_overflow_tags
+default_langcode: site_default
+language_alterable: false

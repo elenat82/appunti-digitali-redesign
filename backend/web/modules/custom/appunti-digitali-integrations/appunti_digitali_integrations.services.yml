@@ -1,0 +1,7 @@
+services:
+  appunti_digitali_integrations.stack_overflow_client:
+    class: Drupal\appunti_digitali_integrations\Service\StackOverflowClient
+    arguments:
+      - '@entity_type.manager'
+      - '@http_client'
+      - '@cache.default'

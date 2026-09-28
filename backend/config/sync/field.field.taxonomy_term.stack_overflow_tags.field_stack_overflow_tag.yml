@@ -1,0 +1,19 @@
+uuid: 8c4a21d0-eb20-4d63-b876-b56a055ebfa5
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_stack_overflow_tag
+    - taxonomy.vocabulary.stack_overflow_tags
+id: taxonomy_term.stack_overflow_tags.field_stack_overflow_tag
+field_name: field_stack_overflow_tag
+entity_type: taxonomy_term
+bundle: stack_overflow_tags
+label: 'Stack Overflow tag'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

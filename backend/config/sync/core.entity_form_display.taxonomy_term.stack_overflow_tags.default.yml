@@ -1,0 +1,52 @@
+uuid: cc6535c5-74cd-4660-bd84-08a15f32bb65
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.stack_overflow_tags.field_stack_overflow_tag
+    - taxonomy.vocabulary.stack_overflow_tags
+  module:
+    - path
+id: taxonomy_term.stack_overflow_tags.default
+targetEntityType: taxonomy_term
+bundle: stack_overflow_tags
+mode: default
+content:
+  field_stack_overflow_tag:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 4
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden:
+  description: true

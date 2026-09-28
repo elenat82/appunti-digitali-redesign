@@ -1,0 +1,9 @@
+uuid: 0b7d1b92-b8f1-43b0-a717-4dcb8df3c4fb
+langcode: it
+status: true
+dependencies: {  }
+name: 'Stack Overflow tags'
+vid: stack_overflow_tags
+description: 'Tag utilizzati per recuperare le domande da Stack Overflow.'
+weight: 0
+new_revision: false

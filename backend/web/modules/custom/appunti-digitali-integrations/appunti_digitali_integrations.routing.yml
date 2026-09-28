@@ -1,0 +1,8 @@
+appunti_digitali_integrations.stack_overflow:
+  path: '/api/stackoverflow'
+  defaults:
+    _controller: '\Drupal\appunti_digitali_integrations\Controller\StackOverflowController::getQuestions'
+  requirements:
+    # Public endpoint consumed by the unauthenticated frontend.
+    _access: 'TRUE'
+  methods: [GET]

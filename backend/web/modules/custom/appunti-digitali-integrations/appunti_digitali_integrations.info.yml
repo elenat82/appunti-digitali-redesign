@@ -1,0 +1,7 @@
+name: 'Appunti Digitali Integrations'
+type: module
+description: 'Provides custom functionality for integrations between Appunti Digitali and other systems.'
+package: Custom
+core_version_requirement: ^11
+dependencies:
+  - drupal:taxonomy
