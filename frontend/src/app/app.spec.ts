@@ -6,6 +6,7 @@ import { signal } from '@angular/core';
 import { App } from './app';
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
 import { SearchService } from './features/search/services/search.service';
+import { provideRouter } from '@angular/router';
 
 describe('App', () => {
   const contentRepositoryMock = {
@@ -57,6 +58,7 @@ describe('App', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
+        provideRouter([]),
         {
           provide: ContentRepositoryService,
           useValue: contentRepositoryMock
@@ -64,7 +66,7 @@ describe('App', () => {
         {
           provide: SearchService,
           useValue: searchMock
-        }
+        },
       ]
     }).compileComponents();
   });

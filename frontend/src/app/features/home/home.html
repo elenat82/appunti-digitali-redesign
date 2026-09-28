@@ -90,3 +90,65 @@
     }
   }
 </section>
+<section
+  class="home-stack-overflow"
+  aria-labelledby="stack-overflow-title"
+>
+  <h2 id="stack-overflow-title">
+    Stack Overflow
+  </h2>
+
+  @switch (stackOverflowState().status) {
+    @case ('loading') {
+      <p>Caricamento domande...</p>
+    }
+
+    @case ('empty') {
+      <p>Nessuna domanda disponibile.</p>
+    }
+
+    @case ('error') {
+      <p>
+        Impossibile caricare le domande Stack Overflow.
+      </p>
+    }
+
+    @case ('ready') {
+      <ul class="stack-overflow-list">
+        @for (
+          question of stackOverflowState().questions;
+          track question.id
+        ) {
+          <li>
+            <a
+              [href]="question.url"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ question.title }}
+            </a>
+
+            <div class="stack-overflow-meta">
+              <span>
+                Score: {{ question.score }}
+              </span>
+
+              <span>
+                Risposte: {{ question.answerCount }}
+              </span>
+            </div>
+
+            <ul class="stack-overflow-tags">
+              @for (
+                tag of question.tags;
+                track tag
+              ) {
+                <li>{{ tag }}</li>
+              }
+            </ul>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

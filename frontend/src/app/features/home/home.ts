@@ -8,10 +8,17 @@ import { catchError, map, of } from 'rxjs';
 
 import { Profile } from '../../core/models/profile.model';
 import { ProfileService } from './services/profile.service';
+import { StackOverflowQuestion } from '../../core/models/stack-overflow-question.model';
+import { StackOverflowService } from './services/stack-overflow.service';
 
 interface HomeProfileState {
   status: 'loading' | 'ready' | 'not-found' | 'error';
   profile: Profile | null;
+}
+
+interface StackOverflowState {
+  status: 'loading' | 'ready' | 'empty' | 'error';
+  questions: StackOverflowQuestion[];
 }
 
 /**
@@ -24,8 +31,8 @@ interface HomeProfileState {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Home {
-  private readonly profileService =
-    inject(ProfileService);
+  private readonly profileService = inject(ProfileService);
+  private readonly stackOverflowService = inject(StackOverflowService);
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -35,13 +42,13 @@ export class Home {
       map((profile) =>
         profile
           ? {
-              status: 'ready' as const,
-              profile
-            }
+            status: 'ready' as const,
+            profile
+          }
           : {
-              status: 'not-found' as const,
-              profile: null
-            }
+            status: 'not-found' as const,
+            profile: null
+          }
       ),
       catchError(() =>
         of<HomeProfileState>({
@@ -55,6 +62,34 @@ export class Home {
         status: 'loading',
         profile: null
       } satisfies HomeProfileState
+    }
+  );
+
+  readonly stackOverflowState = toSignal(
+    this.stackOverflowService.getQuestions().pipe(
+      map((questions) =>
+        questions.length > 0
+          ? {
+            status: 'ready' as const,
+            questions
+          }
+          : {
+            status: 'empty' as const,
+            questions: []
+          }
+      ),
+      catchError(() =>
+        of<StackOverflowState>({
+          status: 'error',
+          questions: []
+        })
+      )
+    ),
+    {
+      initialValue: {
+        status: 'loading',
+        questions: []
+      } satisfies StackOverflowState
     }
   );
 }
