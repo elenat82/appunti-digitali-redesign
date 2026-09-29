@@ -5,3 +5,10 @@ services:
       - '@entity_type.manager'
       - '@http_client'
       - '@cache.default'
+
+  appunti_digitali_integrations.github_client:
+    class: Drupal\appunti_digitali_integrations\Service\GitHubClient
+    arguments:
+      - '@entity_type.manager'
+      - '@http_client'
+      - '@cache.default'

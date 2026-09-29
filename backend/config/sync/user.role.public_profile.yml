@@ -1,0 +1,9 @@
+uuid: 4e2d5d53-0ca2-4fdf-8d4d-157274aa32aa
+langcode: it
+status: true
+dependencies: {  }
+id: public_profile
+label: 'Public profile'
+weight: 4
+is_admin: false
+permissions: {  }

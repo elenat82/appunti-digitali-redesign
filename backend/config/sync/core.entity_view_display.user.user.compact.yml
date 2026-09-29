@@ -7,6 +7,7 @@ dependencies:
     - field.field.user.user.field_cv
     - field.field.user.user.field_full_name
     - field.field.user.user.field_github
+    - field.field.user.user.field_github_username
     - field.field.user.user.field_linkedin
     - field.field.user.user.field_phone
     - field.field.user.user.field_presentation
@@ -39,6 +40,7 @@ hidden:
   field_cv: true
   field_full_name: true
   field_github: true
+  field_github_username: true
   field_linkedin: true
   field_phone: true
   field_presentation: true

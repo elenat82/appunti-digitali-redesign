@@ -6,3 +6,12 @@ appunti_digitali_integrations.stack_overflow:
     # Public endpoint consumed by the unauthenticated frontend.
     _access: 'TRUE'
   methods: [GET]
+
+appunti_digitali_integrations.github:
+  path: '/api/github/starred'
+  defaults:
+    _controller: '\Drupal\appunti_digitali_integrations\Controller\GitHubController::getStarredRepositories'
+  requirements:
+    # Public endpoint consumed by the unauthenticated frontend.
+    _access: 'TRUE'
+  methods: [GET]

@@ -10,6 +10,7 @@ dependencies:
     - field.storage.user.field_presentation
     - field.storage.user.field_professional_role
     - field.storage.user.field_public_email
+    - user.role.public_profile
   module:
     - file
     - link
@@ -679,20 +680,19 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        uid_raw:
-          id: uid_raw
-          table: users_field_data
-          field: uid_raw
+        roles_target_id:
+          id: roles_target_id
+          table: user__roles
+          field: roles_target_id
           relationship: none
           group_type: group
           admin_label: ''
           entity_type: user
-          plugin_id: numeric
-          operator: '='
+          entity_field: roles
+          plugin_id: user_roles
+          operator: or
           value:
-            min: ''
-            max: ''
-            value: '2'
+            public_profile: public_profile
           group: 1
           exposed: false
           expose:
@@ -709,9 +709,7 @@ display:
             multiple: false
             remember_roles:
               authenticated: authenticated
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
+            reduce: false
           is_grouped: false
           group_info:
             label: ''
@@ -724,6 +722,11 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+          reduce_duplicates: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: default
         options:

@@ -6,6 +6,7 @@ dependencies:
     - field.field.user.user.field_cv
     - field.field.user.user.field_full_name
     - field.field.user.user.field_github
+    - field.field.user.user.field_github_username
     - field.field.user.user.field_linkedin
     - field.field.user.user.field_phone
     - field.field.user.user.field_presentation
@@ -54,6 +55,15 @@ content:
       target: ''
     third_party_settings: {  }
     weight: 11
+    region: content
+  field_github_username:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+      link_rel: canonical
+    third_party_settings: {  }
+    weight: 14
     region: content
   field_linkedin:
     type: link

@@ -6,6 +6,7 @@ dependencies:
     - field.field.user.user.field_cv
     - field.field.user.user.field_full_name
     - field.field.user.user.field_github
+    - field.field.user.user.field_github_username
     - field.field.user.user.field_linkedin
     - field.field.user.user.field_phone
     - field.field.user.user.field_presentation
@@ -17,6 +18,7 @@ dependencies:
     - file
     - image
     - link
+    - path
     - telephone
     - text
     - user
@@ -52,6 +54,14 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+    third_party_settings: {  }
+  field_github_username:
+    type: string_textfield
+    weight: 31
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
     third_party_settings: {  }
   field_linkedin:
     type: link_default
@@ -95,6 +105,12 @@ content:
   language:
     weight: 0
     region: content
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   timezone:
     weight: 6
     region: content

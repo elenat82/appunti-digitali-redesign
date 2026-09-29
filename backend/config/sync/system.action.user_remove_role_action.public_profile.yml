@@ -1,0 +1,14 @@
+uuid: 48165035-8524-472c-b4e7-470a9aa67964
+langcode: it
+status: true
+dependencies:
+  config:
+    - user.role.public_profile
+  module:
+    - user
+id: user_remove_role_action.public_profile
+label: 'Remove the Public profile role from the selected user(s)'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: public_profile
