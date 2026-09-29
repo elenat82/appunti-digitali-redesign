@@ -1,154 +1,176 @@
-<section
-  class="home-contact"
-  aria-labelledby="profile-name"
->
+<section class="home-contact" aria-labelledby="profile-name">
   @switch (profileState().status) {
-    @case ('loading') {
-      <p>Caricamento...</p>
-    }
+  @case ('loading') {
+  <p>Caricamento...</p>
+  }
 
-    @case ('not-found') {
-      <p>Profilo non disponibile.</p>
-    }
+  @case ('not-found') {
+  <p>Profilo non disponibile.</p>
+  }
 
-    @case ('error') {
-      <p>
-        Impossibile caricare i contatti.
+  @case ('error') {
+  <p>
+    Impossibile caricare i contatti.
+  </p>
+  }
+
+  @case ('ready') {
+  @if (profileState().profile; as profile) {
+  <div class="profile-identity">
+    <img class="profile-picture" [src]="profile.pictureUrl" [alt]="profile.fullName">
+
+    <div>
+      <h1 id="profile-name">
+        {{ profile.fullName }}
+      </h1>
+
+      <p class="profile-role">
+        {{ profile.professionalRole }}
       </p>
-    }
+    </div>
+  </div>
 
-    @case ('ready') {
-      @if (profileState().profile; as profile) {
-        <div class="profile-identity">
-          <img
-            class="profile-picture"
-            [src]="profile.pictureUrl"
-            [alt]="profile.fullName"
-          >
+  <div class="profile-content">
+    <div class="profile-presentation" [innerHTML]="profile.presentation"></div>
 
-          <div>
-            <h1 id="profile-name">
-              {{ profile.fullName }}
-            </h1>
-
-            <p class="profile-role">
-              {{ profile.professionalRole }}
-            </p>
-          </div>
-        </div>
-
-        <div class="profile-content">
-          <div
-            class="profile-presentation"
-            [innerHTML]="profile.presentation"
-          ></div>
-
-          <div class="profile-links">
-            <div class="profile-links-column">
-              <a
-                [href]="'mailto:' + profile.email"
-              >
-                {{ profile.email }}
-              </a>
-
-              <a
-                [href]="'tel:' + profile.phone"
-              >
-                {{ profile.phone }}
-              </a>
-            </div>
-
-            <div class="profile-links-column">
-              <a
-                [href]="profile.linkedin"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                LinkedIn
-              </a>
-
-              <a
-                [href]="profile.github"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <a
-          class="profile-cv"
-          [href]="profile.cvUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Download CV
+    <div class="profile-links">
+      <div class="profile-links-column">
+        <a [href]="'mailto:' + profile.email">
+          {{ profile.email }}
         </a>
-      }
-    }
+
+        <a [href]="'tel:' + profile.phone">
+          {{ profile.phone }}
+        </a>
+      </div>
+
+      <div class="profile-links-column">
+        <a [href]="profile.linkedin" target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+
+        <a [href]="profile.github" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <a class="profile-cv" [href]="profile.cvUrl" target="_blank" rel="noopener noreferrer">
+    Download CV
+  </a>
+  }
+  }
   }
 </section>
-<section
-  class="home-stack-overflow"
-  aria-labelledby="stack-overflow-title"
->
+<section class="home-stack-overflow" aria-labelledby="stack-overflow-title">
   <h2 id="stack-overflow-title">
     Stack Overflow
   </h2>
 
   @switch (stackOverflowState().status) {
-    @case ('loading') {
-      <p>Caricamento domande...</p>
-    }
+  @case ('loading') {
+  <p>Caricamento domande...</p>
+  }
 
-    @case ('empty') {
-      <p>Nessuna domanda disponibile.</p>
-    }
+  @case ('empty') {
+  <p>Nessuna domanda disponibile.</p>
+  }
 
-    @case ('error') {
-      <p>
-        Impossibile caricare le domande Stack Overflow.
-      </p>
-    }
+  @case ('error') {
+  <p>
+    Impossibile caricare le domande Stack Overflow.
+  </p>
+  }
 
-    @case ('ready') {
-      <ul class="stack-overflow-list">
+  @case ('ready') {
+  <ul class="stack-overflow-list">
+    @for (
+    question of stackOverflowState().questions;
+    track question.id
+    ) {
+    <li>
+      <a [href]="question.url" target="_blank" rel="noopener noreferrer">
+        {{ question.title }}
+      </a>
+
+      <div class="stack-overflow-meta">
+        <span>
+          Score: {{ question.score }}
+        </span>
+
+        <span>
+          Risposte: {{ question.answerCount }}
+        </span>
+      </div>
+
+      <ul class="stack-overflow-tags">
         @for (
-          question of stackOverflowState().questions;
-          track question.id
+        tag of question.tags;
+        track tag
         ) {
-          <li>
-            <a
-              [href]="question.url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ question.title }}
-            </a>
-
-            <div class="stack-overflow-meta">
-              <span>
-                Score: {{ question.score }}
-              </span>
-
-              <span>
-                Risposte: {{ question.answerCount }}
-              </span>
-            </div>
-
-            <ul class="stack-overflow-tags">
-              @for (
-                tag of question.tags;
-                track tag
-              ) {
-                <li>{{ tag }}</li>
-              }
-            </ul>
-          </li>
+        <li>{{ tag }}</li>
         }
       </ul>
+    </li>
     }
+  </ul>
+  }
+  }
+</section>
+<section class="home-github" aria-labelledby="github-title">
+  <h2 id="github-title">
+    GitHub starred
+  </h2>
+
+  @switch (gitHubState().status) {
+  @case ('loading') {
+  <p>Caricamento repository...</p>
+  }
+
+  @case ('empty') {
+  <p>Nessun repository disponibile.</p>
+  }
+
+  @case ('error') {
+  <p>
+    Impossibile caricare i repository GitHub starred.
+  </p>
+  }
+
+  @case ('ready') {
+  <ul class="github-list">
+    @for (
+    repository of gitHubState().repositories;
+    track repository.id
+    ) {
+    <li>
+      <a [href]="repository.url" target="_blank" rel="noopener noreferrer">
+        {{ repository.name }}
+      </a>
+
+      <div class="repository-meta">
+
+        <span>
+          Descrizione: {{ repository.description }}
+        </span>
+      </div>
+
+      <span>
+        Linguaggio: {{ repository.language }}
+      </span>
+
+      <ul class="github-topics">
+        @for (
+        topic of repository.topics;
+        track topic
+        ) {
+        <li>{{ topic }}</li>
+        }
+      </ul>
+    </li>
+    }
+  </ul>
+  }
   }
 </section>

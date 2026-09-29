@@ -13,6 +13,12 @@ import {
 import {
   StackOverflowService
 } from './services/stack-overflow.service';
+import {
+  GitHubRepository
+} from '../../core/models/github-repository.model';
+import {
+  GitHubService
+} from './services/github.service';
 
 describe('Home', () => {
   let fixture: ComponentFixture<Home>;
@@ -66,9 +72,44 @@ describe('Home', () => {
     }
   ];
 
+  let gitHubRepositories$:
+    Subject<GitHubRepository[]>;
+
+  const gitHubServiceMock = {
+    getStarredRepositories: vi.fn(
+      () => gitHubRepositories$.asObservable()
+    )
+  };
+
+  const mockRepositories: GitHubRepository[] = [
+    {
+      id: 12345,
+      name: 'learn-vanilla-js',
+      fullName: 'snipcart/learn-vanilla-js',
+      url: 'https://github.com/snipcart/learn-vanilla-js',
+      description: 'Open source list of paid & free resources to learn vanilla JavaScript',
+      language: '',
+      stars: 1521,
+      topics: ['javascript', 'vanilla-javascript', 'vanilla-js', 'vanillajs'],
+    },
+    {
+      id: 67890,
+      name: 'UI-Design',
+      fullName: 'tipoqueno/UI-Design',
+      url: 'https://github.com/tipoqueno/UI-Design',
+      description: ':fire: A curated list of useful resources related to User Interface Design',
+      language: '',
+      stars: 591,
+      topics: ['awesome', 'awesome-list', 'design-patterns', 'design-systems', 'interfaces', 'principles', 'ui', 'ui-design', 'ux'],
+    }
+  ];
+
   beforeEach(async () => {
     stackOverflowQuestions$ =
       new Subject<StackOverflowQuestion[]>();
+
+    gitHubRepositories$ =
+      new Subject<GitHubRepository[]>();
 
     vi.clearAllMocks();
 
@@ -82,6 +123,10 @@ describe('Home', () => {
         {
           provide: StackOverflowService,
           useValue: stackOverflowServiceMock
+        },
+        {
+          provide: GitHubService,
+          useValue: gitHubServiceMock
         }
       ]
     }).compileComponents();
@@ -218,6 +263,96 @@ describe('Home', () => {
   it('loads Stack Overflow questions', () => {
     expect(
       stackOverflowServiceMock.getQuestions
+    ).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows GitHub  loading state', () => {
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Caricamento repository...');
+  });
+
+  it('shows GitHub repositories', () => {
+    gitHubRepositories$.next(mockRepositories);
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section = element.querySelector(
+      '.home-github'
+    );
+
+    expect(section).toBeTruthy();
+
+    expect(section?.textContent).toContain(
+      'UI-Design'
+    );
+
+    expect(section?.textContent).toContain(
+      ':fire: A curated list of useful resources related to User Interface Design'
+    );
+
+    const repositories = section?.querySelectorAll(
+      '.github-list > li'
+    );
+
+    expect(repositories?.length).toBe(2);
+
+    const firstLink =
+      section?.querySelector<HTMLAnchorElement>(
+        '.github-list > li a'
+      );
+
+    expect(firstLink?.href).toBe(
+      'https://github.com/snipcart/learn-vanilla-js'
+    );
+
+    expect(firstLink?.target).toBe('_blank');
+
+    expect(section?.textContent).toContain(
+      'Descrizione: Open source list of paid & free resources to learn vanilla JavaScript'
+    );
+
+    expect(section?.textContent).toContain(
+      'Linguaggio: '
+    );
+
+    expect(section?.textContent).toContain(
+      'javascript'
+    );
+
+    expect(section?.textContent).toContain(
+      'vanilla-javascript'
+    );
+  });
+
+  it('shows GitHub empty state', () => {
+    gitHubRepositories$.next([]);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Nessun repository disponibile.');
+  });
+
+  it('shows GitHub error state', () => {
+    gitHubRepositories$.error(
+      new Error('GitHub unavailable')
+    );
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain(
+      'Impossibile caricare i repository GitHub starred.'
+    );
+  });
+
+  it('loads GitHub repositories', () => {
+    expect(
+      gitHubServiceMock.getStarredRepositories
     ).toHaveBeenCalledTimes(1);
   });
 });
