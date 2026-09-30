@@ -9,6 +9,20 @@ import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, last, map, of, switchMap } from 'rxjs';
 
+import Prism from 'prismjs';
+
+import 'prismjs/components/prism-markup-templating';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-php';
+import 'prismjs/components/prism-twig';
+import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-sql';
+import 'prismjs/components/prism-bash';
+import 'prismjs/plugins/toolbar/prism-toolbar';
+import 'prismjs/plugins/show-language/prism-show-language';
+import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
+
 import { Article } from '../../../core/models/article.model';
 import { ContentRepositoryService } from '../../../core/data-access/content-repository.service';
 import {
@@ -58,6 +72,8 @@ export class ArticlePage {
         if (!article) {
           return;
         }
+
+        this.highlightCode();
 
         const params = this.queryParamMap();
 
@@ -443,6 +459,27 @@ export class ArticlePage {
     browserWindow.CSS.highlights.delete(
       'selected-search-occurrence'
     );
+  }
+
+  private highlightCode(): void {
+    const body = this.host.nativeElement.querySelector(
+      '.article-body'
+    );
+
+    if (!body) {
+      return;
+    }
+
+    const codeElements =
+      body.querySelectorAll<HTMLElement>(
+        'code[class*="language-"]:not([data-prism-highlighted])'
+      );
+
+    for (const code of codeElements) {
+      Prism.highlightElement(code);
+
+      code.dataset['prismHighlighted'] = 'true';
+    }
   }
 
   /**

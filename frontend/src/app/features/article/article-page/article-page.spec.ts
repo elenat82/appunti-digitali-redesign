@@ -19,6 +19,9 @@ import { ContentRepositoryService } from '../../../core/data-access/content-repo
 import { ArticlePage } from './article-page';
 import { signal } from '@angular/core';
 import { SearchService } from '../../search/services/search.service';
+import {
+  getSearchableBodyElements
+} from '../../search/utils/article-search-dom';
 
 describe('ArticlePage', () => {
   let fixture: ComponentFixture<ArticlePage>;
@@ -157,6 +160,72 @@ describe('ArticlePage', () => {
     expect(link?.href).toBe(
       'https://developer.mozilla.org/'
     );
+  });
+
+  it('preserva il testo ricercabile dopo il syntax highlighting', async () => {
+    const codeArticle: Article = {
+      ...article,
+      body: `
+      <pre>
+        <code class="language-php">$configuration = [];</code>
+      </pre>
+    `
+    };
+
+    contentRepositoryMock.getArticlesByArea.mockReturnValue(
+      of([codeArticle])
+    );
+
+    createComponent();
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const body: HTMLElement | null =
+      fixture.nativeElement.querySelector(
+        '.article-body'
+      );
+
+    expect(body).toBeTruthy();
+
+    const code = body?.querySelector<HTMLElement>(
+      'code.language-php'
+    );
+
+    expect(code).toBeTruthy();
+
+    expect(
+      code?.querySelector('.token')
+    ).toBeTruthy();
+
+    expect(code?.textContent).toBe(
+      '$configuration = [];'
+    );
+
+    const toolbar =
+      fixture.nativeElement.querySelector(
+        '.code-toolbar .toolbar'
+      );
+
+    expect(toolbar?.textContent).toContain('PHP');
+    expect(toolbar?.textContent).toContain('Copia');
+
+    expect(
+      toolbar?.querySelector(
+        '.copy-to-clipboard-button'
+      )
+    ).toBeTruthy();
+
+    const searchableElements =
+      body
+        ? getSearchableBodyElements(body)
+        : [];
+
+    expect(searchableElements).toHaveLength(1);
+
+    expect(
+      searchableElements[0].textContent
+    ).toContain('$configuration = [];');
   });
 
   it('non mostra gli approfondimenti quando non ci sono link esterni', () => {
