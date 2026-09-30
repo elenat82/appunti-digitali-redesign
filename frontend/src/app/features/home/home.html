@@ -227,3 +227,54 @@
   }
   }
 </section>
+<section class="home-saved-resources" aria-labelledby="saved-resources-title">
+  <h2 id="saved-resources-title">
+    Risorse salvate
+  </h2>
+
+  @switch (savedResourcesState().status) {
+  @case ('loading') {
+  <p>Caricamento risorse...</p>
+  }
+
+  @case ('empty') {
+  <p>Nessuna risorsa salvata.</p>
+  }
+
+  @case ('error') {
+  <p>
+    Impossibile caricare le risorse salvate.
+  </p>
+  }
+
+  @case ('ready') {
+  <ul class="saved-resources-list">
+    @for (
+    resource of savedResourcesState().resources;
+    track resource.id
+    ) {
+    <li>
+      <a [href]="resource.url" target="_blank" rel="noopener noreferrer">
+        {{ resource.title }}
+      </a>
+
+      <p class="saved-resource-url">
+        {{ resource.url }}
+      </p>
+
+      @if (resource.tags.length > 0) {
+      <ul class="saved-resource-tags">
+        @for (
+        tag of resource.tags;
+        track tag
+        ) {
+        <li>{{ tag }}</li>
+        }
+      </ul>
+      }
+    </li>
+    }
+  </ul>
+  }
+  }
+</section>

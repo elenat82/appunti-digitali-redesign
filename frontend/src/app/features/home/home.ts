@@ -15,6 +15,8 @@ import { GitHubRepository } from '../../core/models/github-repository.model';
 import { GitHubService } from './services/github.service';
 import { NewsItem } from '../../core/models/news-item.model';
 import { NewsService } from './services/news.service';
+import { SavedResource } from '../../core/models/saved-resource.model';
+import { SavedResourcesService } from './services/saved-resources.service';
 
 interface HomeProfileState {
   status: 'loading' | 'ready' | 'not-found' | 'error';
@@ -36,6 +38,11 @@ interface NewsState {
   news: NewsItem[];
 }
 
+interface SavedResourcesState {
+  status: 'loading' | 'ready' | 'empty' | 'error';
+  resources: SavedResource[];
+}
+
 /**
  * Pagina iniziale pubblica dell'applicazione.
  */
@@ -51,6 +58,7 @@ export class Home {
   private readonly stackOverflowService = inject(StackOverflowService);
   private readonly githubService = inject(GitHubService);
   private readonly newsService = inject(NewsService);
+  private readonly savedResourcesService = inject(SavedResourcesService);
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -164,6 +172,34 @@ export class Home {
         status: 'loading',
         repositories: []
       } satisfies GitHubState
+    }
+  );
+
+  readonly savedResourcesState = toSignal(
+    this.savedResourcesService.getSavedResources().pipe(
+      map((resources) =>
+        resources.length > 0
+          ? {
+            status: 'ready' as const,
+            resources
+          }
+          : {
+            status: 'empty' as const,
+            resources: []
+          }
+      ),
+      catchError(() =>
+        of<SavedResourcesState>({
+          status: 'error',
+          resources: []
+        })
+      )
+    ),
+    {
+      initialValue: {
+        status: 'loading',
+        resources: []
+      } satisfies SavedResourcesState
     }
   );
 }

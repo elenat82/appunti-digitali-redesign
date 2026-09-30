@@ -7,24 +7,14 @@ import { of, Subject } from 'rxjs';
 import { Profile } from '../../core/models/profile.model';
 import { ProfileService } from './services/profile.service';
 import { Home } from './home';
-import {
-  StackOverflowQuestion
-} from '../../core/models/stack-overflow-question.model';
-import {
-  StackOverflowService
-} from './services/stack-overflow.service';
-import {
-  GitHubRepository
-} from '../../core/models/github-repository.model';
-import {
-  GitHubService
-} from './services/github.service';
-import {
-  NewsItem
-} from '../../core/models/news-item.model';
-import {
-  NewsService
-} from './services/news.service';
+import { StackOverflowQuestion } from '../../core/models/stack-overflow-question.model';
+import { StackOverflowService } from './services/stack-overflow.service';
+import { GitHubRepository } from '../../core/models/github-repository.model';
+import { GitHubService } from './services/github.service';
+import { NewsItem } from '../../core/models/news-item.model';
+import { NewsService } from './services/news.service';
+import { SavedResource } from '../../core/models/saved-resource.model';
+import { SavedResourcesService } from './services/saved-resources.service';
 
 describe('Home', () => {
   let fixture: ComponentFixture<Home>;
@@ -138,16 +128,47 @@ describe('Home', () => {
     }
   ];
 
+  let savedResources$:
+    Subject<SavedResource[]>;
+
+  const savedResourcesServiceMock = {
+    getSavedResources: vi.fn(
+      () => savedResources$.asObservable()
+    )
+  };
+
+  const mockSavedResources: SavedResource[] = [
+    {
+      id: 1,
+      title: 'Drupal Entity API',
+      url: 'https://example.com/drupal',
+      tags: [
+        'Drupal',
+        'PHP'
+      ]
+    },
+    {
+      id: 2,
+      title: 'Angular Signals',
+      url: 'https://example.com/angular',
+      tags: [
+        'Angular'
+      ]
+    }
+  ];
+
   beforeEach(async () => {
 
-    news$ =
-      new Subject<NewsItem[]>();
+    news$ = new Subject<NewsItem[]>();
 
     stackOverflowQuestions$ =
       new Subject<StackOverflowQuestion[]>();
 
     gitHubRepositories$ =
       new Subject<GitHubRepository[]>();
+
+    savedResources$ =
+      new Subject<SavedResource[]>();
 
     vi.clearAllMocks();
 
@@ -169,6 +190,10 @@ describe('Home', () => {
         {
           provide: GitHubService,
           useValue: gitHubServiceMock
+        },
+        {
+          provide: SavedResourcesService,
+          useValue: savedResourcesServiceMock
         }
       ]
     }).compileComponents();
@@ -217,8 +242,6 @@ describe('Home', () => {
       'Presentazione'
     );
   });
-
-  /* SEZIONE NOTIZIE ------------------------------------------------------------ */
 
   it('shows news loading state', () => {
     expect(
@@ -513,6 +536,95 @@ describe('Home', () => {
   it('loads GitHub repositories', () => {
     expect(
       gitHubServiceMock.getStarredRepositories
+    ).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows saved resources loading state', () => {
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Caricamento risorse...');
+  });
+
+  it('shows saved resources', () => {
+    savedResources$.next(mockSavedResources);
+    fixture.detectChanges();
+
+    const section: HTMLElement | null =
+      fixture.nativeElement.querySelector(
+        '.home-saved-resources'
+      );
+
+    expect(section).toBeTruthy();
+
+    expect(section?.textContent).toContain(
+      'Drupal Entity API'
+    );
+
+    expect(section?.textContent).toContain(
+      'Angular Signals'
+    );
+
+    expect(section?.textContent).toContain(
+      'https://example.com/drupal'
+    );
+
+    expect(section?.textContent).toContain(
+      'Drupal'
+    );
+
+    expect(section?.textContent).toContain(
+      'PHP'
+    );
+
+    expect(section?.textContent).toContain(
+      'Angular'
+    );
+
+    const resources =
+      section?.querySelectorAll(
+        '.saved-resources-list > li'
+      );
+
+    expect(resources?.length).toBe(2);
+
+    const firstLink =
+      section?.querySelector<HTMLAnchorElement>(
+        '.saved-resources-list > li a'
+      );
+
+    expect(firstLink?.href).toBe(
+      'https://example.com/drupal'
+    );
+
+    expect(firstLink?.target).toBe('_blank');
+  });
+
+  it('shows saved resources empty state', () => {
+    savedResources$.next([]);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Nessuna risorsa salvata.');
+  });
+
+  it('shows saved resources error state', () => {
+    savedResources$.error(
+      new Error('Saved resources unavailable')
+    );
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain(
+      'Impossibile caricare le risorse salvate.'
+    );
+  });
+
+  it('loads saved resources', () => {
+    expect(
+      savedResourcesServiceMock.getSavedResources
     ).toHaveBeenCalledTimes(1);
   });
 });
