@@ -19,6 +19,12 @@ import {
 import {
   GitHubService
 } from './services/github.service';
+import {
+  NewsItem
+} from '../../core/models/news-item.model';
+import {
+  NewsService
+} from './services/news.service';
 
 describe('Home', () => {
   let fixture: ComponentFixture<Home>;
@@ -39,6 +45,34 @@ describe('Home', () => {
   const profileServiceMock = {
     getProfile: vi.fn(() => of(mockProfile))
   };
+
+  let news$:
+    Subject<NewsItem[]>;
+
+  const newsServiceMock = {
+    getNews: vi.fn(
+      () => news$.asObservable()
+    )
+  };
+
+  const mockNews: NewsItem[] = [
+    {
+      id: 244,
+      title: 'Poetic CSS',
+      url: 'https://example.com/poetic-css',
+      source: 'Brad Frost',
+      author: 'Brad Frost',
+      date: 1790121600
+    },
+    {
+      id: 243,
+      title: 'Dark mode toggles',
+      url: 'https://example.com/dark-mode',
+      source: 'Lea Verou',
+      author: 'Lea Verou',
+      date: 1788307200
+    }
+  ];
 
   let stackOverflowQuestions$:
     Subject<StackOverflowQuestion[]>;
@@ -105,6 +139,10 @@ describe('Home', () => {
   ];
 
   beforeEach(async () => {
+
+    news$ =
+      new Subject<NewsItem[]>();
+
     stackOverflowQuestions$ =
       new Subject<StackOverflowQuestion[]>();
 
@@ -119,6 +157,10 @@ describe('Home', () => {
         {
           provide: ProfileService,
           useValue: profileServiceMock
+        },
+        {
+          provide: NewsService,
+          useValue: newsServiceMock
         },
         {
           provide: StackOverflowService,
@@ -174,6 +216,124 @@ describe('Home', () => {
     expect(element.textContent).toContain(
       'Presentazione'
     );
+  });
+
+  /* SEZIONE NOTIZIE ------------------------------------------------------------ */
+
+  it('shows news loading state', () => {
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Caricamento news...');
+  });
+
+  it('shows news', () => {
+    news$.next(mockNews);
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section = element.querySelector(
+      '.home-news'
+    );
+
+    expect(section).toBeTruthy();
+
+    expect(section?.textContent).toContain(
+      'Poetic CSS'
+    );
+
+    expect(section?.textContent).toContain(
+      'Dark mode toggles'
+    );
+
+    const newsItems = section?.querySelectorAll(
+      '.news-list > li'
+    );
+
+    expect(newsItems?.length).toBe(2);
+
+    const firstLink =
+      section?.querySelector<HTMLAnchorElement>(
+        '.news-list > li a'
+      );
+
+    expect(firstLink?.href).toBe(
+      'https://example.com/poetic-css'
+    );
+
+    expect(firstLink?.target).toBe('_blank');
+
+    expect(section?.textContent).toContain(
+      'Fonte: Brad Frost'
+    );
+
+    expect(section?.textContent).toContain(
+      'Autore: Brad Frost'
+    );
+
+    expect(section?.textContent).toContain(
+      'Data: 23/09/2026'
+    );
+  });
+
+  it('shows news empty state', () => {
+    news$.next([]);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain(
+      'Nessuna notizia disponibile.'
+    );
+  });
+
+  it('hides the author when it is not available', () => {
+    news$.next([
+      {
+        id: 244,
+        title: 'Article without author',
+        url: 'https://example.com/article',
+        source: 'Example source',
+        author: null,
+        date: 1790121600
+      }
+    ]);
+
+    fixture.detectChanges();
+
+    const section: HTMLElement | null =
+      fixture.nativeElement.querySelector(
+        '.home-news'
+      );
+
+    expect(section?.textContent).toContain(
+      'Fonte: Example source'
+    );
+
+    expect(section?.textContent).not.toContain(
+      'Autore:'
+    );
+  });
+
+  it('shows news error state', () => {
+    news$.error(
+      new Error('News unavailable')
+    );
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain(
+      'Impossibile caricare le notizie.'
+    );
+  });
+
+  it('loads news', () => {
+    expect(
+      newsServiceMock.getNews
+    ).toHaveBeenCalledTimes(1);
   });
 
   it('shows Stack Overflow loading state', () => {

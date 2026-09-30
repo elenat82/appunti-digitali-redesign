@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 import { Profile } from '../../core/models/profile.model';
 import { ProfileService } from './services/profile.service';
@@ -12,6 +13,8 @@ import { StackOverflowQuestion } from '../../core/models/stack-overflow-question
 import { StackOverflowService } from './services/stack-overflow.service';
 import { GitHubRepository } from '../../core/models/github-repository.model';
 import { GitHubService } from './services/github.service';
+import { NewsItem } from '../../core/models/news-item.model';
+import { NewsService } from './services/news.service';
 
 interface HomeProfileState {
   status: 'loading' | 'ready' | 'not-found' | 'error';
@@ -28,11 +31,17 @@ interface GitHubState {
   repositories: GitHubRepository[];
 }
 
+interface NewsState {
+  status: 'loading' | 'ready' | 'empty' | 'error';
+  news: NewsItem[];
+}
+
 /**
  * Pagina iniziale pubblica dell'applicazione.
  */
 @Component({
   selector: 'app-home',
+  imports: [DatePipe],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -41,6 +50,7 @@ export class Home {
   private readonly profileService = inject(ProfileService);
   private readonly stackOverflowService = inject(StackOverflowService);
   private readonly githubService = inject(GitHubService);
+  private readonly newsService = inject(NewsService);
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -70,6 +80,34 @@ export class Home {
         status: 'loading',
         profile: null
       } satisfies HomeProfileState
+    }
+  );
+
+  readonly newsState = toSignal(
+    this.newsService.getNews().pipe(
+      map((news) =>
+        news.length > 0
+          ? {
+            status: 'ready' as const,
+            news
+          }
+          : {
+            status: 'empty' as const,
+            news: []
+          }
+      ),
+      catchError(() =>
+        of<NewsState>({
+          status: 'error',
+          news: []
+        })
+      )
+    ),
+    {
+      initialValue: {
+        status: 'loading',
+        news: []
+      } satisfies NewsState
     }
   );
 

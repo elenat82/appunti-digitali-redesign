@@ -63,6 +63,59 @@
   }
   }
 </section>
+<section class="home-news" aria-labelledby="news-title">
+  <h2 id="news-title">
+    Notizie
+  </h2>
+
+  @switch (newsState().status) {
+  @case ('loading') {
+  <p>Caricamento news...</p>
+  }
+
+  @case ('empty') {
+  <p>Nessuna notizia disponibile.</p>
+  }
+
+  @case ('error') {
+  <p>
+    Impossibile caricare le notizie.
+  </p>
+  }
+
+  @case ('ready') {
+  <ul class="news-list">
+    @for (
+    item of newsState().news;
+    track item.id
+    ) {
+    <li>
+      <a [href]="item.url" target="_blank" rel="noopener noreferrer">
+        {{ item.title }}
+      </a>
+
+      <div class="news-meta">
+        <span>
+          Fonte: {{ item.source }}
+        </span>
+
+        @if (item.author) {
+        <span>
+          Autore: {{ item.author }}
+        </span>
+        }
+
+        <span>
+          Data: {{ item.date * 1000 | date:'dd/MM/yyyy' }}
+        </span>
+      </div>
+
+    </li>
+    }
+  </ul>
+  }
+  }
+</section>
 <section class="home-stack-overflow" aria-labelledby="stack-overflow-title">
   <h2 id="stack-overflow-title">
     Stack Overflow
