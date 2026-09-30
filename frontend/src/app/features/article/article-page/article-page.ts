@@ -22,6 +22,7 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/plugins/toolbar/prism-toolbar';
 import 'prismjs/plugins/show-language/prism-show-language';
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
+import 'prismjs/plugins/match-braces/prism-match-braces';
 
 import { Article } from '../../../core/models/article.model';
 import { ContentRepositoryService } from '../../../core/data-access/content-repository.service';
@@ -476,6 +477,10 @@ export class ArticlePage {
       );
 
     for (const code of codeElements) {
+      if (code.closest('pre')) {
+        code.classList.add('match-braces');
+      }
+
       Prism.highlightElement(code);
 
       code.dataset['prismHighlighted'] = 'true';
