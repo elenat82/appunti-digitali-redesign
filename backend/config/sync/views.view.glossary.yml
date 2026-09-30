@@ -137,7 +137,7 @@ display:
           entity_type: node
           entity_field: changed
           plugin_id: field
-          label: 'Last update'
+          label: 'Ultimo aggiornamento'
           exclude: false
           alter:
             alter_text: false

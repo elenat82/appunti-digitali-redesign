@@ -12,3 +12,8 @@ services:
       - '@entity_type.manager'
       - '@http_client'
       - '@cache.default'
+
+  appunti_digitali_integrations.news_service:
+    class: Drupal\appunti_digitali_integrations\Service\NewsService
+    arguments:
+      - '@entity_type.manager'

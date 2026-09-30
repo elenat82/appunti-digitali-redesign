@@ -1,0 +1,13 @@
+uuid: 38172eb6-946a-4381-b266-c106850637e3
+langcode: it
+status: true
+dependencies:
+  module:
+    - aggregator
+_core:
+  default_config_hash: QBUcStGTLulHMyYgLwZWdHfUqj-YCQFT-TW0ojsw8pw
+id: aggregator_feed.summary
+label: Sommario
+description: null
+targetEntityType: aggregator_feed
+cache: true

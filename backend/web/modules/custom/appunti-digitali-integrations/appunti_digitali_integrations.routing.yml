@@ -15,3 +15,12 @@ appunti_digitali_integrations.github:
     # Public endpoint consumed by the unauthenticated frontend.
     _access: 'TRUE'
   methods: [GET]
+
+appunti_digitali_integrations.news:
+  path: '/api/news'
+  defaults:
+    _controller: '\Drupal\appunti_digitali_integrations\Controller\NewsController::getNews'
+  requirements:
+    # Public endpoint consumed by the unauthenticated frontend.
+    _access: 'TRUE'
+  methods: [GET]
