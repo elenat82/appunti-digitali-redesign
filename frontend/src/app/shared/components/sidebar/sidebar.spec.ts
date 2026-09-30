@@ -2,14 +2,26 @@ import {
   ComponentFixture,
   TestBed
 } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Component } from '@angular/core';
+import {
+  provideRouter,
+  Router
+} from '@angular/router';
 
 import { Area } from '../../../core/models/area.model';
 import { Article } from '../../../core/models/article.model';
 import { Sidebar } from './sidebar';
 
+@Component({
+  selector: 'app-test-page',
+  template: ''
+})
+class TestPage { }
+
 describe('Sidebar', () => {
   let fixture: ComponentFixture<Sidebar>;
+
+  let router: Router;
 
   const areas: Area[] = [
     {
@@ -55,9 +67,16 @@ describe('Sidebar', () => {
     await TestBed.configureTestingModule({
       imports: [Sidebar],
       providers: [
-        provideRouter([])
+        provideRouter([
+          {
+            path: '**',
+            component: TestPage
+          }
+        ])
       ]
     }).compileComponents();
+
+    router = TestBed.inject(Router);
 
     fixture = TestBed.createComponent(Sidebar);
 
@@ -106,6 +125,72 @@ describe('Sidebar', () => {
     expect(
       icons[1].getAttribute('src')
     ).toBe('https://example.com/css.svg');
+  });
+
+  it('evidenzia l\'area associata all\'articolo corrente', async () => {
+    await router.navigateByUrl(
+      '/html/articolo-html'
+    );
+
+    fixture.detectChanges();
+
+    const activeArea: HTMLElement | null =
+      fixture.nativeElement.querySelector(
+        '.sidebar-area--active'
+      );
+
+    expect(activeArea).toBeTruthy();
+
+    expect(
+      activeArea?.querySelector('summary')
+        ?.textContent
+    ).toContain('HTML');
+  });
+
+  it('mantiene evidenziata l\'area corrente quando la sidebar è chiusa', async () => {
+    await router.navigateByUrl(
+      '/css/articolo-css'
+      + '?source=body&index=0&start=0&end=3'
+    );
+
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement | null =
+      fixture.nativeElement.querySelector(
+        '.sidebar-toggle'
+      );
+
+    button?.click();
+    fixture.detectChanges();
+
+    const activeArea: HTMLElement | null =
+      fixture.nativeElement.querySelector(
+        '.sidebar-area--active'
+      );
+
+    expect(activeArea).toBeTruthy();
+
+    expect(
+      activeArea
+        ?.querySelector('img')
+        ?.getAttribute('src')
+    ).toBe('https://example.com/css.svg');
+
+    expect(
+      activeArea?.querySelector('summary span')
+    ).toBeNull();
+  });
+
+  it('non evidenzia nessuna area fuori da una pagina articolo', async () => {
+    await router.navigateByUrl('/');
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '.sidebar-area--active'
+      )
+    ).toHaveLength(0);
   });
 
   it('mostra gli articoli associati alle aree', () => {

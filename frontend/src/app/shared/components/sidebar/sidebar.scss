@@ -61,3 +61,7 @@ summary::-webkit-details-marker {
 .sidebar--collapsed .sidebar-logo-image {
   width: 2.5rem;
 }
+
+.sidebar-area--active {
+  border: solid 3px var(--color-accent-pink);
+}
