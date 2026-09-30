@@ -15,3 +15,12 @@ appunti_digitali.articles:
     # Public read-only endpoint used to expose published articles to the frontend.
     _access: 'TRUE'
   methods: [GET]
+
+appunti_digitali.saved_resources:
+  path: '/api/saved-resources'
+  defaults:
+    _controller: '\Drupal\appunti_digitali\Controller\SavedResourcesController::getResources'
+  requirements:
+    # Public endpoint consumed by the unauthenticated frontend.
+    _access: 'TRUE'
+  methods: [GET]
