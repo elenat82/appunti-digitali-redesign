@@ -1,0 +1,11 @@
+uuid: ea6cb04c-3a67-47c2-97bd-35f1917d74c6
+langcode: it
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.tag_risorse_salvate
+id: taxonomy_term.tag_risorse_salvate
+target_entity_type_id: taxonomy_term
+target_bundle: tag_risorse_salvate
+default_langcode: site_default
+language_alterable: false

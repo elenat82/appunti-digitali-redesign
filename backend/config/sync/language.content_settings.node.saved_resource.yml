@@ -1,0 +1,11 @@
+uuid: d3cd63bd-0edb-400a-95fa-e8c287d19398
+langcode: it
+status: true
+dependencies:
+  config:
+    - node.type.saved_resource
+id: node.saved_resource
+target_entity_type_id: node
+target_bundle: saved_resource
+default_langcode: site_default
+language_alterable: false

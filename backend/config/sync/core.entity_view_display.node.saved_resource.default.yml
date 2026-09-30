@@ -1,0 +1,43 @@
+uuid: 44aa8265-1761-4a6d-8ba5-f77de3ff93a5
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.node.saved_resource.field_tags
+    - field.field.node.saved_resource.field_url
+    - node.type.saved_resource
+  module:
+    - link
+    - user
+id: node.saved_resource.default
+targetEntityType: node
+bundle: saved_resource
+mode: default
+content:
+  field_tags:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 102
+    region: content
+  field_url:
+    type: link
+    label: above
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    weight: 101
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true

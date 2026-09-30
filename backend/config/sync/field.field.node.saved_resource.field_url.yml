@@ -1,0 +1,23 @@
+uuid: b25cba47-6e0f-4543-a3a2-d6cefa4e4af5
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_url
+    - node.type.saved_resource
+  module:
+    - link
+id: node.saved_resource.field_url
+field_name: field_url
+entity_type: node
+bundle: saved_resource
+label: Url
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  title: 1
+  link_type: 16
+field_type: link

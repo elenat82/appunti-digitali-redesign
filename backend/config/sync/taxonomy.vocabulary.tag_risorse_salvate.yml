@@ -1,0 +1,9 @@
+uuid: c548f43a-fade-482f-bed4-55b963b5ee27
+langcode: it
+status: true
+dependencies: {  }
+name: 'Tag risorse salvate'
+vid: tag_risorse_salvate
+description: null
+weight: 0
+new_revision: false
