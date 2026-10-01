@@ -26,6 +26,10 @@ import { SavedResource } from '../../core/models/saved-resource.model';
 import { SavedResourcesService } from './services/saved-resources.service';
 
 interface HomeProfileState {
+  /**
+   * 'not-found' indica che la richiesta è andata a buon fine, ma non esiste un profilo pubblico disponibile.
+   * 'error' indica invece che la richiesta non è stata completata correttamente, ad esempio per un errore HTTP o del backend.
+   */
   status: 'loading' | 'ready' | 'not-found' | 'error';
   profile: Profile | null;
 }
@@ -71,28 +75,40 @@ export class Home {
   private readonly newsRetry$ = new Subject<void>();
   private readonly stackOverflowRetry$ = new Subject<void>();
   private readonly gitHubRetry$ = new Subject<void>();
+  private readonly profileRetry$ = new Subject<void>();
 
   /**
    * Stato del profilo pubblico mostrato nella home.
    */
   readonly profileState = toSignal(
-    this.profileService.getProfile().pipe(
-      map((profile) =>
-        profile
-          ? {
-            status: 'ready' as const,
-            profile
-          }
-          : {
-            status: 'not-found' as const,
-            profile: null
-          }
-      ),
-      catchError(() =>
-        of<HomeProfileState>({
-          status: 'error',
-          profile: null
-        })
+    this.profileRetry$.pipe(
+      startWith(undefined),
+      switchMap(() =>
+        this.profileService
+          .getProfile()
+          .pipe(
+            map((profile): HomeProfileState =>
+              profile
+                ? {
+                  status: 'ready',
+                  profile
+                }
+                : {
+                  status: 'not-found',
+                  profile: null
+                }
+            ),
+            catchError(() =>
+              of<HomeProfileState>({
+                status: 'error',
+                profile: null
+              })
+            ),
+            startWith<HomeProfileState>({
+              status: 'loading',
+              profile: null
+            })
+          )
       )
     ),
     {
@@ -285,5 +301,12 @@ export class Home {
  */
   retryGitHubStarred(): void {
     this.gitHubRetry$.next();
+  }
+
+  /**
+ * Ripete il caricamento del profilo pubblico.
+ */
+  retryProfile(): void {
+    this.profileRetry$.next();
   }
 }

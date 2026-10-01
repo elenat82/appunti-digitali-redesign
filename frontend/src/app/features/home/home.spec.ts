@@ -2,7 +2,7 @@ import {
   ComponentFixture,
   TestBed
 } from '@angular/core/testing';
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { Profile } from '../../core/models/profile.model';
 import { ProfileService } from './services/profile.service';
@@ -32,8 +32,13 @@ describe('Home', () => {
     pictureUrl: 'https://example.com/picture.png'
   };
 
+  let profile$:
+    Subject<Profile | null>;
+
   const profileServiceMock = {
-    getProfile: vi.fn(() => of(mockProfile))
+    getProfile: vi.fn(
+      () => profile$.asObservable()
+    )
   };
 
   let news$:
@@ -170,6 +175,9 @@ describe('Home', () => {
     savedResources$ =
       new Subject<SavedResource[]>();
 
+    profile$ =
+      new Subject<Profile | null>();
+
     vi.clearAllMocks();
 
     await TestBed.configureTestingModule({
@@ -223,6 +231,9 @@ describe('Home', () => {
   });
 
   it('shows the public profile', () => {
+    profile$.next(mockProfile);
+    fixture.detectChanges();
+
     const element: HTMLElement =
       fixture.nativeElement;
 
@@ -241,6 +252,122 @@ describe('Home', () => {
     expect(element.textContent).toContain(
       'Presentazione'
     );
+  });
+
+  it('shows profile loading state', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-contact'
+      );
+
+    expect(
+      section?.textContent
+    ).toContain('Caricamento...');
+  });
+
+  it('shows profile not-found state', () => {
+    profile$.next(null);
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-contact'
+      );
+
+    expect(
+      section?.textContent
+    ).toContain('Profilo non disponibile.');
+
+    // 'not-found' è una risposta valida, il retry è disponibile solo in caso di errore
+    expect(
+      section?.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeNull();
+  });
+
+  it('shows profile error state', () => {
+    profile$.error(
+      new Error('Profile unavailable')
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-contact'
+      );
+
+    expect(
+      section?.textContent
+    ).toContain(
+      'Impossibile caricare i contatti.'
+    );
+
+    expect(
+      section?.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeTruthy();
+  });
+
+  it('retries public profile after an error', () => {
+    profile$.error(
+      new Error('Profile unavailable')
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-contact'
+      );
+
+    const retryButton =
+      section?.querySelector<HTMLButtonElement>(
+        '.home-section-retry'
+      );
+
+    expect(retryButton).toBeTruthy();
+
+    profile$ =
+      new Subject<Profile | null>();
+
+    retryButton?.click();
+    fixture.detectChanges();
+
+    expect(
+      profileServiceMock.getProfile
+    ).toHaveBeenCalledTimes(2);
+
+    expect(
+      section?.textContent
+    ).toContain('Caricamento...');
+
+    profile$.next(mockProfile);
+    fixture.detectChanges();
+
+    expect(
+      section?.textContent
+    ).toContain('Elena Trudini');
+
+    expect(
+      section?.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeNull();
   });
 
   it('shows news loading state', () => {

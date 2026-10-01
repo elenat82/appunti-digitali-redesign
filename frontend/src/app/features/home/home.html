@@ -9,9 +9,15 @@
   }
 
   @case ('error') {
-  <p>
-    Impossibile caricare i contatti.
-  </p>
+  <div class="home-profile-error">
+    <p>
+      Impossibile caricare i contatti.
+    </p>
+
+    <button type="button" class="home-section-retry" (click)="retryProfile()">
+      Riprova
+    </button>
+  </div>
   }
 
   @case ('ready') {
