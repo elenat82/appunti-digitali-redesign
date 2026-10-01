@@ -244,8 +244,16 @@ describe('Home', () => {
   });
 
   it('shows news loading state', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-news'
+      );
+
     expect(
-      fixture.nativeElement.textContent
+      section?.textContent
     ).toContain('Caricamento news...');
   });
 
@@ -359,10 +367,81 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('shows Stack Overflow loading state', () => {
+  it('retries news after an error', () => {
+    news$.error(
+      new Error('News unavailable')
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-news'
+      );
+
+    const retryButton =
+      section?.querySelector<HTMLButtonElement>(
+        '.home-section-retry'
+      );
+
+    expect(retryButton).toBeTruthy();
+
+    news$ = new Subject<NewsItem[]>();
+
+    retryButton?.click();
+    fixture.detectChanges();
+
     expect(
-      fixture.nativeElement.textContent
-    ).toContain('Caricamento domande');
+      newsServiceMock.getNews
+    ).toHaveBeenCalledTimes(2);
+
+    // Verifica una sola volta che il retry sia isolato alla sezione:
+    // gli altri service non devono essere richiamati.
+    expect(
+      stackOverflowServiceMock.getQuestions
+    ).toHaveBeenCalledTimes(1);
+
+    expect(
+      gitHubServiceMock.getStarredRepositories
+    ).toHaveBeenCalledTimes(1);
+
+    expect(
+      savedResourcesServiceMock.getSavedResources
+    ).toHaveBeenCalledTimes(1);
+
+    expect(
+      section?.textContent
+    ).toContain('Caricamento news...');
+
+    news$.next(mockNews);
+    fixture.detectChanges();
+
+    expect(
+      section?.textContent
+    ).toContain('Poetic CSS');
+
+    expect(
+      section?.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeNull();
+  });
+
+  it('shows Stack Overflow loading state', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-stack-overflow'
+      );
+
+    expect(
+      section?.textContent
+    ).toContain('Caricamento domande...');
   });
 
   it('shows Stack Overflow questions', () => {
@@ -449,9 +528,66 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('shows GitHub  loading state', () => {
+  it('retries Stack Overflow questions after an error', () => {
+    stackOverflowQuestions$.error(
+      new Error('Stack Overflow questions unavailable')
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-stack-overflow'
+      );
+
+    const retryButton =
+      section?.querySelector<HTMLButtonElement>(
+        '.home-section-retry'
+      );
+
+    expect(retryButton).toBeTruthy();
+
+    stackOverflowQuestions$ = new Subject<StackOverflowQuestion[]>();
+
+    retryButton?.click();
+    fixture.detectChanges();
+
     expect(
-      fixture.nativeElement.textContent
+      stackOverflowServiceMock.getQuestions
+    ).toHaveBeenCalledTimes(2);
+
+    expect(
+      section?.textContent
+    ).toContain('Caricamento domande...');
+
+    stackOverflowQuestions$.next(mockQuestions);
+    fixture.detectChanges();
+
+    expect(
+      section?.textContent
+    ).toContain('How to test an Angular service?');
+
+    expect(
+      section?.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeNull();
+  });
+
+  it('shows GitHub loading state', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-github'
+      );
+
+    expect(
+      section?.textContent
     ).toContain('Caricamento repository...');
   });
 
@@ -539,9 +675,65 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('shows saved resources loading state', () => {
+  it('retries GitHub starred repositories after an error', () => {
+    gitHubRepositories$.error(
+      new Error('GitHub repositories unavailable')
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-github'
+      );
+
+    const retryButton =
+      section?.querySelector<HTMLButtonElement>(
+        '.home-section-retry'
+      );
+
+    expect(retryButton).toBeTruthy();
+
+    gitHubRepositories$ = new Subject<GitHubRepository[]>();
+
+    retryButton?.click();
+    fixture.detectChanges();
+
     expect(
-      fixture.nativeElement.textContent
+      gitHubServiceMock.getStarredRepositories
+    ).toHaveBeenCalledTimes(2);
+
+    expect(
+      section?.textContent
+    ).toContain('Caricamento repository...');
+
+    gitHubRepositories$.next(mockRepositories);
+    fixture.detectChanges();
+
+    expect(
+      section?.textContent
+    ).toContain('UI-Design');
+
+    expect(
+      section?.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeNull();
+  });
+
+  it('shows saved resources loading state', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-saved-resources'
+      );
+    expect(
+      section?.textContent
     ).toContain('Caricamento risorse...');
   });
 
@@ -638,8 +830,13 @@ describe('Home', () => {
     const element: HTMLElement =
       fixture.nativeElement;
 
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-saved-resources'
+      );
+
     const retryButton =
-      element.querySelector<HTMLButtonElement>(
+      section?.querySelector<HTMLButtonElement>(
         '.home-section-retry'
       );
 
@@ -655,18 +852,18 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(2);
 
     expect(
-      fixture.nativeElement.textContent
+      section?.textContent
     ).toContain('Caricamento risorse...');
 
     savedResources$.next(mockSavedResources);
     fixture.detectChanges();
 
     expect(
-      fixture.nativeElement.textContent
+      section?.textContent
     ).toContain('Drupal Entity API');
 
     expect(
-      fixture.nativeElement.querySelector(
+      section?.querySelector(
         '.home-section-retry'
       )
     ).toBeNull();

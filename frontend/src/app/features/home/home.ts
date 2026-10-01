@@ -68,6 +68,9 @@ export class Home {
   private readonly savedResourcesService = inject(SavedResourcesService);
 
   private readonly savedResourcesRetry$ = new Subject<void>();
+  private readonly newsRetry$ = new Subject<void>();
+  private readonly stackOverflowRetry$ = new Subject<void>();
+  private readonly gitHubRetry$ = new Subject<void>();
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -101,23 +104,34 @@ export class Home {
   );
 
   readonly newsState = toSignal(
-    this.newsService.getNews().pipe(
-      map((news) =>
-        news.length > 0
-          ? {
-            status: 'ready' as const,
-            news
-          }
-          : {
-            status: 'empty' as const,
-            news: []
-          }
-      ),
-      catchError(() =>
-        of<NewsState>({
-          status: 'error',
-          news: []
-        })
+    this.newsRetry$.pipe(
+      startWith(undefined),
+      switchMap(() =>
+        this.newsService
+          .getNews()
+          .pipe(
+            map((news): NewsState =>
+              news.length > 0
+                ? {
+                  status: 'ready',
+                  news
+                }
+                : {
+                  status: 'empty',
+                  news: []
+                }
+            ),
+            catchError(() =>
+              of<NewsState>({
+                status: 'error',
+                news: []
+              })
+            ),
+            startWith<NewsState>({
+              status: 'loading',
+              news: []
+            })
+          )
       )
     ),
     {
@@ -129,23 +143,34 @@ export class Home {
   );
 
   readonly stackOverflowState = toSignal(
-    this.stackOverflowService.getQuestions().pipe(
-      map((questions) =>
-        questions.length > 0
-          ? {
-            status: 'ready' as const,
-            questions
-          }
-          : {
-            status: 'empty' as const,
-            questions: []
-          }
-      ),
-      catchError(() =>
-        of<StackOverflowState>({
-          status: 'error',
-          questions: []
-        })
+    this.stackOverflowRetry$.pipe(
+      startWith(undefined),
+      switchMap(() =>
+        this.stackOverflowService
+          .getQuestions()
+          .pipe(
+            map((questions): StackOverflowState =>
+              questions.length > 0
+                ? {
+                  status: 'ready',
+                  questions
+                }
+                : {
+                  status: 'empty',
+                  questions: []
+                }
+            ),
+            catchError(() =>
+              of<StackOverflowState>({
+                status: 'error',
+                questions: []
+              })
+            ),
+            startWith<StackOverflowState>({
+              status: 'loading',
+              questions: []
+            })
+          )
       )
     ),
     {
@@ -157,23 +182,34 @@ export class Home {
   );
 
   readonly gitHubState = toSignal(
-    this.githubService.getStarredRepositories().pipe(
-      map((repositories) =>
-        repositories.length > 0
-          ? {
-            status: 'ready' as const,
-            repositories
-          }
-          : {
-            status: 'empty' as const,
-            repositories: []
-          }
-      ),
-      catchError(() =>
-        of<GitHubState>({
-          status: 'error',
-          repositories: []
-        })
+    this.gitHubRetry$.pipe(
+      startWith(undefined),
+      switchMap(() =>
+        this.githubService
+          .getStarredRepositories()
+          .pipe(
+            map((repositories): GitHubState =>
+              repositories.length > 0
+                ? {
+                  status: 'ready',
+                  repositories
+                }
+                : {
+                  status: 'empty',
+                  repositories: []
+                }
+            ),
+            catchError(() =>
+              of<GitHubState>({
+                status: 'error',
+                repositories: []
+              })
+            ),
+            startWith<GitHubState>({
+              status: 'loading',
+              repositories: []
+            })
+          )
       )
     ),
     {
@@ -228,5 +264,26 @@ export class Home {
  */
   retrySavedResources(): void {
     this.savedResourcesRetry$.next();
+  }
+
+  /**
+ * Ripete il caricamento delle news.
+ */
+  retryNews(): void {
+    this.newsRetry$.next();
+  }
+
+  /**
+ * Ripete il caricamento delle domande Stack Overflow.
+ */
+  retryStackOverflow(): void {
+    this.stackOverflowRetry$.next();
+  }
+
+  /**
+ * Ripete il caricamento dei repository GitHub starred.
+ */
+  retryGitHubStarred(): void {
+    this.gitHubRetry$.next();
   }
 }

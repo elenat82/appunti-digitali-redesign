@@ -64,9 +64,18 @@
   }
 </section>
 <section class="home-news" aria-labelledby="news-title">
-  <h2 id="news-title">
-    Notizie
-  </h2>
+
+  <div class="home-section-header">
+    <h2 id="news-title">
+      Notizie
+    </h2>
+
+    @if (newsState().status === 'error') {
+    <button type="button" class="home-section-retry" (click)="retryNews()">
+      Riprova
+    </button>
+    }
+  </div>
 
   @switch (newsState().status) {
   @case ('loading') {
@@ -117,9 +126,17 @@
   }
 </section>
 <section class="home-stack-overflow" aria-labelledby="stack-overflow-title">
-  <h2 id="stack-overflow-title">
-    Stack Overflow
-  </h2>
+  <div class="home-section-header">
+    <h2 id="stack-overflow-title">
+      Stack Overflow
+    </h2>
+
+    @if (stackOverflowState().status === 'error') {
+    <button type="button" class="home-section-retry" (click)="retryStackOverflow()">
+      Riprova
+    </button>
+    }
+  </div>
 
   @switch (stackOverflowState().status) {
   @case ('loading') {
@@ -172,9 +189,17 @@
   }
 </section>
 <section class="home-github" aria-labelledby="github-title">
-  <h2 id="github-title">
-    GitHub starred
-  </h2>
+  <div class="home-section-header">
+    <h2 id="github-title">
+      GitHub starred
+    </h2>
+
+    @if (gitHubState().status === 'error') {
+    <button type="button" class="home-section-retry" (click)="retryGitHubStarred()">
+      Riprova
+    </button>
+    }
+  </div>
 
   @switch (gitHubState().status) {
   @case ('loading') {
