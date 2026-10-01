@@ -228,9 +228,17 @@
   }
 </section>
 <section class="home-saved-resources" aria-labelledby="saved-resources-title">
-  <h2 id="saved-resources-title">
-    Risorse salvate
-  </h2>
+  <div class="home-section-header">
+    <h2 id="saved-resources-title">
+      Risorse salvate
+    </h2>
+
+    @if (savedResourcesState().status === 'error') {
+    <button type="button" class="home-section-retry" (click)="retrySavedResources()">
+      Riprova
+    </button>
+    }
+  </div>
 
   @switch (savedResourcesState().status) {
   @case ('loading') {

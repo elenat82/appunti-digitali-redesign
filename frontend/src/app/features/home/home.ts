@@ -4,7 +4,14 @@ import {
   inject
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of } from 'rxjs';
+import {
+  catchError,
+  map,
+  of,
+  startWith,
+  Subject,
+  switchMap
+} from 'rxjs';
 import { DatePipe } from '@angular/common';
 
 import { Profile } from '../../core/models/profile.model';
@@ -59,6 +66,8 @@ export class Home {
   private readonly githubService = inject(GitHubService);
   private readonly newsService = inject(NewsService);
   private readonly savedResourcesService = inject(SavedResourcesService);
+
+  private readonly savedResourcesRetry$ = new Subject<void>();
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -176,23 +185,34 @@ export class Home {
   );
 
   readonly savedResourcesState = toSignal(
-    this.savedResourcesService.getSavedResources().pipe(
-      map((resources) =>
-        resources.length > 0
-          ? {
-            status: 'ready' as const,
-            resources
-          }
-          : {
-            status: 'empty' as const,
-            resources: []
-          }
-      ),
-      catchError(() =>
-        of<SavedResourcesState>({
-          status: 'error',
-          resources: []
-        })
+    this.savedResourcesRetry$.pipe(
+      startWith(undefined),
+      switchMap(() =>
+        this.savedResourcesService
+          .getSavedResources()
+          .pipe(
+            map((resources): SavedResourcesState =>
+              resources.length > 0
+                ? {
+                  status: 'ready',
+                  resources
+                }
+                : {
+                  status: 'empty',
+                  resources: []
+                }
+            ),
+            catchError(() =>
+              of<SavedResourcesState>({
+                status: 'error',
+                resources: []
+              })
+            ),
+            startWith<SavedResourcesState>({
+              status: 'loading',
+              resources: []
+            })
+          )
       )
     ),
     {
@@ -202,4 +222,11 @@ export class Home {
       } satisfies SavedResourcesState
     }
   );
+
+  /**
+ * Ripete il caricamento delle risorse salvate.
+ */
+  retrySavedResources(): void {
+    this.savedResourcesRetry$.next();
+  }
 }

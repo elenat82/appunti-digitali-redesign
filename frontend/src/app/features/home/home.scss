@@ -60,3 +60,10 @@
   flex: 0 0 auto;
   white-space: nowrap;
 }
+
+.home-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}

@@ -627,4 +627,48 @@ describe('Home', () => {
       savedResourcesServiceMock.getSavedResources
     ).toHaveBeenCalledTimes(1);
   });
+
+  it('retries saved resources after an error', () => {
+    savedResources$.error(
+      new Error('Saved resources unavailable')
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const retryButton =
+      element.querySelector<HTMLButtonElement>(
+        '.home-section-retry'
+      );
+
+    expect(retryButton).toBeTruthy();
+
+    savedResources$ = new Subject<SavedResource[]>();
+
+    retryButton?.click();
+    fixture.detectChanges();
+
+    expect(
+      savedResourcesServiceMock.getSavedResources
+    ).toHaveBeenCalledTimes(2);
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Caricamento risorse...');
+
+    savedResources$.next(mockSavedResources);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Drupal Entity API');
+
+    expect(
+      fixture.nativeElement.querySelector(
+        '.home-section-retry'
+      )
+    ).toBeNull();
+  });
 });
