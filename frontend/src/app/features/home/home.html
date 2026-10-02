@@ -1,7 +1,7 @@
 <section class="home-contact" aria-labelledby="profile-name">
   @switch (profileState().status) {
   @case ('loading') {
-  <p>Caricamento...</p>
+  <app-loading-indicator />
   }
 
   @case ('not-found') {
@@ -85,7 +85,7 @@
 
   @switch (newsState().status) {
   @case ('loading') {
-  <p>Caricamento news...</p>
+  <app-loading-indicator />
   }
 
   @case ('empty') {
@@ -146,7 +146,7 @@
 
   @switch (stackOverflowState().status) {
   @case ('loading') {
-  <p>Caricamento domande...</p>
+  <app-loading-indicator />
   }
 
   @case ('empty') {
@@ -209,7 +209,7 @@
 
   @switch (gitHubState().status) {
   @case ('loading') {
-  <p>Caricamento repository...</p>
+  <app-loading-indicator />
   }
 
   @case ('empty') {
@@ -273,7 +273,7 @@
 
   @switch (savedResourcesState().status) {
   @case ('loading') {
-  <p>Caricamento risorse...</p>
+  <app-loading-indicator />
   }
 
   @case ('empty') {

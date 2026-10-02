@@ -210,6 +210,10 @@ describe('Home', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should create', () => {
     expect(
       fixture.componentInstance
@@ -230,8 +234,12 @@ describe('Home', () => {
     ).toHaveBeenCalledOnce();
   });
 
-  it('shows the public profile', () => {
+  it('shows the public profile', async () => {
+    vi.useFakeTimers();
+
     profile$.next(mockProfile);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const element: HTMLElement =
@@ -264,12 +272,18 @@ describe('Home', () => {
       );
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
   });
 
-  it('shows profile not-found state', () => {
+  it('shows profile not-found state', async () => {
+    vi.useFakeTimers();
+
     profile$.next(null);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const element: HTMLElement =
@@ -284,7 +298,8 @@ describe('Home', () => {
       section?.textContent
     ).toContain('Profilo non disponibile.');
 
-    // 'not-found' è una risposta valida, il retry è disponibile solo in caso di errore
+    // 'not-found' è una risposta valida,
+    // il retry è disponibile solo in caso di errore.
     expect(
       section?.querySelector(
         '.home-section-retry'
@@ -320,7 +335,9 @@ describe('Home', () => {
     ).toBeTruthy();
   });
 
-  it('retries public profile after an error', () => {
+  it('retries public profile after an error', async () => {
+    vi.useFakeTimers();
+
     profile$.error(
       new Error('Profile unavailable')
     );
@@ -353,15 +370,34 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(2);
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
 
     profile$.next(mockProfile);
+    fixture.detectChanges();
+
+    // I dati sono arrivati, ma il loader resta visibile
+    // per i 500 ms previsti.
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     expect(
       section?.textContent
     ).toContain('Elena Trudini');
+
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeNull();
 
     expect(
       section?.querySelector(
@@ -380,12 +416,18 @@ describe('Home', () => {
       );
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento news...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
   });
 
-  it('shows news', () => {
+  it('shows news', async () => {
+    vi.useFakeTimers();
+
     news$.next(mockNews);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const element: HTMLElement =
@@ -435,18 +477,32 @@ describe('Home', () => {
     );
   });
 
-  it('shows news empty state', () => {
+  it('shows news empty state', async () => {
+    vi.useFakeTimers();
+
     news$.next([]);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-news'
+      );
+
     expect(
-      fixture.nativeElement.textContent
+      section?.textContent
     ).toContain(
       'Nessuna notizia disponibile.'
     );
   });
 
-  it('hides the author when it is not available', () => {
+  it('hides the author when it is not available', async () => {
+    vi.useFakeTimers();
+
     news$.next([
       {
         id: 244,
@@ -458,6 +514,7 @@ describe('Home', () => {
       }
     ]);
 
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const section: HTMLElement | null =
@@ -494,7 +551,9 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('retries news after an error', () => {
+  it('retries news after an error', async () => {
+    vi.useFakeTimers();
+
     news$.error(
       new Error('News unavailable')
     );
@@ -540,11 +599,28 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento news...');
+      profileServiceMock.getProfile
+    ).toHaveBeenCalledTimes(1);
+
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
 
     news$.next(mockNews);
     fixture.detectChanges();
+
+    // I dati sono arrivati, ma il loader resta visibile per i 500 ms previsti.
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(500);
+    fixture.detectChanges();
+
 
     expect(
       section?.textContent
@@ -552,7 +628,7 @@ describe('Home', () => {
 
     expect(
       section?.querySelector(
-        '.home-section-retry'
+        'app-loading-indicator'
       )
     ).toBeNull();
   });
@@ -567,12 +643,18 @@ describe('Home', () => {
       );
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento domande...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
   });
 
-  it('shows Stack Overflow questions', () => {
+  it('shows Stack Overflow questions', async () => {
+    vi.useFakeTimers();
+
     stackOverflowQuestions$.next(mockQuestions);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const element: HTMLElement =
@@ -626,13 +708,27 @@ describe('Home', () => {
     );
   });
 
-  it('shows Stack Overflow empty state', () => {
+  it('shows Stack Overflow empty state', async () => {
+    vi.useFakeTimers();
+
     stackOverflowQuestions$.next([]);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-stack-overflow'
+      );
+
     expect(
-      fixture.nativeElement.textContent
-    ).toContain('Nessuna domanda disponibile.');
+      section?.textContent
+    ).toContain(
+      'Nessuna domanda disponibile.'
+    );
   });
 
   it('shows Stack Overflow error state', () => {
@@ -655,7 +751,9 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('retries Stack Overflow questions after an error', () => {
+  it('retries Stack Overflow questions after an error', async () => {
+    vi.useFakeTimers();
+
     stackOverflowQuestions$.error(
       new Error('Stack Overflow questions unavailable')
     );
@@ -677,7 +775,8 @@ describe('Home', () => {
 
     expect(retryButton).toBeTruthy();
 
-    stackOverflowQuestions$ = new Subject<StackOverflowQuestion[]>();
+    stackOverflowQuestions$ =
+      new Subject<StackOverflowQuestion[]>();
 
     retryButton?.click();
     fixture.detectChanges();
@@ -687,15 +786,36 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(2);
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento domande...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
 
     stackOverflowQuestions$.next(mockQuestions);
     fixture.detectChanges();
 
+    // I dati sono arrivati, ma il loader resta visibile
+    // per i 500 ms previsti.
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(500);
+    fixture.detectChanges();
+
     expect(
       section?.textContent
-    ).toContain('How to test an Angular service?');
+    ).toContain(
+      'How to test an Angular service?'
+    );
+
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeNull();
 
     expect(
       section?.querySelector(
@@ -714,12 +834,18 @@ describe('Home', () => {
       );
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento repository...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
   });
 
-  it('shows GitHub repositories', () => {
+  it('shows GitHub repositories', async () => {
+    vi.useFakeTimers();
+
     gitHubRepositories$.next(mockRepositories);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const element: HTMLElement =
@@ -771,15 +897,35 @@ describe('Home', () => {
     expect(section?.textContent).toContain(
       'vanilla-javascript'
     );
-  });
-
-  it('shows GitHub empty state', () => {
-    gitHubRepositories$.next([]);
-    fixture.detectChanges();
 
     expect(
-      fixture.nativeElement.textContent
-    ).toContain('Nessun repository disponibile.');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeNull();
+  });
+
+  it('shows GitHub empty state', async () => {
+    vi.useFakeTimers();
+
+    gitHubRepositories$.next([]);
+
+    await vi.advanceTimersByTimeAsync(500);
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-github'
+      );
+
+    expect(
+      section?.textContent
+    ).toContain(
+      'Nessun repository disponibile.'
+    );
   });
 
   it('shows GitHub error state', () => {
@@ -802,7 +948,9 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('retries GitHub starred repositories after an error', () => {
+  it('retries GitHub starred repositories after an error', async () => {
+    vi.useFakeTimers();
+
     gitHubRepositories$.error(
       new Error('GitHub repositories unavailable')
     );
@@ -834,15 +982,33 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(2);
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento repository...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
 
     gitHubRepositories$.next(mockRepositories);
     fixture.detectChanges();
 
     expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(500);
+    fixture.detectChanges();
+
+
+    expect(
       section?.textContent
     ).toContain('UI-Design');
+
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeNull();
 
     expect(
       section?.querySelector(
@@ -860,12 +1026,18 @@ describe('Home', () => {
         '.home-saved-resources'
       );
     expect(
-      section?.textContent
-    ).toContain('Caricamento risorse...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
   });
 
-  it('shows saved resources', () => {
+  it('shows saved resources', async () => {
+    vi.useFakeTimers();
+
     savedResources$.next(mockSavedResources);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
     const section: HTMLElement | null =
@@ -918,13 +1090,27 @@ describe('Home', () => {
     expect(firstLink?.target).toBe('_blank');
   });
 
-  it('shows saved resources empty state', () => {
+  it('shows saved resources empty state', async () => {
+    vi.useFakeTimers();
+
     savedResources$.next([]);
+
+    await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-saved-resources'
+      );
+
     expect(
-      fixture.nativeElement.textContent
-    ).toContain('Nessuna risorsa salvata.');
+      section?.textContent
+    ).toContain(
+      'Nessuna risorsa salvata.'
+    );
   });
 
   it('shows saved resources error state', () => {
@@ -947,7 +1133,8 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(1);
   });
 
-  it('retries saved resources after an error', () => {
+  it('retries saved resources after an error', async () => {
+    vi.useFakeTimers();
     savedResources$.error(
       new Error('Saved resources unavailable')
     );
@@ -979,15 +1166,32 @@ describe('Home', () => {
     ).toHaveBeenCalledTimes(2);
 
     expect(
-      section?.textContent
-    ).toContain('Caricamento risorse...');
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
 
     savedResources$.next(mockSavedResources);
     fixture.detectChanges();
 
     expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeTruthy();
+
+    await vi.advanceTimersByTimeAsync(500);
+    fixture.detectChanges();
+
+    expect(
       section?.textContent
     ).toContain('Drupal Entity API');
+
+    expect(
+      section?.querySelector(
+        'app-loading-indicator'
+      )
+    ).toBeNull();
 
     expect(
       section?.querySelector(

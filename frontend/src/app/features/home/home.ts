@@ -6,6 +6,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   catchError,
+  delay,
   map,
   of,
   startWith,
@@ -24,6 +25,9 @@ import { NewsItem } from '../../core/models/news-item.model';
 import { NewsService } from './services/news.service';
 import { SavedResource } from '../../core/models/saved-resource.model';
 import { SavedResourcesService } from './services/saved-resources.service';
+import {
+  LoadingIndicator
+} from '../../shared/components/loading-indicator/loading-indicator';
 
 interface HomeProfileState {
   /**
@@ -54,12 +58,14 @@ interface SavedResourcesState {
   resources: SavedResource[];
 }
 
+const LOADING_COMPLETION_DELAY_MS = 500;
+
 /**
  * Pagina iniziale pubblica dell'applicazione.
  */
 @Component({
   selector: 'app-home',
-  imports: [DatePipe],
+  imports: [DatePipe, LoadingIndicator],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -87,6 +93,7 @@ export class Home {
         this.profileService
           .getProfile()
           .pipe(
+            delay(LOADING_COMPLETION_DELAY_MS),
             map((profile): HomeProfileState =>
               profile
                 ? {
@@ -126,6 +133,7 @@ export class Home {
         this.newsService
           .getNews()
           .pipe(
+            delay(LOADING_COMPLETION_DELAY_MS),
             map((news): NewsState =>
               news.length > 0
                 ? {
@@ -165,6 +173,7 @@ export class Home {
         this.stackOverflowService
           .getQuestions()
           .pipe(
+            delay(LOADING_COMPLETION_DELAY_MS),
             map((questions): StackOverflowState =>
               questions.length > 0
                 ? {
@@ -204,6 +213,7 @@ export class Home {
         this.githubService
           .getStarredRepositories()
           .pipe(
+            delay(LOADING_COMPLETION_DELAY_MS),
             map((repositories): GitHubState =>
               repositories.length > 0
                 ? {
@@ -243,6 +253,7 @@ export class Home {
         this.savedResourcesService
           .getSavedResources()
           .pipe(
+            delay(LOADING_COMPLETION_DELAY_MS),
             map((resources): SavedResourcesState =>
               resources.length > 0
                 ? {
