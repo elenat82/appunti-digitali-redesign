@@ -54,18 +54,36 @@ ddev exec ./vendor/bin/phpcbf
 
 #### Test
 
-Tutti i test funzionali del modulo custom
+##### Modulo `appunti_digitali`
+
+Tutti i test funzionali:
 
 ```bash
 ddev exec ./vendor/bin/phpunit -c phpunit.xml \
   web/modules/custom/appunti_digitali/tests/src/Functional
 ```
 
-Un singolo test
+Un singolo test funzionale:
 
 ```bash
 ddev exec ./vendor/bin/phpunit -c phpunit.xml \
   web/modules/custom/appunti_digitali/tests/src/Functional/ArticlesEndpointTest.php
+```
+
+##### Modulo `appunti_digitali_integrations`
+
+Tutti i test Kernel:
+
+```bash
+ddev exec ./vendor/bin/phpunit -c phpunit.xml \
+  web/modules/custom/appunti-digitali-integrations/tests/src/Kernel
+```
+
+Un singolo test Kernel:
+
+```bash
+ddev exec ./vendor/bin/phpunit -c phpunit.xml \
+  web/modules/custom/appunti-digitali-integrations/tests/src/Kernel/GitHubClientTest.php
 ```
 
 ### Frontend Angular
