@@ -5,6 +5,7 @@ services:
       - '@entity_type.manager'
       - '@http_client'
       - '@cache.default'
+      - '@logger.channel.appunti_digitali_integrations'
 
   appunti_digitali_integrations.github_client:
     class: Drupal\appunti_digitali_integrations\Service\GitHubClient
@@ -12,8 +13,13 @@ services:
       - '@entity_type.manager'
       - '@http_client'
       - '@cache.default'
+      - '@logger.channel.appunti_digitali_integrations'
 
   appunti_digitali_integrations.news_service:
     class: Drupal\appunti_digitali_integrations\Service\NewsService
     arguments:
       - '@entity_type.manager'
+
+  logger.channel.appunti_digitali_integrations:
+    parent: logger.channel_base
+    arguments: ['appunti_digitali_integrations']

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Drupal\appunti_digitali_integrations\Service;
 
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\taxonomy\TermInterface;
 use GuzzleHttp\ClientInterface;
-use Drupal\Core\Cache\CacheBackendInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Provides Stack Overflow integration functionality.
@@ -30,6 +32,7 @@ final class StackOverflowClient implements StackOverflowClientInterface {
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly ClientInterface $httpClient,
     private readonly CacheBackendInterface $cache,
+    private readonly LoggerChannelInterface $logger,
   ) {}
 
   /**
@@ -87,82 +90,102 @@ final class StackOverflowClient implements StackOverflowClientInterface {
     }
 
     $cache_id =
-    self::CACHE_PREFIX .
-    hash('sha256', implode('|', $tags));
+      self::CACHE_PREFIX .
+      hash('sha256', implode('|', $tags));
 
     if ($cached = $this->cache->get($cache_id)) {
       return $cached->data;
     }
 
-    $response = $this->httpClient->request(
-    'GET',
-    self::API_URL,
-    [
-      'query' => [
-        'site' => 'stackoverflow',
-        'tagged' => implode(';', $tags),
-        'sort' => 'activity',
-        'order' => 'desc',
-        'pagesize' => self::FETCH_SIZE,
-      ],
-    ]
-    );
+    try {
+      $response = $this->httpClient->request(
+        'GET',
+        self::API_URL,
+        [
+          'query' => [
+            'site' => 'stackoverflow',
+            'tagged' => implode(';', $tags),
+            'sort' => 'activity',
+            'order' => 'desc',
+            'pagesize' => self::FETCH_SIZE,
+          ],
+        ]
+      );
 
-    $data = json_decode(
-    (string) $response->getBody(),
-    TRUE,
-    512,
-    JSON_THROW_ON_ERROR
-    );
-
-    if (
-    !isset($data['items']) ||
-    !is_array($data['items'])
-    ) {
-      return [];
-    }
-
-    $questions = [];
-
-    foreach ($data['items'] as $item) {
-      if (
-      !isset($item['score']) ||
-      $item['score'] < 0
-      ) {
-        continue;
-      }
-
-      $questions[] = [
-        'id' => $item['question_id'],
-        'title' => html_entity_decode(
-        $item['title'],
-        ENT_QUOTES | ENT_HTML5,
-        'UTF-8'
-        ),
-        'url' => $item['link'],
-        'tags' => $item['tags'],
-        'score' => $item['score'],
-        'answerCount' => $item['answer_count'],
-        'isAnswered' => $item['is_answered'],
-        'lastActivityDate' =>
-        $item['last_activity_date'],
-      ];
+      $data = json_decode(
+        (string) $response->getBody(),
+        TRUE,
+        512,
+        JSON_THROW_ON_ERROR
+      );
 
       if (
-      count($questions) ===
-      self::RESULT_LIMIT
+        !isset($data['items']) ||
+        !is_array($data['items'])
       ) {
-        break;
+        $this->logger->warning(
+          'Stack Overflow API returned a response without a valid items collection for tags @tags.',
+          [
+            '@tags' => implode(', ', $tags),
+          ]
+        );
+
+        return [];
       }
+
+      $questions = [];
+
+      foreach ($data['items'] as $item) {
+        if (
+          !isset($item['score']) ||
+          $item['score'] < 0
+        ) {
+          continue;
+        }
+
+        $questions[] = [
+          'id' => $item['question_id'],
+          'title' => html_entity_decode(
+            $item['title'],
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+          ),
+          'url' => $item['link'],
+          'tags' => $item['tags'],
+          'score' => $item['score'],
+          'answerCount' => $item['answer_count'],
+          'isAnswered' => $item['is_answered'],
+          'lastActivityDate' =>
+          $item['last_activity_date'],
+        ];
+
+        if (
+          count($questions) ===
+          self::RESULT_LIMIT
+        ) {
+          break;
+        }
+      }
+
+      $this->cache->set(
+        $cache_id,
+        $questions,
+        time() + self::CACHE_MAX_AGE
+      );
+
+      return $questions;
     }
+    catch (GuzzleException | \JsonException $exception) {
+      $this->logger->error(
+        'Stack Overflow questions request failed for tags @tags: @message',
+        [
+          '@tags' => implode(', ', $tags),
+          '@message' => $exception->getMessage(),
+        ]
+          );
 
-    $this->cache->set(
-    $cache_id,
-    $questions,
-    time() + self::CACHE_MAX_AGE
-    );
-
-    return $questions;
+      throw $exception;
+    }
   }
 
 }

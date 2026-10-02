@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\appunti_digitali_integrations\Kernel;
 
-use Drupal\Core\Cache\MemoryBackend;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\KernelTests\KernelTestBase;
@@ -430,14 +429,11 @@ class GitHubClientTest extends KernelTestBase {
     ClientInterface $http_client,
   ): GitHubClient {
     return new GitHubClient(
-      $this->container->get(
-        'entity_type.manager'
-      ),
+      $this->container->get('entity_type.manager'),
       $http_client,
-      new MemoryBackend(
-        $this->container->get(
-          'datetime.time'
-        )
+      $this->container->get('cache.default'),
+      $this->container->get(
+        'logger.channel.appunti_digitali_integrations'
       ),
     );
   }

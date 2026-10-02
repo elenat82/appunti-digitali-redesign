@@ -84,6 +84,9 @@ final class StackOverflowClientTest extends KernelTestBase {
       $this->container->get('entity_type.manager'),
       $http_client,
       $this->container->get('cache.default'),
+      $this->container->get(
+        'logger.channel.appunti_digitali_integrations'
+      ),
     );
   }
 
@@ -372,30 +375,30 @@ final class StackOverflowClientTest extends KernelTestBase {
 
     $api_response = [
       'items' => [
-      [
-        'question_id' => 12345,
-        'title' => 'Angular question',
-        'link' => 'https://stackoverflow.com/questions/12345',
-        'tags' => ['angular'],
-        'score' => 3,
-        'answer_count' => 2,
-        'is_answered' => TRUE,
-        'last_activity_date' => 1234567890,
-      ],
+        [
+          'question_id' => 12345,
+          'title' => 'Angular question',
+          'link' => 'https://stackoverflow.com/questions/12345',
+          'tags' => ['angular'],
+          'score' => 3,
+          'answer_count' => 2,
+          'is_answered' => TRUE,
+          'last_activity_date' => 1234567890,
+        ],
       ],
     ];
 
     $response = new Response(
-    200,
-    ['Content-Type' => 'application/json'],
-    json_encode(
-      $api_response,
-      JSON_THROW_ON_ERROR
-    )
+      200,
+      ['Content-Type' => 'application/json'],
+      json_encode(
+        $api_response,
+        JSON_THROW_ON_ERROR
+      )
     );
 
     $http_client = $this->createMock(
-    ClientInterface::class
+      ClientInterface::class
     );
 
     $http_client
@@ -409,18 +412,18 @@ final class StackOverflowClientTest extends KernelTestBase {
     $second_result = $client->getQuestions();
 
     $this->assertSame(
-    $first_result,
-    $second_result
+      $first_result,
+      $second_result
     );
 
     $this->assertCount(
-    1,
-    $second_result
+      1,
+      $second_result
     );
 
     $this->assertSame(
-    12345,
-    $second_result[0]['id']
+      12345,
+      $second_result[0]['id']
     );
   }
 

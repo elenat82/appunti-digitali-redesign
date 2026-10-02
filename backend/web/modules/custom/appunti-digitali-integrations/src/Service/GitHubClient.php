@@ -4,8 +4,10 @@ namespace Drupal\appunti_digitali_integrations\Service;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\user\UserInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Retrieves starred repositories from GitHub.
@@ -40,6 +42,7 @@ class GitHubClient implements GitHubClientInterface {
     private readonly EntityTypeManagerInterface $entityTypeManager,
     private readonly ClientInterface $httpClient,
     private readonly CacheBackendInterface $cache,
+    private readonly LoggerChannelInterface $logger,
   ) {}
 
   /**
@@ -60,55 +63,77 @@ class GitHubClient implements GitHubClientInterface {
     $page = 1;
 
     do {
-      $response = $this->httpClient->request(
-        'GET',
-        sprintf(
-          self::API_URL,
-          rawurlencode($username)
-        ),
-        [
-          'headers' => [
-            'Accept' => 'application/vnd.github+json',
-            'User-Agent' => 'Appunti-Digitali',
-          ],
-          'query' => [
-            'sort' => 'created',
-            'direction' => 'desc',
-            'per_page' => self::PAGE_SIZE,
-            'page' => $page,
-          ],
-        ]
-      );
+      try {
+        $response = $this->httpClient->request(
+          'GET',
+          sprintf(
+            self::API_URL,
+            rawurlencode($username)
+          ),
+          [
+            'headers' => [
+              'Accept' => 'application/vnd.github+json',
+              'User-Agent' => 'Appunti-Digitali',
+            ],
+            'query' => [
+              'sort' => 'created',
+              'direction' => 'desc',
+              'per_page' => self::PAGE_SIZE,
+              'page' => $page,
+            ],
+          ]
+        );
 
-      $data = json_decode(
-        (string) $response->getBody(),
-        TRUE,
-        512,
-        JSON_THROW_ON_ERROR
-      );
+        $data = json_decode(
+          (string) $response->getBody(),
+          TRUE,
+          512,
+          JSON_THROW_ON_ERROR
+        );
 
-      if (!is_array($data)) {
-        break;
+        if (!is_array($data)) {
+          $this->logger->warning(
+            'GitHub API returned an unexpected response format for user @username on page @page.',
+            [
+              '@username' => $username,
+              '@page' => $page,
+            ]
+          );
+
+          break;
+        }
+
+        foreach ($data as $repository) {
+          $repositories[] = [
+            'id' => $repository['id'],
+            'name' => $repository['name'],
+            'fullName' => $repository['full_name'],
+            'url' => $repository['html_url'],
+            'description' =>
+            $repository['description'] ?? NULL,
+            'language' =>
+            $repository['language'] ?? NULL,
+            'stars' =>
+            $repository['stargazers_count'] ?? 0,
+            'topics' =>
+            $repository['topics'] ?? [],
+          ];
+        }
+
+        $page++;
       }
+      catch (GuzzleException | \JsonException $exception) {
+        $this->logger->error(
+          'GitHub starred repositories request failed for user @username on page @page: @message',
+          [
+            '@username' => $username,
+            '@page' => $page,
+            '@message' => $exception->getMessage(),
+          ]
+              );
 
-      foreach ($data as $repository) {
-        $repositories[] = [
-          'id' => $repository['id'],
-          'name' => $repository['name'],
-          'fullName' => $repository['full_name'],
-          'url' => $repository['html_url'],
-          'description' =>
-          $repository['description'] ?? NULL,
-          'language' =>
-          $repository['language'] ?? NULL,
-          'stars' =>
-          $repository['stargazers_count'] ?? 0,
-          'topics' =>
-          $repository['topics'] ?? [],
-        ];
+        throw $exception;
       }
-
-      $page++;
     } while (count($data) === self::PAGE_SIZE);
 
     $this->cache->set(
@@ -136,6 +161,12 @@ class GitHubClient implements GitHubClientInterface {
       ->execute();
 
     if (count($user_ids) !== 1) {
+      $this->logger->error(
+        'GitHub integration configuration is invalid: expected exactly one active public profile user, found @count.',
+        [
+          '@count' => count($user_ids),
+        ]
+      );
       throw new \UnexpectedValueException(
         'Exactly one active user must have the public_profile role.'
       );
@@ -144,6 +175,9 @@ class GitHubClient implements GitHubClientInterface {
     $user = $storage->load(reset($user_ids));
 
     if (!$user instanceof UserInterface) {
+      $this->logger->error(
+        'GitHub integration could not load the public profile user.'
+      );
       throw new \UnexpectedValueException(
         'The public profile user could not be loaded.'
       );
@@ -156,6 +190,9 @@ class GitHubClient implements GitHubClientInterface {
     );
 
     if ($username === '') {
+      $this->logger->error(
+        'GitHub integration cannot retrieve starred repositories because the public profile has no GitHub username.'
+      );
       throw new \UnexpectedValueException(
         'The public profile user does not have a GitHub username.'
       );
