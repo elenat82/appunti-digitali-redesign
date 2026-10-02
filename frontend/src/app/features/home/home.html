@@ -41,9 +41,46 @@
 
     <div class="profile-links">
       <div class="profile-links-column">
-        <a [href]="'mailto:' + profile.email">
-          {{ profile.email }}
-        </a>
+        <div class="profile-email-wrapper" (keydown.escape)="closeEmailActions()">
+          <button type="button" class="profile-email" [attr.aria-expanded]="isEmailActionsOpen()"
+            aria-controls="profile-email-actions" (click)="toggleEmailActions()">
+            <span>
+              {{ profile.email }}
+            </span>
+
+            <svg class="profile-email-stroke" viewBox="0 0 154 13" aria-hidden="true" focusable="false">
+              <path class="profile-email-stroke__path"
+                d="M2 2c49.7 2.6 100 3.1 150 1.7-46.5 2-93 4.4-139.2 7.3 45.2-1.5 90.6-1.8 135.8-.6" fill="none"
+                pathLength="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+            </svg>
+          </button>
+
+          @if (isEmailActionsOpen()) {
+          <div id="profile-email-actions" class="profile-email-actions">
+            <a class="profile-email-action" [href]="'mailto:' + profile.email" (click)="scheduleEmailActionsClose()">
+              Scrivi email
+            </a>
+
+            <button type="button" class="profile-email-action" (click)="copyEmail(profile.email)">
+              <span aria-live="polite" aria-atomic="true">
+                @switch (emailCopyStatus()) {
+                @case ('copied') {
+                Copiato!
+                }
+
+                @case ('error') {
+                Copia non riuscita
+                }
+
+                @default {
+                Copia indirizzo
+                }
+                }
+              </span>
+            </button>
+          </div>
+          }
+        </div>
 
         <a [href]="'tel:' + profile.phone">
           {{ profile.phone }}
