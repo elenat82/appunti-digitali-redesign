@@ -10,32 +10,6 @@
   min-height: 100dvh;
 }
 
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  box-sizing: border-box;
-  min-height: var(--app-header-height);
-
-  background-color: var(--color-background);
-}
-
-.app-title {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  text-decoration: none;
-}
-
-app-search-bar {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
 .app-layout {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

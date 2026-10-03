@@ -16,24 +16,24 @@ import { RouterOutlet } from '@angular/router';
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
 import { Article } from './core/models/article.model';
 import { SearchService } from './features/search/services/search.service';
-import { SearchBar } from './features/search/components/search-bar/search-bar';
 import { SearchResults } from './features/search/components/search-results/search-results';
 import { Sidebar } from './shared/components/sidebar/sidebar';
+import { Header } from './layout/header/header';
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
-    SearchBar,
     SearchResults,
-    Sidebar
+    Sidebar,
+    Header
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
   private readonly contentRepository = inject(ContentRepositoryService);
-  protected readonly search = inject(SearchService);
+  private readonly search = inject(SearchService);
 
   private readonly areas$ = this.contentRepository.getAreas().pipe(
     shareReplay({ bufferSize: 1, refCount: true })
