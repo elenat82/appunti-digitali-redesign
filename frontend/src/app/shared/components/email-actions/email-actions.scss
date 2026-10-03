@@ -1,0 +1,107 @@
+.profile-email-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-email-actions {
+  position: absolute;
+  z-index: 10;
+
+  inset-block-end: calc(100% + 0.75rem);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  min-inline-size: 12rem;
+  padding: 1rem;
+
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 0.25rem 0.75rem
+    rgba(0, 0, 0, 0.2);
+}
+
+.profile-email-action {
+  display: block;
+  inline-size: 100%;
+
+  padding: 0.5rem;
+  white-space: nowrap;
+
+  background: none;
+  border: 0;
+
+  text-align: start;
+  cursor: pointer;
+}
+
+.profile-email-actions::after {
+  content: '';
+
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 50%;
+
+  transform: translateX(-50%);
+
+  border: 0.5rem solid transparent;
+  border-block-start-color: #fff;
+}
+
+.profile-email {
+  position: relative;
+  display: inline-block;
+
+  padding: 0;
+  border: 0;
+
+  background: transparent;
+  color: inherit;
+  font: inherit;
+
+  cursor: pointer;
+}
+
+.profile-email-stroke {
+  position: absolute;
+
+  inset-inline-start: -0.5rem;
+  inset-block-start: 100%;
+
+  inline-size: calc(100% + 1rem);
+  block-size: 0.8rem;
+
+  overflow: visible;
+
+  pointer-events: none;
+}
+
+.profile-email-stroke__path {
+  stroke: rgba(237, 150, 63, 0.7);
+  stroke-width: 5;
+
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+
+  transition:
+    stroke-dashoffset
+    800ms
+    ease-out;
+}
+
+.profile-email:hover
+.profile-email-stroke__path,
+.profile-email:focus-visible
+.profile-email-stroke__path {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-email-stroke__path {
+    transition: none;
+  }
+}

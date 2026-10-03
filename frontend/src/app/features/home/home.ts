@@ -1,8 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
-  signal
+  inject
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -29,6 +28,7 @@ import { SavedResourcesService } from './services/saved-resources.service';
 import {
   LoadingIndicator
 } from '../../shared/components/loading-indicator/loading-indicator';
+import { EmailActions } from '../../shared/components/email-actions/email-actions';
 
 interface HomeProfileState {
   /**
@@ -60,14 +60,13 @@ interface SavedResourcesState {
 }
 
 const LOADING_COMPLETION_DELAY_MS = 500;
-const EMAIL_ACTIONS_CLOSE_DELAY_MS = 2000;
 
 /**
  * Pagina iniziale pubblica dell'applicazione.
  */
 @Component({
   selector: 'app-home',
-  imports: [DatePipe, LoadingIndicator],
+  imports: [DatePipe, LoadingIndicator, EmailActions],
   templateUrl: './home.html',
   styleUrl: './home.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -84,10 +83,6 @@ export class Home {
   private readonly stackOverflowRetry$ = new Subject<void>();
   private readonly gitHubRetry$ = new Subject<void>();
   private readonly profileRetry$ = new Subject<void>();
-
-  readonly isEmailActionsOpen = signal(false);
-  readonly emailCopyStatus = signal<'idle' | 'copied' | 'error'>('idle');
-  private emailActionsCloseTimeout: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -326,73 +321,5 @@ export class Home {
   retryProfile(): void {
     this.profileRetry$.next();
   }
-
-  toggleEmailActions(): void {
-    if (this.emailActionsCloseTimeout) {
-      clearTimeout(
-        this.emailActionsCloseTimeout
-      );
-
-      this.emailActionsCloseTimeout = null;
-    }
-
-    this.isEmailActionsOpen.update(
-      isOpen => !isOpen
-    );
-
-    this.emailCopyStatus.set('idle');
-  }
-
-  async copyEmail(email: string): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(email);
-
-      this.emailCopyStatus.set('copied');
-    }
-    catch {
-      this.emailCopyStatus.set('error');
-    }
-
-    this.scheduleEmailActionsClose();
-  }
-
-  /**
- * Programma la chiusura del pannello dopo un'azione dell'utente (ad esempio copia dell'indirizzo o apertura del client email).
- * Il ritardo permette di lasciare visibile il feedback dell'azione prima di rimuovere il pannello.
- */
-
-  scheduleEmailActionsClose(): void {
-    if (this.emailActionsCloseTimeout) {
-      clearTimeout(
-        this.emailActionsCloseTimeout
-      );
-    }
-
-    this.emailActionsCloseTimeout =
-      setTimeout(() => {
-        this.isEmailActionsOpen.set(false);
-        this.emailCopyStatus.set('idle');
-
-        this.emailActionsCloseTimeout = null;
-      }, EMAIL_ACTIONS_CLOSE_DELAY_MS);
-  }
-
-  /**
- * Chiude subito il pannello quando l'utente lo dismette esplicitamente, ad esempio premendo Escape.
- * Annulla anche un'eventuale chiusura ritardata già programmata, perché il pannello non deve più restare aperto.
- */
-  closeEmailActions(): void {
-    if (this.emailActionsCloseTimeout) {
-      clearTimeout(
-        this.emailActionsCloseTimeout
-      );
-
-      this.emailActionsCloseTimeout = null;
-    }
-
-    this.isEmailActionsOpen.set(false);
-    this.emailCopyStatus.set('idle');
-  }
-
 
 }
