@@ -2,12 +2,19 @@
   <app-header />
 
   <div class="app-layout">
-    <app-sidebar [areas]="areas()" [articlesByArea]="articlesByArea()" />
+    <app-sidebar
+      [areas]="areas()"
+      [articlesByArea]="articlesByArea()"
+    />
 
     <main class="app-main">
       <router-outlet />
     </main>
 
-    <app-search-results class="search-overlay" />
+    <app-search-results
+      class="search-overlay"
+    />
   </div>
+
+  <app-footer />
 </div>

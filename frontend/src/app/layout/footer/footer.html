@@ -1,0 +1,31 @@
+<footer class="app-footer">
+  <div>
+    Made with
+
+    <i
+      class="icon-app-drupal"
+      aria-hidden="true"
+    ></i>
+
+    +
+
+    <i
+      class="icon-app-angular"
+      aria-hidden="true"
+    ></i>
+
+    +
+
+    <i
+      class="icon-app-heart"
+      aria-hidden="true"
+    ></i>
+
+    @if (email(); as email) {
+      by
+      <app-email-actions
+        [email]="email"
+      />
+    }
+  </div>
+</footer>

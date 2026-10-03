@@ -19,6 +19,7 @@ import { SearchService } from './features/search/services/search.service';
 import { SearchResults } from './features/search/components/search-results/search-results';
 import { Sidebar } from './shared/components/sidebar/sidebar';
 import { Header } from './layout/header/header';
+import { Footer } from './layout/footer/footer';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,8 @@ import { Header } from './layout/header/header';
     RouterOutlet,
     SearchResults,
     Sidebar,
-    Header
+    Header,
+    Footer
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
