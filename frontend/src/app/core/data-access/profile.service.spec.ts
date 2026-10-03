@@ -5,8 +5,8 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { environment } from '../../../../environments/environment';
-import { Profile } from '../../../core/models/profile.model';
+import { environment } from '../../../environments/environment';
+import { Profile } from '../models/profile.model';
 import { ProfileService } from './profile.service';
 
 describe('ProfileService', () => {

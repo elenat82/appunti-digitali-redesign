@@ -16,7 +16,7 @@ import {
 import { DatePipe } from '@angular/common';
 
 import { Profile } from '../../core/models/profile.model';
-import { ProfileService } from './services/profile.service';
+import { ProfileService } from '../../core/data-access/profile.service';
 import { StackOverflowQuestion } from '../../core/models/stack-overflow-question.model';
 import { StackOverflowService } from './services/stack-overflow.service';
 import { GitHubRepository } from '../../core/models/github-repository.model';

@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 
 import { Profile } from '../../core/models/profile.model';
-import { ProfileService } from './services/profile.service';
+import { ProfileService } from '../../core/data-access/profile.service';
 import { Home } from './home';
 import { StackOverflowQuestion } from '../../core/models/stack-overflow-question.model';
 import { StackOverflowService } from './services/stack-overflow.service';
