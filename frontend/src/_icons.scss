@@ -1,0 +1,96 @@
+@font-face {
+  font-family: 'AppuntiDigitaliIcons';
+  src:
+    url('/assets/fonts/icomoon/fonts/AppuntiDigitaliIcons.woff') format('woff'),
+    url('/assets/fonts/icomoon/fonts/AppuntiDigitaliIcons.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^='icon-app-'],
+[class*=' icon-app-'] {
+  font-family: 'AppuntiDigitaliIcons' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-app-saved-resources::before {
+  content: '\f275';
+}
+
+.icon-app-retry::before {
+  content: '\f536';
+}
+
+.icon-app-close-sidebar::before {
+  content: '\f444';
+}
+
+.icon-app-open-sidebar::before {
+  content: '\f0fe';
+}
+
+.icon-app-back-to-results::before {
+  content: '\f2f0';
+}
+
+.icon-app-github::before {
+  content: '\e90a';
+}
+
+.icon-app-stackoverflow::before {
+  content: '\e907';
+}
+
+.icon-app-mail::before {
+  content: '\e909';
+}
+
+.icon-app-news::before {
+  content: '\e908';
+}
+
+.icon-app-copy::before {
+  content: '\e925';
+}
+
+.icon-app-tags::before {
+  content: '\e936';
+}
+
+.icon-app-search::before {
+  content: '\e986';
+}
+
+.icon-app-heart::before {
+  content: '\e9da';
+}
+
+.icon-app-phone::before {
+  content: '\e942';
+}
+
+.icon-app-download::before {
+  content: '\e9c7';
+}
+
+.icon-app-linkedin::before {
+  content: '\eac9';
+}
+
+.icon-app-drupal::before {
+  content: '\fb02';
+}
+
+.icon-app-angular::before {
+  content: '\f594';
+}
+
+
