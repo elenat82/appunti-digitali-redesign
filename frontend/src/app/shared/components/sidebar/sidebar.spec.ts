@@ -64,6 +64,11 @@ describe('Sidebar', () => {
   };
 
   beforeEach(async () => {
+    vi.spyOn(
+      HTMLMediaElement.prototype,
+      'play'
+    ).mockResolvedValue(undefined);
+
     await TestBed.configureTestingModule({
       imports: [Sidebar],
       providers: [
@@ -91,6 +96,10 @@ describe('Sidebar', () => {
     );
 
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should create', () => {
@@ -328,5 +337,65 @@ describe('Sidebar', () => {
     expect(
       button?.getAttribute('aria-expanded')
     ).toBe('true');
+  });
+
+  it('plays the closing sound when the sidebar is closed', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const button =
+      element.querySelector<HTMLButtonElement>(
+        '.sidebar-toggle'
+      );
+
+    button?.click();
+
+    const playMock =
+      vi.mocked(
+        HTMLMediaElement.prototype.play
+      );
+
+    expect(playMock).toHaveBeenCalledOnce();
+
+    const audio =
+      playMock.mock.instances[0] as HTMLAudioElement;
+
+    expect(audio.src).toContain(
+      '/assets/sounds/sidebar-close.mp3'
+    );
+  });
+
+  it('plays the opening sound when the sidebar is reopened', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const button =
+      element.querySelector<HTMLButtonElement>(
+        '.sidebar-toggle'
+      );
+
+    button?.click();
+    button?.click();
+
+    const playMock =
+      vi.mocked(
+        HTMLMediaElement.prototype.play
+      );
+
+    expect(playMock).toHaveBeenCalledTimes(2);
+
+    const firstAudio =
+      playMock.mock.instances[0] as HTMLAudioElement;
+
+    const secondAudio =
+      playMock.mock.instances[1] as HTMLAudioElement;
+
+    expect(firstAudio.src).toContain(
+      '/assets/sounds/sidebar-close.mp3'
+    );
+
+    expect(secondAudio.src).toContain(
+      '/assets/sounds/sidebar-open.mp3'
+    );
   });
 });

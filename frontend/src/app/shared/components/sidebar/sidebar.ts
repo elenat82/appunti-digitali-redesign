@@ -31,6 +31,12 @@ export class Sidebar {
 
   private readonly router = inject(Router);
 
+  /**
+   * Indica se il contenuto della sidebar è visibile.
+   */
+  readonly isOpen = signal(true);
+
+
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter(
@@ -69,14 +75,29 @@ export class Sidebar {
   });
 
   /**
-   * Indica se il contenuto della sidebar è visibile.
-   */
-  readonly isOpen = signal(true);
-
-  /**
-   * Apre o chiude la sidebar.
+   * Apre o chiude la sidebar e riproduce il relativo feedback sonoro.
    */
   toggle(): void {
-    this.isOpen.update((isOpen) => !isOpen);
+    const willOpen = !this.isOpen();
+
+    this.isOpen.set(willOpen);
+
+    this.playToggleSound(willOpen);
+  }
+
+  /**
+   * Riproduce il feedback sonoro associato all'apertura o alla chiusura della sidebar.
+   */
+  private playToggleSound(isOpening: boolean): void {
+    const audio = new Audio(
+      isOpening
+        ? '/assets/sounds/sidebar-open.mp3'
+        : '/assets/sounds/sidebar-close.mp3'
+    );
+
+    void audio.play().catch(() => {
+      // Possiamo ignorare l'errore, il feedback sonoro è accessorio.
+    });
+
   }
 }
