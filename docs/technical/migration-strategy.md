@@ -47,7 +47,9 @@ La migrazione deve preservare, dove possibile:
 - link di approfondimento;
 - ordine degli articoli;
 - struttura dei blocchi di codice;
-- markup necessario alla corretta visualizzazione dei contenuti tecnici.
+- markup necessario alla corretta visualizzazione dei contenuti tecnici;
+- stato di pubblicazione;
+- ordine delle aree tematiche.
 
 L'eventuale migrazione di altri dati del sito legacy verrà analizzata separatamente.
 
@@ -87,20 +89,7 @@ I link contestuali inseriti direttamente nel body rimangono invece parte del bod
 
 L'ordinamento degli articoli all'interno dell'area viene gestito tramite `field_weight`.
 
-La migrazione deve quindi determinare, quando possibile, il valore di ordinamento corrispondente per ogni articolo importato.
-
-## Dati legacy non mantenuti
-
-Non tutti i dati presenti nel sito Drupal 8 devono essere trasferiti.
-
-In particolare, il nuovo modello non prevede la migrazione dei campi:
-
-- Tag;
-- Correlati.
-
-Questi dati non devono quindi essere trasferiti soltanto per riprodurre fedelmente la struttura del vecchio sito.
-
-La migrazione deve privilegiare il modello dati definito per il nuovo sito, non la duplicazione completa della struttura legacy.
+La migrazione deve trasferire il valore legacy di `field_weight` nel corrispondente campo `field_weight` del nodo Drupal 11.
 
 ## Analisi della sorgente Drupal 8
 
@@ -119,6 +108,192 @@ Per ogni area tematica devono essere verificati almeno:
 - eventuali differenze tra i content type.
 
 Il mapping definitivo deve essere basato sui dati effettivamente presenti nel sito legacy e non su assunzioni relative ai nomi dei campi.
+
+### Content type legacy
+
+L'analisi del database Drupal 8 ha rilevato i seguenti content type tecnici:
+
+| Content type | Pubblicati | Non pubblicati |
+| --- | ---: | ---: |
+| angular | 2 | 0 |
+| css | 21 | 0 |
+| drupal | 26 | 26 |
+| html | 17 | 0 |
+| javascript | 36 | 0 |
+| php | 32 | 0 |
+| varie | 26 | 1 |
+
+Sono inoltre presenti i content type `feed_rss` e `strumenti_utili`, che non rientrano nella migrazione iniziale degli articoli tecnici.
+
+I 52 contenuti dell'area Drupal devono essere mantenuti integralmente, preservandone lo stato di pubblicazione.
+
+### Struttura dei campi legacy
+
+I content type tecnici del Drupal 8 utilizzano una struttura in gran parte comune.
+
+Tutti i content type tecnici contengono i seguenti campi:
+
+- `body`;
+- `field_approfondimenti`;
+- `field_content_type_weight`;
+- `field_correlati`;
+- `field_tags`;
+- `field_weight`.
+
+Sono inoltre presenti alcuni campi specifici per area:
+
+- Angular:
+  - `field_angular_tags`;
+  - `field_versioni_angular`;
+- CSS:
+  - `field_tags_css`;
+  - `field_versioni_css`;
+- Drupal:
+  - `field_tags_drupal`;
+- HTML:
+  - `field_tags_html`;
+  - `field_versioni_html`;
+- JavaScript:
+  - `field_tags_js`;
+  - `field_versioni_js`;
+- PHP:
+  - `field_tags_php`.
+
+Il mapping principale già identificato è:
+
+| Drupal 8 | Drupal 11 |
+| --- | --- |
+| `title` | `title` |
+| `status` | `status` |
+| `body` | `field_body` |
+| `field_approfondimenti` | `field_approfondimenti` |
+| `field_weight` | `field_weight` |
+| `field_content_type_weight` | weight della configurazione dell'area |
+
+I campi relativi a tag e correlati non fanno parte del nuovo modello dati.
+
+### Campi legacy non migrati
+
+Alcuni campi presenti nei content type tecnici del Drupal 8 non vengono mantenuti nel nuovo modello dati.
+
+Si tratta di campi introdotti in passato per funzionalità poi non utilizzate in modo significativo e che non sono più necessarie nel nuovo sito.
+
+Non devono essere migrati i seguenti campi:
+
+- `field_tags`;
+- `field_correlati`;
+
+e i campi specifici per area:
+
+- Angular:
+  - `field_angular_tags`;
+  - `field_versioni_angular`;
+- CSS:
+  - `field_tags_css`;
+  - `field_versioni_css`;
+- Drupal:
+  - `field_tags_drupal`;
+- HTML:
+  - `field_tags_html`;
+  - `field_versioni_html`;
+- JavaScript:
+  - `field_tags_js`;
+  - `field_versioni_js`;
+- PHP:
+  - `field_tags_php`.
+
+L'eventuale presenza di valori in questi campi nel database legacy non costituisce un requisito di conservazione.
+
+La migrazione deve trasferire soltanto i dati previsti dal nuovo modello, evitando di riprodurre campi o classificazioni non più utilizzati.
+
+### Ordinamento legacy
+
+Il sito Drupal 8 utilizza due campi distinti per l'ordinamento.
+
+`field_content_type_weight` determina l'ordine di presentazione delle aree tematiche.
+
+`field_weight` determina invece l'ordine dei singoli articoli all'interno della relativa area.
+
+Nel nuovo Drupal i due concetti rimangono separati:
+
+- `field_content_type_weight` non viene migrato sui nodi, ma viene trasferito nella configurazione dell'area associata al content type;
+- `field_weight` viene migrato nel campo `field_weight` del nodo.
+
+Il mapping è quindi:
+
+| Drupal 8 | Drupal 11 |
+| --- | --- |
+| `field_content_type_weight` | weight della configurazione dell'area |
+| `field_weight` | `field_weight` del nodo |
+
+### Stato di pubblicazione
+
+La migrazione deve preservare lo stato di pubblicazione dei contenuti.
+
+I nodi pubblicati nel Drupal 8 devono essere creati come pubblicati nel Drupal 11, mentre i nodi non pubblicati devono rimanere non pubblicati.
+
+Questo vale anche per l'area Drupal, che contiene attualmente:
+
+- 26 articoli pubblicati;
+- 26 articoli non pubblicati.
+
+Entrambi i gruppi devono essere mantenuti.
+
+La presenza di contenuti non pubblicati nel backend non modifica il contratto del frontend pubblico: le API Drupal continuano a esporre ad Angular esclusivamente i contenuti pubblicati.
+
+### Formato del body legacy
+
+Tutti i 187 articoli tecnici del Drupal 8 utilizzano il text format `full_html`.
+
+Nessun articolo tecnico utilizza il summary del campo body.
+
+La migrazione deve quindi:
+
+- trasferire `body_value` nel nuovo `field_body.value`;
+- impostare `field_body.format` a `full_html`;
+- non migrare `body_summary`, perché non contiene dati da preservare.
+
+Il mapping è:
+
+| Drupal 8 | Drupal 11 |
+| --- | --- |
+| `body_value` | `field_body.value` |
+| `body_format` (`full_html`) | `field_body.format` (`full_html`) |
+
+Il markup HTML del body deve essere preservato, salvo le trasformazioni esplicitamente previste dalla pipeline di migrazione.
+
+### Approfondimenti legacy
+
+Il campo `field_approfondimenti` è un campo Link multivalore.
+
+Nel database Drupal 8 sono presenti 126 approfondimenti associati a 58 articoli tecnici.
+
+Tutti gli approfondimenti sono link esterni.
+
+Ogni valore deve preservare:
+
+- URI;
+- titolo del link;
+- posizione relativa rispetto agli altri valori dello stesso articolo.
+
+Il titolo del link non è valorizzato in modo uniforme nel sito legacy.
+Sono presenti:
+
+- link senza titolo;
+- link il cui titolo coincide con l'URL;
+- link con un titolo descrittivo.
+
+La migrazione deve preservare il valore legacy senza generare o normalizzare automaticamente il titolo.
+
+Il campo `field_approfondimenti_options` contiene sempre un array vuoto serializzato (`a:0:{}`) e non deve quindi essere migrato.
+
+Il mapping è:
+
+| Drupal 8 | Drupal 11 |
+| --- | --- |
+| `field_approfondimenti_uri` | `field_approfondimenti.uri` |
+| `field_approfondimenti_title` | `field_approfondimenti.title` |
+| `delta` | ordine dei valori multivalore |
 
 ## Strategia di esecuzione
 
@@ -224,12 +399,10 @@ La procedura utilizzata per il rilascio dovrà essere documentata con i comandi 
 
 ## Aspetti ancora da definire
 
-I seguenti aspetti richiedono l'analisi del sito Drupal 8 prima di poter essere definiti in modo definitivo:
+I seguenti aspetti richiedono ulteriori analisi o verranno definiti durante l'implementazione della pipeline:
 
-- mapping esatto dei machine name legacy;
 - meccanismo tecnico utilizzato per leggere il database Drupal 8;
 - migration necessarie e relative dipendenze;
-- gestione dell'ordinamento legacy;
 - trasformazioni definitive degli heading;
 - gestione di immagini e file locali;
 - gestione degli embed;
