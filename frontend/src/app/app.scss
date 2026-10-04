@@ -39,7 +39,21 @@
 
   overflow: hidden;
 
-  // L'host non deve bloccare la pagina quando
-  // non contiene risultati visibili.
+  // L'host non deve bloccare la pagina quando non contiene risultati visibili.
   pointer-events: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  padding: 0.75rem 1rem;
+
+  transform: translateY(-100%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }

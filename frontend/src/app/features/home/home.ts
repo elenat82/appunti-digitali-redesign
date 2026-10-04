@@ -1,7 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject
+  inject,
+  signal
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -83,6 +84,8 @@ export class Home {
   private readonly stackOverflowRetry$ = new Subject<void>();
   private readonly gitHubRetry$ = new Subject<void>();
   private readonly profileRetry$ = new Subject<void>();
+
+  readonly accessibilityStatus = signal('');
 
   /**
    * Stato del profilo pubblico mostrato nella home.
@@ -291,6 +294,9 @@ export class Home {
  * Ripete il caricamento delle risorse salvate.
  */
   retrySavedResources(): void {
+    this.accessibilityStatus.set(
+      'Ricaricamento delle risorse salvate...'
+    );
     this.savedResourcesRetry$.next();
   }
 
@@ -298,6 +304,9 @@ export class Home {
  * Ripete il caricamento delle news.
  */
   retryNews(): void {
+    this.accessibilityStatus.set(
+      'Ricaricamento delle notizie...'
+    );
     this.newsRetry$.next();
   }
 
@@ -305,6 +314,9 @@ export class Home {
  * Ripete il caricamento delle domande Stack Overflow.
  */
   retryStackOverflow(): void {
+    this.accessibilityStatus.set(
+      'Ricaricamento delle domande Stack Overflow...'
+    );
     this.stackOverflowRetry$.next();
   }
 
@@ -312,6 +324,9 @@ export class Home {
  * Ripete il caricamento dei repository GitHub starred.
  */
   retryGitHubStarred(): void {
+    this.accessibilityStatus.set(
+      'Ricaricamento dei repository GitHub starred...'
+    );
     this.gitHubRetry$.next();
   }
 
@@ -319,6 +334,9 @@ export class Home {
  * Ripete il caricamento del profilo pubblico.
  */
   retryProfile(): void {
+    this.accessibilityStatus.set(
+      'Ricaricamento del profilo...'
+    );
     this.profileRetry$.next();
   }
 

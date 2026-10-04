@@ -126,6 +126,25 @@ describe('EmailActions', () => {
         '.profile-email-actions button'
       );
 
+    const liveRegion =
+      copyButton?.querySelector<HTMLElement>(
+        '[aria-live="polite"]'
+      );
+
+    expect(liveRegion).toBeTruthy();
+
+    expect(
+      liveRegion?.getAttribute(
+        'aria-atomic'
+      )
+    ).toBe('true');
+
+    copyButton?.focus();
+
+    expect(document.activeElement).toBe(
+      copyButton
+    );
+
     copyButton?.click();
 
     await Promise.resolve();
@@ -161,12 +180,13 @@ describe('EmailActions', () => {
         'aria-expanded'
       )
     ).toBe('false');
+
+    expect(document.activeElement).toBe(
+      emailButton
+    );
   });
 
-  it('closes email actions immediately with Escape', () => {
-
-    fixture.detectChanges();
-
+  it('closes email actions with Escape and restores focus to the email button', () => {
     const element: HTMLElement =
       fixture.nativeElement;
 
@@ -178,13 +198,18 @@ describe('EmailActions', () => {
     emailButton?.click();
     fixture.detectChanges();
 
-    expect(
-      element.querySelector(
-        '.profile-email-actions'
-      )
-    ).toBeTruthy();
+    const copyButton =
+      element.querySelector<HTMLButtonElement>(
+        '.profile-email-actions button'
+      );
 
-    emailButton?.dispatchEvent(
+    copyButton?.focus();
+
+    expect(document.activeElement).toBe(
+      copyButton
+    );
+
+    copyButton?.dispatchEvent(
       new KeyboardEvent(
         'keydown',
         {
@@ -207,6 +232,10 @@ describe('EmailActions', () => {
         'aria-expanded'
       )
     ).toBe('false');
+
+    expect(document.activeElement).toBe(
+      emailButton
+    );
   });
 
   it('shows an error when the email cannot be copied', async () => {
@@ -271,5 +300,60 @@ describe('EmailActions', () => {
         '.profile-email-actions'
       )
     ).toBeNull();
+  });
+
+  it('does not restore focus when it has already moved outside the email actions', async () => {
+    vi.useFakeTimers();
+
+    const writeText = vi.fn().mockResolvedValue(undefined);
+
+    Object.defineProperty(
+      navigator,
+      'clipboard',
+      {
+        configurable: true,
+        value: { writeText }
+      }
+    );
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const emailButton =
+      element.querySelector<HTMLButtonElement>(
+        '.profile-email'
+      );
+
+    emailButton?.click();
+    fixture.detectChanges();
+
+    const copyButton =
+      element.querySelector<HTMLButtonElement>(
+        '.profile-email-actions button'
+      );
+
+    const externalButton =
+      document.createElement('button');
+
+    document.body.appendChild(
+      externalButton
+    );
+
+    copyButton?.focus();
+    copyButton?.click();
+
+    await Promise.resolve();
+    fixture.detectChanges();
+
+    externalButton.focus();
+
+    await vi.advanceTimersByTimeAsync(2000);
+    fixture.detectChanges();
+
+    expect(document.activeElement).toBe(
+      externalButton
+    );
+
+    externalButton.remove();
   });
 });

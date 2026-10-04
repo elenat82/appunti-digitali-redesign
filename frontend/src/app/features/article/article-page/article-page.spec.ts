@@ -22,17 +22,25 @@ import { SearchService } from '../../search/services/search.service';
 import {
   getSearchableBodyElements
 } from '../../search/utils/article-search-dom';
+import {
+  SearchResultGroup
+} from '../../search/models/search-result.model';
 
 describe('ArticlePage', () => {
   let fixture: ComponentFixture<ArticlePage>;
   let routeParamMap: ReplaySubject<ParamMap>;
+  let routeQueryParamMap: ReplaySubject<ParamMap>;
 
   const contentRepositoryMock = {
     getArticlesByArea: vi.fn()
   };
 
+  const resultGroupsState =
+    signal<SearchResultGroup[]>([]);
+
   const searchMock = {
-    resultGroups: signal([])
+    resultGroups:
+      resultGroupsState.asReadonly()
   };
 
   const article: Article = {
@@ -54,6 +62,9 @@ describe('ArticlePage', () => {
     vi.clearAllMocks();
 
     routeParamMap = new ReplaySubject<ParamMap>(1);
+    routeQueryParamMap = new ReplaySubject<ParamMap>(1);
+
+    resultGroupsState.set([]);
 
     const emptyQueryParamMap =
       convertToParamMap({});
@@ -65,7 +76,7 @@ describe('ArticlePage', () => {
           provide: ActivatedRoute,
           useValue: {
             paramMap: routeParamMap.asObservable(),
-            queryParamMap: of(emptyQueryParamMap),
+            queryParamMap: routeQueryParamMap.asObservable(),
             snapshot: {
               queryParamMap: emptyQueryParamMap
             }
@@ -83,9 +94,16 @@ describe('ArticlePage', () => {
     }).compileComponents();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   function createComponent(
     area: string | null = 'html',
-    slug: string | null = 'articolo-html-di-prova'
+    slug: string | null =
+      'articolo-html-di-prova',
+    queryParams:
+      Record<string, string> = {}
   ): void {
     const params: Record<string, string> = {};
 
@@ -100,6 +118,11 @@ describe('ArticlePage', () => {
     routeParamMap.next(
       convertToParamMap(params)
     );
+
+    routeQueryParamMap.next(
+      convertToParamMap(queryParams)
+    );
+
 
     fixture = TestBed.createComponent(ArticlePage);
     fixture.detectChanges();
@@ -159,6 +182,25 @@ describe('ArticlePage', () => {
 
     expect(link?.href).toBe(
       'https://developer.mozilla.org/'
+    );
+
+    const newTabHint =
+      link?.querySelector<HTMLElement>(
+        '.visually-hidden'
+      );
+
+    expect(newTabHint).toBeTruthy();
+
+    expect(
+      newTabHint?.textContent?.trim()
+    ).toBe(
+      '(si apre in una nuova scheda)'
+    );
+
+    expect(link?.target).toBe('_blank');
+
+    expect(link?.rel).toBe(
+      'noopener noreferrer'
     );
   });
 
@@ -287,5 +329,117 @@ describe('ArticlePage', () => {
     ).toContain(
       'Impossibile caricare l\'articolo'
     );
+  });
+
+  it('sposta il focus sul segmento dell\'occorrenza selezionata', async () => {
+    const searchArticle: Article = {
+      ...article,
+      body: '<p>Drupal utilizza i servizi.</p>'
+    };
+
+    contentRepositoryMock
+      .getArticlesByArea
+      .mockReturnValue(
+        of([searchArticle])
+      );
+
+    resultGroupsState.set([
+      {
+        articleId: 1,
+        articleTitle:
+          'Articolo HTML di prova',
+        articlePath:
+          '/html/articolo-html-di-prova',
+        areaId: 'html',
+        occurrences: [
+          {
+            articleId: 1,
+            segmentId:
+              'article-1-segment-1',
+            startOffset: 0,
+            endOffset: 6,
+            segmentType: 'paragraph',
+            locator: {
+              source: 'body',
+              index: 0
+            },
+            snippet: {
+              beforeMatch: '',
+              match: 'Drupal',
+              afterMatch:
+                ' utilizza i servizi.',
+              isStartTruncated: false,
+              isEndTruncated: false
+            }
+          }
+        ]
+      }
+    ]);
+
+    const nativeCreateRange =
+      document.createRange.bind(
+        document
+      );
+
+    vi.spyOn(
+      document,
+      'createRange'
+    ).mockImplementation(() => {
+      const range =
+        nativeCreateRange();
+
+      Object.defineProperty(
+        range,
+        'getBoundingClientRect',
+        {
+          configurable: true,
+          value: vi.fn(
+            () => ({
+              top: 0,
+              height: 0
+            } as DOMRect)
+          )
+        }
+      );
+
+      return range;
+    });
+
+    vi.spyOn(
+      window,
+      'scrollTo'
+    ).mockImplementation(() => { });
+
+    createComponent(
+      'html',
+      'articolo-html-di-prova',
+      {
+        source: 'body',
+        index: '0',
+        start: '0',
+        end: '6'
+      }
+    );
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const target =
+      element.querySelector<HTMLElement>(
+        '.article-body p'
+      );
+
+    expect(target).toBeTruthy();
+
+    expect(
+      document.activeElement
+    ).toBe(target);
+
+    expect(
+      target?.getAttribute('tabindex')
+    ).toBe('-1');
   });
 });

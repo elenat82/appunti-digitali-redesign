@@ -1,4 +1,4 @@
-<label for="global-search">
+<label class="visually-hidden" for="global-search">
   Cerca negli appunti
 </label>
 
@@ -7,5 +7,7 @@
   type="search"
   [value]="search.query()"
   (input)="onInput($event)"
+  (keydown.escape)="closeResults($event)"
   autocomplete="off"
+  placeholder="Cerca negli appunti..."
 />

@@ -91,7 +91,7 @@ describe('App', () => {
     expect(button).toBeNull();
   });
 
-  it('should show return to results when search results are closed', () => {
+  it('should show "Mostra risultati" when search results are closed', () => {
     queryState.set('Drupal');
     resultsOpenState.set(false);
 
@@ -105,9 +105,9 @@ describe('App', () => {
       );
 
     expect(button).not.toBeNull();
-    expect(button?.textContent?.trim()).toBe(
-      'Torna ai risultati'
-    );
+    expect(
+      button?.textContent?.trim()
+    ).toBe('Mostra risultati');
   });
 
   it('should reopen search results from the header', () => {
@@ -147,6 +147,67 @@ describe('App', () => {
 
     expect(searchMock.updateArticles).toHaveBeenCalledTimes(1);
     expect(searchMock.updateArticles).toHaveBeenCalledWith([]);
+  });
+
+  it('espone uno skip link verso il contenuto principale', () => {
+    const fixture = TestBed.createComponent(App);
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const skipLink =
+      element.querySelector<HTMLAnchorElement>(
+        '.skip-link'
+      );
+
+    const main =
+      element.querySelector<HTMLElement>(
+        '#main-content'
+      );
+
+    expect(skipLink).toBeTruthy();
+    expect(main).toBeTruthy();
+
+    expect(
+      skipLink?.getAttribute('href')
+    ).toBe('#main-content');
+
+    expect(
+      skipLink?.textContent?.trim()
+    ).toBe('Vai al contenuto principale');
+
+    expect(
+      main?.getAttribute('tabindex')
+    ).toBe('-1');
+  });
+
+  it('rende inert il contenuto principale quando i risultati sono aperti', () => {
+    resultsOpenState.set(true);
+
+    const fixture = TestBed.createComponent(App);
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const main =
+      element.querySelector<HTMLElement>(
+        '#main-content'
+      );
+
+    expect(
+      main?.hasAttribute('inert')
+    ).toBe(true);
+
+    resultsOpenState.set(false);
+    fixture.detectChanges();
+
+    expect(
+      main?.hasAttribute('inert')
+    ).toBe(false);
   });
 
 });

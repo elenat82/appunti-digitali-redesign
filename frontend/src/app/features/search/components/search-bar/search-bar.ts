@@ -28,4 +28,12 @@ export class SearchBar {
 
     this.search.setQuery(input.value);
   }
+
+  protected closeResults(
+    event: Event
+  ): void {
+    event.preventDefault();
+
+    this.search.closeResults();
+  }
 }

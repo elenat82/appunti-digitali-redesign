@@ -1,4 +1,8 @@
-<section class="home-contact" aria-labelledby="profile-name">
+<p class="visually-hidden home-accessibility-status" aria-live="polite" aria-atomic="true">
+  {{ accessibilityStatus() }}
+</p>
+<section class="home-contact" aria-label="Profilo e contatti"
+  [attr.aria-busy]="profileState().status === 'loading' ? 'true' : 'false'">
   @switch (profileState().status) {
   @case ('loading') {
   <app-loading-indicator />
@@ -10,12 +14,15 @@
 
   @case ('error') {
   <div class="home-profile-error">
-    <p>
+    <p role="status">
       Impossibile caricare i contatti.
     </p>
 
     <button type="button" class="home-section-retry" (click)="retryProfile()">
       Riprova
+      <span class="visually-hidden">
+        il caricamento del profilo
+      </span>
     </button>
   </div>
   }
@@ -51,10 +58,16 @@
       <div class="profile-links-column">
         <a [href]="profile.linkedin" target="_blank" rel="noopener noreferrer">
           LinkedIn
+          <span class="visually-hidden">
+            (si apre in una nuova scheda)
+          </span>
         </a>
 
         <a [href]="profile.github" target="_blank" rel="noopener noreferrer">
           GitHub
+          <span class="visually-hidden">
+            (si apre in una nuova scheda)
+          </span>
         </a>
       </div>
     </div>
@@ -62,12 +75,15 @@
 
   <a class="profile-cv" [href]="profile.cvUrl" target="_blank" rel="noopener noreferrer">
     Download CV
+    <span class="visually-hidden">
+      (si apre in una nuova scheda)
+    </span>
   </a>
   }
   }
   }
 </section>
-<section class="home-news" aria-labelledby="news-title">
+<section class="home-news" aria-labelledby="news-title" [attr.aria-busy]="newsState().status === 'loading' ? 'true' : 'false'">
 
   <div class="home-section-header">
     <h2 id="news-title">
@@ -77,6 +93,9 @@
     @if (newsState().status === 'error') {
     <button type="button" class="home-section-retry" (click)="retryNews()">
       Riprova
+      <span class="visually-hidden">
+        il caricamento delle notizie
+      </span>
     </button>
     }
   </div>
@@ -91,7 +110,7 @@
   }
 
   @case ('error') {
-  <p>
+  <p role="status">
     Impossibile caricare le notizie.
   </p>
   }
@@ -105,6 +124,9 @@
     <li>
       <a [href]="item.url" target="_blank" rel="noopener noreferrer">
         {{ item.title }}
+        <span class="visually-hidden">
+          (si apre in una nuova scheda)
+        </span>
       </a>
 
       <div class="news-meta">
@@ -129,7 +151,8 @@
   }
   }
 </section>
-<section class="home-stack-overflow" aria-labelledby="stack-overflow-title">
+<section class="home-stack-overflow" aria-labelledby="stack-overflow-title"
+  [attr.aria-busy]="stackOverflowState().status === 'loading' ? 'true' : 'false'">
   <div class="home-section-header">
     <h2 id="stack-overflow-title">
       Stack Overflow
@@ -138,6 +161,9 @@
     @if (stackOverflowState().status === 'error') {
     <button type="button" class="home-section-retry" (click)="retryStackOverflow()">
       Riprova
+      <span class="visually-hidden">
+        il caricamento delle domande Stack Overflow
+      </span>
     </button>
     }
   </div>
@@ -152,7 +178,7 @@
   }
 
   @case ('error') {
-  <p>
+  <p role="status">
     Impossibile caricare le domande Stack Overflow.
   </p>
   }
@@ -166,6 +192,9 @@
     <li>
       <a [href]="question.url" target="_blank" rel="noopener noreferrer">
         {{ question.title }}
+        <span class="visually-hidden">
+          (si apre in una nuova scheda)
+        </span>
       </a>
 
       <div class="stack-overflow-meta">
@@ -192,7 +221,8 @@
   }
   }
 </section>
-<section class="home-github" aria-labelledby="github-title">
+<section class="home-github" aria-labelledby="github-title"
+  [attr.aria-busy]="gitHubState().status === 'loading' ? 'true' : 'false'">
   <div class="home-section-header">
     <h2 id="github-title">
       GitHub starred
@@ -201,6 +231,9 @@
     @if (gitHubState().status === 'error') {
     <button type="button" class="home-section-retry" (click)="retryGitHubStarred()">
       Riprova
+      <span class="visually-hidden">
+        il caricamento dei repository GitHub starred
+      </span>
     </button>
     }
   </div>
@@ -215,7 +248,7 @@
   }
 
   @case ('error') {
-  <p>
+  <p role="status">
     Impossibile caricare i repository GitHub starred.
   </p>
   }
@@ -229,6 +262,9 @@
     <li>
       <a [href]="repository.url" target="_blank" rel="noopener noreferrer">
         {{ repository.name }}
+        <span class="visually-hidden">
+          (si apre in una nuova scheda)
+        </span>
       </a>
 
       <div class="repository-meta">
@@ -256,7 +292,8 @@
   }
   }
 </section>
-<section class="home-saved-resources" aria-labelledby="saved-resources-title">
+<section class="home-saved-resources" aria-labelledby="saved-resources-title"
+  [attr.aria-busy]="savedResourcesState().status === 'loading' ? 'true' : 'false'">
   <div class="home-section-header">
     <h2 id="saved-resources-title">
       Risorse salvate
@@ -265,6 +302,9 @@
     @if (savedResourcesState().status === 'error') {
     <button type="button" class="home-section-retry" (click)="retrySavedResources()">
       Riprova
+      <span class="visually-hidden">
+        il caricamento delle risorse salvate
+      </span>
     </button>
     }
   </div>
@@ -279,7 +319,7 @@
   }
 
   @case ('error') {
-  <p>
+  <p role="status">
     Impossibile caricare le risorse salvate.
   </p>
   }
@@ -293,6 +333,9 @@
     <li>
       <a [href]="resource.url" target="_blank" rel="noopener noreferrer">
         {{ resource.title }}
+        <span class="visually-hidden">
+          (si apre in una nuova scheda)
+        </span>
       </a>
 
       <p class="saved-resource-url">

@@ -12,9 +12,12 @@ describe('SearchBar', () => {
 
   const searchMock = {
     query: queryState.asReadonly(),
+
     setQuery: vi.fn((query: string) => {
       queryState.set(query);
-    })
+    }),
+
+    closeResults: vi.fn()
   };
 
   beforeEach(async () => {
@@ -59,5 +62,60 @@ describe('SearchBar', () => {
       fixture.nativeElement.querySelector('input');
 
     expect(input.value).toBe('Queue API');
+  });
+
+  it('associa una label accessibile al campo di ricerca', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const label =
+      element.querySelector<HTMLLabelElement>(
+        'label[for="global-search"]'
+      );
+
+    const input =
+      element.querySelector<HTMLInputElement>(
+        '#global-search'
+      );
+
+    expect(label).toBeTruthy();
+    expect(input).toBeTruthy();
+
+    expect(
+      label?.textContent?.trim()
+    ).toBe('Cerca negli appunti');
+
+    expect(label?.htmlFor).toBe(
+      input?.id
+    );
+  });
+
+  it('chiude i risultati con Escape senza modificare la query', () => {
+    queryState.set('Drupal');
+    fixture.detectChanges();
+
+    const input: HTMLInputElement =
+      fixture.nativeElement.querySelector(
+        '#global-search'
+      );
+
+    const event = new KeyboardEvent(
+      'keydown',
+      {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true
+      }
+    );
+
+    input.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(true);
+
+    expect(
+      searchMock.closeResults
+    ).toHaveBeenCalledOnce();
+
+    expect(queryState()).toBe('Drupal');
   });
 });

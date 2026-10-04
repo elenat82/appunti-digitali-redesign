@@ -36,6 +36,7 @@ import { Footer } from './layout/footer/footer';
 export class App {
   private readonly contentRepository = inject(ContentRepositoryService);
   private readonly search = inject(SearchService);
+  protected readonly isSearchResultsOpen = this.search.isResultsOpen;
 
   private readonly areas$ = this.contentRepository.getAreas().pipe(
     shareReplay({ bufferSize: 1, refCount: true })

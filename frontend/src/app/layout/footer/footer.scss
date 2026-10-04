@@ -1,0 +1,16 @@
+.footer-tech {
+  position: relative;
+}
+
+.footer-tech::after {
+  content: attr(data-tooltip);
+
+  position: absolute;
+
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.footer-tech:hover::after {
+  opacity: 1;
+}

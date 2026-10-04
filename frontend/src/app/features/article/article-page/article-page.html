@@ -19,8 +19,10 @@
     <ul>
       @for (link of article.externalLinks; track link.url) {
       <li>
-        <a [href]="link.url">
-          {{ link.title || link.url }}
+        <a [href]="link.url" target="_blank" rel="noopener noreferrer">
+          {{ link.title || link.url }} <span class="visually-hidden">
+            (si apre in una nuova scheda)
+          </span>
         </a>
       </li>
       }

@@ -128,6 +128,18 @@ describe('Sidebar', () => {
     );
 
     expect(
+      summaries[0].hasAttribute(
+        'data-tooltip'
+      )
+    ).toBe(false);
+
+    expect(
+      summaries[1].hasAttribute(
+        'data-tooltip'
+      )
+    ).toBe(false);
+
+    expect(
       icons[0].getAttribute('src')
     ).toBe('https://example.com/html.svg');
 
@@ -266,6 +278,14 @@ describe('Sidebar', () => {
     expect(
       button?.getAttribute('aria-expanded')
     ).toBe('false');
+
+    expect(
+      button?.getAttribute('aria-label')
+    ).toBe('Apri barra laterale');
+
+    expect(
+      button?.getAttribute('data-tooltip')
+    ).toBe('Apri barra laterale');
   });
 
   it('mantiene visibili le icone quando la sidebar è chiusa', () => {
@@ -337,6 +357,14 @@ describe('Sidebar', () => {
     expect(
       button?.getAttribute('aria-expanded')
     ).toBe('true');
+
+    expect(
+      button?.getAttribute('aria-label')
+    ).toBe('Chiudi barra laterale');
+
+    expect(
+      button?.getAttribute('data-tooltip')
+    ).toBe('Chiudi barra laterale');
   });
 
   it('plays the closing sound when the sidebar is closed', () => {
@@ -397,5 +425,87 @@ describe('Sidebar', () => {
     expect(secondAudio.src).toContain(
       '/assets/sounds/sidebar-open.mp3'
     );
+  });
+
+  it('reopens the sidebar and expands the selected area when collapsed', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const toggleButton =
+      element.querySelector<HTMLButtonElement>(
+        '.sidebar-toggle'
+      );
+
+    toggleButton?.click();
+    fixture.detectChanges();
+
+    expect(
+      fixture.componentInstance.isOpen()
+    ).toBe(false);
+
+    const details =
+      element.querySelector<HTMLDetailsElement>(
+        'details'
+      );
+
+    const summary =
+      details?.querySelector<HTMLElement>(
+        'summary'
+      );
+
+    summary?.click();
+    fixture.detectChanges();
+
+    expect(
+      fixture.componentInstance.isOpen()
+    ).toBe(true);
+
+    expect(details?.open).toBe(true);
+
+    expect(
+      details?.querySelector('ul')
+    ).toBeTruthy();
+  });
+
+  it('keeps area summaries accessible when the sidebar is collapsed', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const toggleButton =
+      element.querySelector<HTMLButtonElement>(
+        '.sidebar-toggle'
+      );
+
+    toggleButton?.click();
+    fixture.detectChanges();
+
+    const summaries =
+      element.querySelectorAll<HTMLElement>(
+        'summary'
+      );
+
+    expect(
+      summaries[0].getAttribute(
+        'aria-label'
+      )
+    ).toBe('HTML');
+
+    expect(
+      summaries[1].getAttribute(
+        'aria-label'
+      )
+    ).toBe('CSS');
+
+    expect(
+      summaries[0].getAttribute(
+        'data-tooltip'
+      )
+    ).toBe('HTML');
+
+    expect(
+      summaries[1].getAttribute(
+        'data-tooltip'
+      )
+    ).toBe('CSS');
   });
 });

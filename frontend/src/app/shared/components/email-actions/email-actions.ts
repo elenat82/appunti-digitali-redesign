@@ -1,7 +1,9 @@
 import {
   Component,
+  ElementRef,
   input,
-  signal
+  signal,
+  viewChild
 } from '@angular/core';
 
 const EMAIL_ACTIONS_CLOSE_DELAY_MS = 2000;
@@ -18,6 +20,10 @@ export class EmailActions {
   readonly isEmailActionsOpen = signal(false);
   readonly emailCopyStatus = signal<'idle' | 'copied' | 'error'>('idle');
   private emailActionsCloseTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  private readonly emailTrigger = viewChild<ElementRef<HTMLButtonElement>>('emailTrigger');
+  private readonly actionsPanel = viewChild<ElementRef<HTMLElement>>('actionsPanel');
+
   /**
  * Identificatore univoco del pannello delle azioni email.
  *
@@ -63,35 +69,57 @@ export class EmailActions {
  */
 
   scheduleEmailActionsClose(): void {
-    if (this.emailActionsCloseTimeout) {
-      clearTimeout(
-        this.emailActionsCloseTimeout
-      );
-    }
-
-    this.emailActionsCloseTimeout =
-      setTimeout(() => {
-        this.isEmailActionsOpen.set(false);
-        this.emailCopyStatus.set('idle');
-
-        this.emailActionsCloseTimeout = null;
-      }, EMAIL_ACTIONS_CLOSE_DELAY_MS);
+  if (this.emailActionsCloseTimeout) {
+    clearTimeout(
+      this.emailActionsCloseTimeout
+    );
   }
+
+  this.emailActionsCloseTimeout =
+    setTimeout(() => {
+      this.hideEmailActions();
+
+      this.emailActionsCloseTimeout = null;
+    }, EMAIL_ACTIONS_CLOSE_DELAY_MS);
+}
 
   /**
  * Chiude subito il pannello quando l'utente lo dismette esplicitamente, ad esempio premendo Escape.
  * Annulla anche un'eventuale chiusura ritardata già programmata, perché il pannello non deve più restare aperto.
  */
   closeEmailActions(): void {
-    if (this.emailActionsCloseTimeout) {
-      clearTimeout(
-        this.emailActionsCloseTimeout
-      );
+  if (this.emailActionsCloseTimeout) {
+    clearTimeout(
+      this.emailActionsCloseTimeout
+    );
 
-      this.emailActionsCloseTimeout = null;
-    }
-
-    this.isEmailActionsOpen.set(false);
-    this.emailCopyStatus.set('idle');
+    this.emailActionsCloseTimeout = null;
   }
+
+  this.hideEmailActions();
+}
+
+  /**
+ * Chiude il pannello e ripristina il focus sul trigger se il focus si trova ancora in una delle azioni email.
+ */
+private hideEmailActions(): void {
+  const panel =
+    this.actionsPanel()?.nativeElement;
+
+  const shouldRestoreFocus =
+    panel !== undefined &&
+    document.activeElement !== null &&
+    panel.contains(document.activeElement);
+
+  this.isEmailActionsOpen.set(false);
+  this.emailCopyStatus.set('idle');
+
+  if (shouldRestoreFocus) {
+    this.emailTrigger()
+      ?.nativeElement
+      .focus();
+  }
+}
+
+
 }

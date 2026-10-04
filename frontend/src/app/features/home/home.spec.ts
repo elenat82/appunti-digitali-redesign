@@ -222,6 +222,30 @@ describe('Home', () => {
     ).toBeTruthy();
   });
 
+  it('espone una live region condivisa per i feedback della home', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const liveRegion =
+      element.querySelector<HTMLElement>(
+        '.home-accessibility-status'
+      );
+
+    expect(liveRegion).toBeTruthy();
+
+    expect(
+      liveRegion?.getAttribute('aria-live')
+    ).toBe('polite');
+
+    expect(
+      liveRegion?.getAttribute('aria-atomic')
+    ).toBe('true');
+
+    expect(
+      liveRegion?.textContent?.trim()
+    ).toBe('');
+  });
+
   it('shows the contact area', () => {
     expect(
       fixture.nativeElement.querySelector(
@@ -287,6 +311,10 @@ describe('Home', () => {
         'app-loading-indicator'
       )
     ).toBeTruthy();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
   });
 
   it('shows profile not-found state', async () => {
@@ -333,8 +361,15 @@ describe('Home', () => {
         '.home-contact'
       );
 
+    const status =
+      section?.querySelector<HTMLElement>(
+        '[role="status"]'
+      );
+
+    expect(status).toBeTruthy();
+
     expect(
-      section?.textContent
+      status?.textContent
     ).toContain(
       'Impossibile caricare i contatti.'
     );
@@ -376,6 +411,21 @@ describe('Home', () => {
     retryButton?.click();
     fixture.detectChanges();
 
+    const liveRegion =
+      element.querySelector<HTMLElement>(
+        '.home-accessibility-status'
+      );
+
+    expect(
+      liveRegion?.textContent?.trim()
+    ).toBe(
+      'Ricaricamento del profilo...'
+    );
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
+
     expect(
       profileServiceMock.getProfile
     ).toHaveBeenCalledTimes(2);
@@ -399,6 +449,10 @@ describe('Home', () => {
 
     await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('false');
 
     expect(
       section?.textContent
@@ -431,6 +485,10 @@ describe('Home', () => {
         'app-loading-indicator'
       )
     ).toBeTruthy();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
   });
 
   it('shows news', async () => {
@@ -549,8 +607,23 @@ describe('Home', () => {
 
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-news'
+      );
+
+    const status =
+      section?.querySelector<HTMLElement>(
+        '[role="status"]'
+      );
+
+    expect(status).toBeTruthy();
+
     expect(
-      fixture.nativeElement.textContent
+      status?.textContent
     ).toContain(
       'Impossibile caricare le notizie.'
     );
@@ -570,7 +643,6 @@ describe('Home', () => {
     );
 
     fixture.detectChanges();
-
     const element: HTMLElement =
       fixture.nativeElement;
 
@@ -590,6 +662,21 @@ describe('Home', () => {
 
     retryButton?.click();
     fixture.detectChanges();
+
+    expect(
+      element
+        .querySelector<HTMLElement>(
+          '.home-accessibility-status'
+        )
+        ?.textContent
+        ?.trim()
+    ).toBe(
+      'Ricaricamento delle notizie...'
+    );
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
 
     expect(
       newsServiceMock.getNews
@@ -632,6 +719,10 @@ describe('Home', () => {
     await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
 
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('false');
+
 
     expect(
       section?.textContent
@@ -658,6 +749,10 @@ describe('Home', () => {
         'app-loading-indicator'
       )
     ).toBeTruthy();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
   });
 
   it('shows Stack Overflow questions', async () => {
@@ -749,8 +844,23 @@ describe('Home', () => {
 
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-stack-overflow'
+      );
+
+    const status =
+      section?.querySelector<HTMLElement>(
+        '[role="status"]'
+      );
+
+    expect(status).toBeTruthy();
+
     expect(
-      fixture.nativeElement.textContent
+      status?.textContent
     ).toContain(
       'Impossibile caricare le domande Stack Overflow.'
     );
@@ -793,6 +903,22 @@ describe('Home', () => {
     fixture.detectChanges();
 
     expect(
+      element
+        .querySelector<HTMLElement>(
+          '.home-accessibility-status'
+        )
+        ?.textContent
+        ?.trim()
+    ).toBe(
+      'Ricaricamento delle domande Stack Overflow...'
+    );
+
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
+
+    expect(
       stackOverflowServiceMock.getQuestions
     ).toHaveBeenCalledTimes(2);
 
@@ -805,6 +931,11 @@ describe('Home', () => {
     stackOverflowQuestions$.next(mockQuestions);
     fixture.detectChanges();
 
+    // I dati sono arrivati, ma il delay non è ancora terminato.
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
+
     // I dati sono arrivati, ma il loader resta visibile
     // per i 500 ms previsti.
     expect(
@@ -815,6 +946,10 @@ describe('Home', () => {
 
     await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('false');
 
     expect(
       section?.textContent
@@ -849,6 +984,10 @@ describe('Home', () => {
         'app-loading-indicator'
       )
     ).toBeTruthy();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
   });
 
   it('shows GitHub repositories', async () => {
@@ -946,8 +1085,23 @@ describe('Home', () => {
 
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-github'
+      );
+
+    const status =
+      section?.querySelector<HTMLElement>(
+        '[role="status"]'
+      );
+
+    expect(status).toBeTruthy();
+
     expect(
-      fixture.nativeElement.textContent
+      status?.textContent
     ).toContain(
       'Impossibile caricare i repository GitHub starred.'
     );
@@ -989,6 +1143,21 @@ describe('Home', () => {
     fixture.detectChanges();
 
     expect(
+      element
+        .querySelector<HTMLElement>(
+          '.home-accessibility-status'
+        )
+        ?.textContent
+        ?.trim()
+    ).toBe(
+      'Ricaricamento dei repository GitHub starred...'
+    );
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
+
+    expect(
       gitHubServiceMock.getStarredRepositories
     ).toHaveBeenCalledTimes(2);
 
@@ -1009,6 +1178,10 @@ describe('Home', () => {
 
     await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('false');
 
 
     expect(
@@ -1041,6 +1214,10 @@ describe('Home', () => {
         'app-loading-indicator'
       )
     ).toBeTruthy();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
   });
 
   it('shows saved resources', async () => {
@@ -1131,8 +1308,23 @@ describe('Home', () => {
 
     fixture.detectChanges();
 
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const section =
+      element.querySelector<HTMLElement>(
+        '.home-saved-resources'
+      );
+
+    const status =
+      section?.querySelector<HTMLElement>(
+        '[role="status"]'
+      );
+
+    expect(status).toBeTruthy();
+
     expect(
-      fixture.nativeElement.textContent
+      status?.textContent
     ).toContain(
       'Impossibile caricare le risorse salvate.'
     );
@@ -1173,6 +1365,21 @@ describe('Home', () => {
     fixture.detectChanges();
 
     expect(
+      element
+        .querySelector<HTMLElement>(
+          '.home-accessibility-status'
+        )
+        ?.textContent
+        ?.trim()
+    ).toBe(
+      'Ricaricamento delle risorse salvate...'
+    );
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('true');
+
+    expect(
       savedResourcesServiceMock.getSavedResources
     ).toHaveBeenCalledTimes(2);
 
@@ -1193,6 +1400,10 @@ describe('Home', () => {
 
     await vi.advanceTimersByTimeAsync(500);
     fixture.detectChanges();
+
+    expect(
+      section?.getAttribute('aria-busy')
+    ).toBe('false');
 
     expect(
       section?.textContent

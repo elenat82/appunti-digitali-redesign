@@ -312,4 +312,124 @@ describe('SearchResults', () => {
       searchMock.closeResults
     ).toHaveBeenCalled();
   });
+
+  it('espone il riepilogo della ricerca in una live region', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(true);
+    indexStatusState.set('ready');
+    occurrenceCountState.set(12);
+    articleCountState.set(3);
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const liveRegion =
+      element.querySelector<HTMLElement>(
+        '[aria-live="polite"]'
+      );
+
+    expect(liveRegion).toBeTruthy();
+
+    expect(
+      liveRegion?.getAttribute(
+        'aria-atomic'
+      )
+    ).toBe('true');
+
+    expect(
+      liveRegion?.textContent?.trim()
+    ).toBe(
+      'Drupal: 12 occorrenze in 3 articoli'
+    );
+
+    expect(
+      element
+        .querySelector(
+          '.search-results-panel'
+        )
+        ?.hasAttribute('aria-live')
+    ).toBe(false);
+  });
+
+  it('espone un titolo accessibile per il pannello dei risultati', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(true);
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const panel =
+      element.querySelector<HTMLElement>(
+        '.search-results-panel'
+      );
+
+    const title =
+      element.querySelector<HTMLHeadingElement>(
+        '#search-results-title'
+      );
+
+    expect(panel).toBeTruthy();
+    expect(title).toBeTruthy();
+
+    expect(
+      panel?.getAttribute('aria-labelledby')
+    ).toBe('search-results-title');
+
+    expect(title?.tagName).toBe('H1');
+
+    expect(
+      title?.textContent?.trim()
+    ).toBe('Risultati della ricerca');
+
+    expect(
+      title?.classList.contains(
+        'visually-hidden'
+      )
+    ).toBe(true);
+  });
+
+  it('chiude i risultati con Escape e restituisce il focus alla ricerca', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(true);
+
+    fixture.detectChanges();
+
+    const searchInput =
+      document.createElement('input');
+
+    searchInput.id = 'global-search';
+    document.body.appendChild(searchInput);
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const panel =
+      element.querySelector<HTMLElement>(
+        '.search-results-panel'
+      );
+
+    panel?.dispatchEvent(
+      new KeyboardEvent(
+        'keydown',
+        {
+          key: 'Escape',
+          bubbles: true
+        }
+      )
+    );
+
+    expect(
+      searchMock.closeResults
+    ).toHaveBeenCalled();
+
+    expect(
+      document.activeElement
+    ).toBe(searchInput);
+
+    searchInput.remove();
+  });
 });

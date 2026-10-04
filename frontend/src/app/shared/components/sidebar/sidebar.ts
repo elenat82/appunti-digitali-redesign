@@ -78,12 +78,47 @@ export class Sidebar {
    * Apre o chiude la sidebar e riproduce il relativo feedback sonoro.
    */
   toggle(): void {
-    const willOpen = !this.isOpen();
-
-    this.isOpen.set(willOpen);
-
-    this.playToggleSound(willOpen);
+    this.setOpen(!this.isOpen());
   }
+
+  /**
+ * Riapre la sidebar quando viene selezionata un'area mentre il pannello è collassato.
+ */
+  openAreaIfCollapsed(
+    event: MouseEvent,
+    details: HTMLDetailsElement
+  ): void {
+    if (this.isOpen()) {
+      return;
+    }
+
+    /*
+     * Impedisce al comportamento nativo del summary di invertire lo stato del details.
+     *
+     * Nello stato collassato vogliamo sempre:
+     * - riaprire la sidebar;
+     * - mostrare l'area selezionata già espansa.
+     */
+    event.preventDefault();
+
+    details.open = true;
+
+    this.setOpen(true);
+  }
+
+  /**
+   * Imposta lo stato della sidebar e riproduce il feedback sonoro solo quando lo stato cambia.
+   */
+  private setOpen(isOpen: boolean): void {
+    if (this.isOpen() === isOpen) {
+      return;
+    }
+
+    this.isOpen.set(isOpen);
+
+    this.playToggleSound(isOpen);
+  }
+
 
   /**
    * Riproduce il feedback sonoro associato all'apertura o alla chiusura della sidebar.

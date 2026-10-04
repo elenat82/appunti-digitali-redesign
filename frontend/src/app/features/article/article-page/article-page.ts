@@ -151,6 +151,8 @@ export class ArticlePage {
           selectedOccurrence.startOffset,
           selectedOccurrence.endOffset
         );
+
+        this.focusSearchTarget(target);
       }
     });
   }
@@ -212,6 +214,51 @@ export class ArticlePage {
 
       default:
         return null;
+    }
+  }
+
+  /**
+ * Sposta il focus sul segmento che contiene l'occorrenza selezionata.
+ *
+ * Se il target non è normalmente focalizzabile, aggiunge temporaneamente tabindex="-1" senza inserirlo nell'ordine normale di tabulazione.
+ */
+  private focusSearchTarget(
+    element: Element
+  ): void {
+    if (!(element instanceof HTMLElement)) {
+      return;
+    }
+
+    const hasTabindex =
+      element.hasAttribute('tabindex');
+
+    const needsTemporaryTabindex =
+      element.tabIndex < 0 &&
+      !hasTabindex;
+
+    if (needsTemporaryTabindex) {
+      element.setAttribute(
+        'tabindex',
+        '-1'
+      );
+    }
+
+    element.focus({
+      preventScroll: true
+    });
+
+    if (needsTemporaryTabindex) {
+      element.addEventListener(
+        'blur',
+        () => {
+          element.removeAttribute(
+            'tabindex'
+          );
+        },
+        {
+          once: true
+        }
+      );
     }
   }
 

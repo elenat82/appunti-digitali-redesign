@@ -5,8 +5,9 @@
 
   <nav id="sidebar-navigation" aria-label="Argomenti">
     @for (area of areas(); track area.id) {
-    <details [class.sidebar-area--active]="activeAreaId() === area.id">
-      <summary>
+    <details #areaDetails [class.sidebar-area--active]="activeAreaId() === area.id">
+      <summary class="sidebar-area-summary" [attr.aria-label]="isOpen() ? null : area.label"
+        [attr.data-tooltip]="isOpen() ? null : area.label" (click)="openAreaIfCollapsed($event, areaDetails)">
         <img [src]="area.iconUrl" alt="" width="24" height="24">
 
         @if (isOpen()) {
@@ -37,7 +38,11 @@
       isOpen()
         ? 'Chiudi barra laterale'
         : 'Apri barra laterale'
-    " (click)="toggle()">
+    " (click)="toggle()" [attr.data-tooltip]="
+    isOpen()
+      ? 'Chiudi barra laterale'
+      : 'Apri barra laterale'
+  ">
     {{ isOpen() ? '‹' : '›' }}
   </button>
 </aside>

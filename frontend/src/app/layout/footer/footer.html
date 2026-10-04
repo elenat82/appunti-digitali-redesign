@@ -2,30 +2,34 @@
   <div>
     Made with
 
-    <i
-      class="icon-app-drupal"
-      aria-hidden="true"
-    ></i>
+    <span class="footer-tech" data-tooltip="Drupal">
+      <i class="icon-app-drupal" aria-hidden="true"></i>
+      <span class="visually-hidden">
+        Drupal
+      </span>
+    </span>
 
     +
 
-    <i
-      class="icon-app-angular"
-      aria-hidden="true"
-    ></i>
+    <span class="footer-tech" data-tooltip="Angular">
+      <i class="icon-app-angular" aria-hidden="true"></i>
+      <span class="visually-hidden">
+        Angular
+      </span>
+    </span>
 
     +
 
-    <i
-      class="icon-app-heart"
-      aria-hidden="true"
-    ></i>
+    <span class="footer-tech" data-tooltip="Love">
+      <i class="icon-app-heart" aria-hidden="true"></i>
+      <span class="visually-hidden">
+        Love
+      </span>
+    </span>
 
     @if (email(); as email) {
-      by
-      <app-email-actions
-        [email]="email"
-      />
+    by
+    <app-email-actions [email]="email" />
     }
   </div>
 </footer>

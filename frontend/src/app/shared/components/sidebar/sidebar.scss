@@ -34,6 +34,21 @@ summary {
 .sidebar-toggle {
   display: block;
   margin-inline: auto;
+  position: relative;
+}
+
+.sidebar-toggle::after {
+  content: attr(data-tooltip);
+
+  position: absolute;
+
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.sidebar-toggle:hover::after,
+.sidebar-toggle:focus-visible::after {
+  opacity: 1;
 }
 
 summary {
@@ -60,6 +75,32 @@ summary::-webkit-details-marker {
 
 .sidebar--collapsed .sidebar-logo-image {
   width: 2.5rem;
+}
+
+.sidebar-area-summary {
+  position: relative;
+}
+
+.sidebar-area-summary::after {
+  content: attr(data-tooltip);
+
+  position: absolute;
+
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.sidebar--collapsed
+.sidebar-area-summary:hover::after,
+.sidebar--collapsed
+.sidebar-area-summary:focus-visible::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-logo-image {
+    transition: none;
+  }
 }
 
 .sidebar-area--active {
