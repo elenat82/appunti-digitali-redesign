@@ -20,7 +20,9 @@ process:
     plugin: default_value
     default_value: it
 
-  field_body/value: body_value
+  field_body/value:
+    plugin: appunti_digitali_transform_legacy_body
+    source: body_value
   field_body/format:
     plugin: default_value
     default_value: full_html
