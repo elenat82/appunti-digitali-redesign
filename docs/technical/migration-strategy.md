@@ -15,7 +15,8 @@ La migrazione viene progettata secondo i seguenti principi:
 - Drupal 8 costituisce la sorgente dei dati legacy;
 - Drupal 11 costituisce la destinazione;
 - il database Drupal 8 non viene modificato dalla procedura di migrazione;
-- le trasformazioni necessarie vengono implementate nella pipeline di migrazione e non applicate manualmente ai singoli contenuti;
+- le trasformazioni sistematiche necessarie vengono implementate nella pipeline di migrazione e non applicate manualmente ai singoli contenuti;
+- eventuali correzioni manuali sono ammesse soltanto per eccezioni isolate, esplicitamente documentate e non convenienti da generalizzare nella pipeline;
 - la migrazione deve poter essere eseguita più volte durante lo sviluppo;
 - la migrazione parziale utilizzata durante lo sviluppo deve utilizzare le stesse definizioni della migrazione completa;
 - la selezione di un sottoinsieme di contenuti deve avvenire in fase di esecuzione e non attraverso migration dedicate esclusivamente ai dati di prova;
@@ -105,6 +106,7 @@ Per ogni area tematica devono essere verificati almeno:
 - formato di testo utilizzato dal body;
 - presenza di immagini o file locali;
 - struttura dei blocchi di codice;
+- struttura degli embed CodePen legacy;
 - eventuali differenze tra i content type.
 
 Il mapping definitivo deve essere basato sui dati effettivamente presenti nel sito legacy e non su assunzioni relative ai nomi dei campi.
@@ -295,6 +297,72 @@ Il mapping è:
 | `field_approfondimenti_title` | `field_approfondimenti.title` |
 | `delta` | ordine dei valori multivalore |
 
+### CodePen legacy
+
+Il sito Drupal 8 utilizza CodePen Prefill Embed per alcuni esempi frontend interattivi.
+
+Nel body legacy gli embed sono identificati tramite il wrapper `.penny`. Il censimento ha individuato questo marker in 26 articoli tecnici, con più embed presenti in alcuni articoli.
+
+La struttura rilevata è riconducibile al seguente formato:
+
+    <div class="penny">
+      <pre data-lang="html">...</pre>
+      <pre data-lang="css" data-option-autoprefixer="true">...</pre>
+      <pre data-lang="js">...</pre>
+    </div>
+
+I blocchi `pre` effettivamente presenti variano in base alla demo. Alcuni embed contengono HTML, CSS e JavaScript; altri omettono uno dei blocchi oppure mantengono placeholder legacy come `// no js` o commenti equivalenti.
+
+La migrazione non deve aggiungere, rimuovere o normalizzare questi blocchi in base al loro contenuto: il codice, l'ordine dei `pre`, l'escaping dell'HTML e gli eventuali placeholder vengono preservati.
+
+L'analisi degli attributi `data-*` presenti realmente nel markup dell'embed, escludendo gli attributi che compaiono soltanto come codice HTML escaped all'interno dei `pre`, ha rilevato esclusivamente:
+
+- `data-lang`;
+- `data-option-autoprefixer`.
+
+Il primo identifica il linguaggio del blocco. Il secondo è la forma legacy utilizzata per abilitare Autoprefixer e deve essere normalizzato nel formato attuale previsto da CodePen:
+
+    data-option-autoprefixer="true"
+        ↓
+    data-options-autoprefixer="true"
+
+Nel sito legacy il frontend Angular completa inoltre gli embed a runtime aggiungendo classe e configurazione CodePen, tra cui altezza, tema, modalità editable, tab iniziale e `data-prefill`.
+
+Queste impostazioni comuni di presentazione non devono essere materializzate nei body migrati. Nel nuovo sito sono responsabilità del frontend Angular, secondo quanto definito nell'analisi tecnica.
+
+Il formato di destinazione del wrapper è quindi:
+
+    <div class="codepen-demo" data-prefill>
+      ...
+    </div>
+
+La trasformazione sistematica applicata dalla pipeline è:
+
+    <div class="penny">
+        ↓
+    <div class="codepen-demo" data-prefill>
+
+La pipeline deve quindi:
+
+- sostituire il marker `.penny` con `.codepen-demo`;
+- aggiungere l'attributo `data-prefill` al wrapper;
+- preservare integralmente i `pre` e il relativo contenuto;
+- preservare `data-lang`;
+- rinominare `data-option-autoprefixer` in `data-options-autoprefixer`;
+- non aggiungere `class="codepen"`, perché l'inizializzazione dell'embed viene controllata dal frontend;
+- non migrare nel body `data-height`, `data-theme-id`, `data-editable` o `data-default-tab`, perché sono impostazioni comuni gestite da Angular;
+- non introdurre regole basate sul titolo o sull'identità del singolo articolo.
+
+#### Eccezione Geolocation API
+
+Nel vecchio frontend l'articolo `Geolocation API` viene riconosciuto tramite il titolo e riceve a runtime una configurazione `data-prefill` speciale che aggiunge la Google Maps JavaScript API come risorsa esterna.
+
+Questa eccezione non viene riprodotta nella nuova pipeline né nel nuovo frontend.
+
+Il body dell'articolo contiene già un'istruzione che invita a procurarsi una Google Maps API key, aprire l'esempio su CodePen e configurare la risorsa esterna. Poiché si tratta di un unico contenuto, dopo la migrazione definitiva l'articolo viene verificato e, se necessario, corretto manualmente per rendere esplicita la modalità corrente di aggiunta della risorsa JavaScript esterna.
+
+La correzione manuale del contenuto viene registrata nella checklist post-migrazione e non costituisce una regola generale della migration.
+
 ## Strategia di esecuzione
 
 Durante lo sviluppo viene utilizzata una copia locale del database Drupal 8.
@@ -334,7 +402,10 @@ Il campione deve comprendere contenuti utili a verificare almeno:
 - blocchi di codice;
 - link nel body;
 - approfondimenti esterni;
-- eventuali immagini o embed.
+- eventuali immagini;
+- CodePen senza opzioni aggiuntive;
+- CodePen con `data-option-autoprefixer`;
+- CodePen con uno dei blocchi `pre` assente o mantenuto come placeholder legacy.
 
 La limitazione ai contenuti selezionati riguarda soltanto l'esecuzione.
 Mapping, trasformazioni e configurazione della migration devono essere gli stessi che verranno utilizzati per l'import completo.
@@ -345,7 +416,9 @@ Questo permette di utilizzare immediatamente contenuti reali nel frontend e, con
 
 Il body deve essere migrato mantenendo il markup semantico necessario alla consultazione e alla ricerca.
 
-Le trasformazioni non devono essere eseguite manualmente sui singoli nodi: quando una trasformazione è necessaria deve essere implementata nella pipeline di migrazione, in modo che venga applicata in maniera uniforme e ripetibile.
+Quando una trasformazione riguarda un pattern ricorrente deve essere implementata nella pipeline di migrazione, in modo che venga applicata in maniera uniforme e ripetibile. Correzioni manuali sono riservate a eccezioni isolate già identificate e documentate, come il controllo post-migrazione dell'articolo `Geolocation API`.
+
+Per gli embed CodePen la trasformazione sistematica è già definita nella sezione dedicata all'analisi del formato legacy e deve essere applicata a tutti i wrapper `.penny`.
 
 È già stata individuata la necessità di verificare la gerarchia degli heading del sito legacy rispetto alla nuova pagina articolo.
 
@@ -368,6 +441,11 @@ Per ogni articolo campione devono essere controllati almeno:
 - tabelle;
 - codice inline;
 - blocchi di codice;
+- trasformazione dei wrapper `.penny` in `.codepen-demo` con `data-prefill`;
+- preservazione dei `pre` e dei relativi `data-lang` negli embed CodePen;
+- normalizzazione di `data-option-autoprefixer` in `data-options-autoprefixer`;
+- assenza nel body delle configurazioni di presentazione CodePen che devono rimanere responsabilità del frontend;
+- esclusione del contenuto interno di `.codepen-demo` dall’indice di ricerca client-side;
 - link interni al body;
 - approfondimenti;
 - ordinamento;
@@ -376,7 +454,7 @@ Per ogni articolo campione devono essere controllati almeno:
 - indicizzazione da parte della ricerca client-side;
 - navigazione verso le singole occorrenze della ricerca.
 
-Le eventuali anomalie devono essere risolte modificando la pipeline e rieseguendo la migrazione.
+Le anomalie che riguardano pattern sistematici devono essere risolte modificando la pipeline e rieseguendo la migrazione. Le sole eccezioni manuali previste devono essere documentate e ricontrollate dopo ogni esecuzione completa.
 
 ## Migrazione definitiva
 
@@ -389,11 +467,12 @@ La procedura definitiva dovrà prevedere:
 1. acquisizione della sorgente Drupal 8 aggiornata;
 2. preparazione del database Drupal 11;
 3. esecuzione completa delle migration;
-4. verifica dei risultati;
-5. verifica delle API Drupal;
-6. verifica dei contenuti nel frontend Angular;
-7. verifica della ricerca;
-8. verifica degli eventuali file migrati.
+4. esecuzione delle correzioni manuali eccezionali documentate nella checklist post-migrazione;
+5. verifica dei risultati;
+6. verifica delle API Drupal;
+7. verifica dei contenuti nel frontend Angular;
+8. verifica della ricerca;
+9. verifica degli eventuali file migrati.
 
 La procedura utilizzata per il rilascio dovrà essere documentata con i comandi effettivamente necessari una volta completata l'implementazione.
 
@@ -405,7 +484,7 @@ I seguenti aspetti richiedono ulteriori analisi o verranno definiti durante l'im
 - migration necessarie e relative dipendenze;
 - trasformazioni definitive degli heading;
 - gestione di immagini e file locali;
-- gestione degli embed;
+- gestione di eventuali embed diversi da CodePen;
 - gestione degli alias URL;
 - eventuale preservazione delle date di creazione e modifica;
 - eventuali altri dati del sito legacy da migrare oltre agli articoli.
