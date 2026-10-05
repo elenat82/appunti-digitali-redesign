@@ -1,0 +1,10 @@
+name: 'Appunti Digitali Migrate'
+type: module
+description: 'Migra i contenuti legacy di Appunti Digitali da Drupal 8 a Drupal 11.'
+package: Custom
+core_version_requirement: ^11
+
+dependencies:
+  - drupal:migrate
+  - migrate_plus:migrate_plus
+  - migrate_tools:migrate_tools

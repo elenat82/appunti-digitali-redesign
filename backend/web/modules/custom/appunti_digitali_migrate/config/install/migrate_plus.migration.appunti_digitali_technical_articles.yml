@@ -1,0 +1,43 @@
+id: appunti_digitali_technical_articles
+label: 'Appunti Digitali - Technical articles'
+migration_tags:
+  - 'Appunti Digitali'
+
+migration_dependencies:
+  required: []
+  optional: []
+
+source:
+  plugin: appunti_digitali_legacy_technical_article
+  key: legacy
+
+process:
+  type: type
+  title: title
+  status: status
+
+  langcode:
+    plugin: default_value
+    default_value: it
+
+  field_body/value: body_value
+  field_body/format:
+    plugin: default_value
+    default_value: full_html
+
+  field_weight: field_weight
+
+  field_approfondimenti:
+    plugin: sub_process
+    source: approfondimenti
+    process:
+      uri: uri
+      title: title
+
+destination:
+  plugin: 'entity:node'
+
+dependencies:
+  enforced:
+    module:
+      - appunti_digitali_migrate
