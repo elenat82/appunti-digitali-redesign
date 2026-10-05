@@ -521,6 +521,8 @@ Non viene utilizzato globalmente un bypass della sanitizzazione per considerare 
 
 Se alcuni elementi necessari agli articoli, in particolare embed o contenuti interattivi, richiedono una gestione particolare, questi casi vengono trattati esplicitamente invece di disabilitare le protezioni per l'intero body.
 
+Gli embed CodePen vengono riconosciuti tramite un markup applicativo esplicito e inizializzati dal frontend con una logica dedicata. Il body non contiene script eseguibili utilizzati per inizializzare CodePen e Angular non applica regole basate sul titolo o sull'identità del singolo articolo.
+
 ## Architettura della ricerca client-side
 
 La ricerca viene eseguita interamente nel browser.
@@ -823,9 +825,9 @@ Gli approfondimenti rimangono distinti dal body perché provengono da un campo D
 
 Non vengono indicizzati gli elementi puramente decorativi o privi di contenuto informativo.
 
-Il contenuto interno degli embed CodePen è escluso dalla segmentazione quando rappresenta codice già presente nell'articolo tramite un normale blocco statico.
+Il contenuto interno dei wrapper `.codepen-demo` è sempre escluso dalla segmentazione e non genera `SearchSegment`. L'eventuale codice statico presente separatamente nell'articolo continua invece a essere indicizzato secondo le normali regole dei blocchi di codice.
 
-In questo modo la stessa porzione di codice non produce risultati duplicati.
+Questa scelta evita che il codice utilizzato esclusivamente per costruire una demo interattiva produca risultati duplicati o introduca dipendenze tra la ricerca e il formato dell'embed.
 
 Gli altri contenuti incorporati tramite provider esterni vengono valutati singolarmente nella sezione dedicata agli embed.
 
@@ -1290,7 +1292,7 @@ Gli embed devono rimanere elementi secondari rispetto al contenuto dell'articolo
 
 ### CodePen
 
-CodePen viene utilizzato per mostrare esempi frontend interattivi.
+CodePen viene utilizzato tramite **Prefill Embed** per mostrare esempi frontend interattivi mantenendo il codice sorgente nel body Drupal, senza richiedere che ogni esempio esista come Pen salvato su CodePen.
 
 Il suo utilizzo è previsto principalmente per:
 
@@ -1304,39 +1306,63 @@ CodePen non viene utilizzato come playground generale per linguaggi backend o di
 
 Per questi linguaggi vengono utilizzati normali blocchi di codice statici con syntax highlighting.
 
-Quando possibile, l'articolo mantiene anche una rappresentazione statica del codice significativo mostrato nel Pen.
+#### Markup canonico nel body
 
-Questo permette di:
+Il body identifica una demo CodePen tramite il wrapper applicativo `.codepen-demo`.
 
-- rendere il contenuto leggibile anche se l'embed non viene caricato;
-- mantenere il codice disponibile alla ricerca client-side;
-- evitare che un servizio esterno diventi necessario per consultare
-  l'articolo.
+La struttura concettuale è:
+
+    <div class="codepen-demo" data-prefill>
+      <pre data-lang="html">...</pre>
+      <pre data-lang="css" data-options-autoprefixer="true">...</pre>
+      <pre data-lang="js">...</pre>
+    </div>
+
+I blocchi relativi a HTML, CSS e JavaScript sono opzionali: una demo contiene soltanto i linguaggi necessari. Non viene richiesto di aggiungere blocchi vuoti per i linguaggi non utilizzati.
+
+Ogni blocco `pre` dichiara il linguaggio tramite `data-lang`. Eventuali opzioni specifiche supportate da CodePen rimangono associate al relativo blocco; ad esempio l'Autoprefixer CSS viene rappresentato tramite `data-options-autoprefixer="true"`.
+
+Il codice HTML destinato alla demo rimane escaped all'interno del relativo `pre`, in modo da essere conservato come codice e non interpretato come markup dell'articolo.
+
+`data-prefill` identifica il wrapper come Prefill Embed e può, quando realmente necessario, contenere la configurazione specifica della singola demo prevista dall'API CodePen. Eventuali dipendenze specifiche non devono essere dedotte dal titolo dell'articolo né codificate attraverso condizioni dedicate nel frontend.
+
+#### Responsabilità di Angular
+
+La classe `.codepen-demo` viene mantenuta distinta dalla classe standard `.codepen` utilizzata da CodePen per l'inizializzazione automatica. Questo permette al frontend di controllare quando la demo viene trasformata nell'embed interattivo.
+
+Angular ha la responsabilità di:
+
+- riconoscere i wrapper `.codepen-demo`;
+- applicare le impostazioni comuni di presentazione dell'embed, come altezza, tema, modalità editable ed eventuale tab iniziale;
+- caricare lo script ufficiale di CodePen soltanto nel browser;
+- inizializzare gli embed tramite l'API `__CPEmbed()` utilizzando un selettore controllato;
+- evitare che l'inizializzazione CodePen interferisca con il rendering dell'articolo o con la ricerca.
+
+Le impostazioni comuni di presentazione non vengono duplicate nei body Drupal quando possono essere applicate uniformemente dal frontend. Il body conserva invece il codice e le eventuali opzioni realmente specifiche della singola demo.
+
+L'inizializzazione avviene come progressive enhancement: l'HTML renderizzato lato server contiene già i blocchi `pre` della demo, mentre la trasformazione nell'embed interattivo viene eseguita successivamente nel browser.
+
+Quando utile per le performance, l'inizializzazione può essere ritardata fino a quando la demo è vicina alla viewport. La strategia concreta di lazy loading viene verificata durante l'implementazione.
 
 ### Indicizzazione degli embed
 
-Il contenuto interno degli embed CodePen non viene inserito nell'indice di ricerca.
+Il contenuto interno dei wrapper `.codepen-demo` non viene inserito nell'indice di ricerca.
 
-Il codice rilevante deve essere indicizzato attraverso i normali blocchi di codice statici presenti nell'articolo.
+Se lo stesso argomento contiene anche un normale blocco di codice statico, quest'ultimo viene indicizzato secondo le normali regole della ricerca. La presenza di un blocco statico equivalente non è però un requisito per utilizzare un Prefill Embed.
 
 Questa scelta evita:
 
 - duplicazione delle occorrenze nei risultati;
-- dipendenza dalla struttura HTML interna generata da CodePen;
-- necessità di accedere al contenuto di iframe appartenenti a domini esterni.
+- dipendenza della ricerca dalla struttura utilizzata per configurare CodePen;
+- necessità di accedere al contenuto degli iframe generati dal provider.
 
-Il contenitore dell'embed può comunque far parte della struttura dell'articolo,
-ma il contenuto remoto non viene trattato come `SearchSegment`.
+La segmentazione riconosce quindi `.codepen-demo` come confine non ricercabile e ignora tutti i suoi discendenti.
 
 ### Link alla risorsa originale
 
-Quando disponibile deve essere presente un collegamento alla risorsa originale sul servizio esterno.
+Per gli embed basati su una risorsa esterna già esistente, quando disponibile deve essere presente un collegamento alla relativa pagina sul provider.
 
-Il link permette di:
-
-- aprire l'esempio direttamente sul provider;
-- utilizzare le funzionalità complete del playground;
-- accedere alla risorsa anche quando l'embed non viene visualizzato correttamente.
+I Prefill Embed CodePen costituiscono un caso differente: il codice sorgente rimane nel body Drupal e non richiede l'esistenza di un Pen salvato né di un URL CodePen persistente. L'apertura o la modifica dell'esempio sul provider viene quindi gestita dalle funzionalità dell'embed stesso.
 
 ### Caricamento
 
@@ -1361,7 +1387,9 @@ Se il provider esterno non è disponibile, l'interfaccia deve poter mostrare:
 
 - un messaggio di stato;
 - il collegamento alla risorsa originale, quando disponibile;
-- l'eventuale blocco di codice statico equivalente presente nell'articolo.
+- il contenuto locale disponibile come fallback.
+
+Nel caso dei Prefill Embed CodePen, i blocchi `pre` presenti nel body costituiscono già la sorgente locale della demo e devono rimanere utilizzabili anche se l'enhancement interattivo non può essere completato.
 
 Non viene utilizzato un errore globale della pagina per il fallimento di un singolo embed.
 
@@ -2388,6 +2416,7 @@ I test frontend devono coprire principalmente:
 - servizi di accesso ai dati;
 - trasformazione delle response API nei modelli applicativi;
 - segmentazione dei contenuti;
+- esclusione dei wrapper `.codepen-demo` e dei relativi discendenti dall'indice;
 - normalizzazione utilizzata dalla ricerca;
 - individuazione di tutte le occorrenze;
 - generazione delle `SearchOccurrence`;
@@ -2421,6 +2450,7 @@ Altri flussi da verificare includono:
 - utilizzo della cache locale;
 - comportamento in caso di API temporaneamente non disponibile;
 - retry delle integrazioni esterne;
+- enhancement client-side e fallback dei Prefill Embed CodePen;
 - apertura e chiusura della navigazione desktop e mobile.
 
 #### Backend Drupal
@@ -2683,7 +2713,17 @@ Per ogni provider realmente utilizzato devono essere verificati:
 - requisiti della Content Security Policy;
 - permessi necessari agli iframe.
 
-In particolare deve essere verificata l'integrazione corrente di CodePen senza indicizzarne il contenuto remoto.
+In particolare, per CodePen devono essere verificati:
+
+- riconoscimento del markup `.codepen-demo`;
+- conservazione di `data-prefill`, `data-lang` e delle eventuali opzioni supportate sui blocchi `pre`;
+- applicazione lato frontend delle impostazioni comuni dell'embed senza duplicarle nei body;
+- caricamento dello script CodePen esclusivamente nel browser;
+- inizializzazione controllata tramite `__CPEmbed()` e compatibilità con Angular SSR/hydration;
+- eventuale inizializzazione differita quando la demo è vicina alla viewport;
+- esclusione completa dei discendenti di `.codepen-demo` dalla segmentazione della ricerca;
+- fallback ai blocchi `pre` locali quando l'enhancement non è disponibile;
+- comportamento responsive e assenza di layout shift significativo durante la trasformazione nell'iframe.
 
 ### Servizi esterni della home
 
