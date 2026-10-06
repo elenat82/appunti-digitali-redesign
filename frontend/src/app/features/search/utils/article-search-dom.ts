@@ -22,6 +22,7 @@ export function getSearchableBodyElements(
     root.querySelectorAll(SEARCHABLE_SELECTOR)
   ).filter(
     (element) =>
+      !element.closest('.codepen-demo') &&
       shouldCreateSegment(element) &&
       getSearchableElementText(element).trim()
   );

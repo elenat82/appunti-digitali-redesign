@@ -1328,21 +1328,48 @@ Il codice HTML destinato alla demo rimane escaped all'interno del relativo `pre`
 
 #### Responsabilità di Angular
 
-La classe `.codepen-demo` viene mantenuta distinta dalla classe standard `.codepen` utilizzata da CodePen per l'inizializzazione automatica. Questo permette al frontend di controllare quando la demo viene trasformata nell'embed interattivo.
-
-Angular ha la responsabilità di:
-
-- riconoscere i wrapper `.codepen-demo`;
-- applicare le impostazioni comuni di presentazione dell'embed, come altezza, tema, modalità editable ed eventuale tab iniziale;
-- caricare lo script ufficiale di CodePen soltanto nel browser;
-- inizializzare gli embed tramite l'API `__CPEmbed()` utilizzando un selettore controllato;
-- evitare che l'inizializzazione CodePen interferisca con il rendering dell'articolo o con la ricerca.
+La classe `.codepen-demo` viene mantenuta distinta dalla classe standard `.codepen` utilizzata da CodePen per l'inizializzazione automatica. Angular controlla quindi esplicitamente il progressive enhancement degli embed, senza delegare l'inizializzazione automatica al markup proveniente da Drupal.
 
 Le impostazioni comuni di presentazione non vengono duplicate nei body Drupal quando possono essere applicate uniformemente dal frontend. Il body conserva invece il codice e le eventuali opzioni realmente specifiche della singola demo.
 
-L'inizializzazione avviene come progressive enhancement: l'HTML renderizzato lato server contiene già i blocchi `pre` della demo, mentre la trasformazione nell'embed interattivo viene eseguita successivamente nel browser.
+### Integrazione nel frontend
 
-Quando utile per le performance, l'inizializzazione può essere ritardata fino a quando la demo è vicina alla viewport. La strategia concreta di lazy loading viene verificata durante l'implementazione.
+Gli esempi CodePen vengono gestiti tramite Prefill Embed.
+
+Il body Drupal rimane la sorgente del contenuto della demo e utilizza un contenitore con classe `codepen-demo` e attributo `data-prefill`. I blocchi `pre` interni identificano i contenuti HTML, CSS e JavaScript attraverso `data-lang` e gli eventuali attributi CodePen supportati dal progetto.
+
+La classe `codepen-demo` viene utilizzata intenzionalmente al posto della classe standard `codepen`, in modo che lo script CodePen non inizializzi automaticamente tutti gli embed presenti nella pagina.
+
+Il body continua a essere renderizzato tramite i normali meccanismi Angular senza disabilitare globalmente la sanitizzazione. Poiché il sanitizer rimuove gli attributi `data-*` necessari a CodePen, il frontend ripristina esplicitamente sul DOM renderizzato soltanto gli attributi previsti dall'integrazione:
+
+- `data-prefill`;
+- `data-lang`;
+- `data-options-autoprefixer`.
+
+Non viene utilizzato `bypassSecurityTrustHtml` sull'intero body.
+
+Le impostazioni di presentazione comuni agli embed vengono definite nel frontend e non memorizzate nei singoli articoli:
+
+- altezza: 400 px;
+- larghezza: responsive;
+- modalità editable: attiva;
+- tema: dark.
+
+Il tab iniziale dipende dall'area dell'articolo:
+
+- HTML: `html,result`;
+- CSS: `css,result`;
+- JavaScript: `js,result`;
+- Varie: `result`;
+- eventuali altre aree: `result`.
+
+La configurazione dipende quindi soltanto dall'area dell'articolo e non dal titolo, dal NID o da eccezioni associate a singoli contenuti.
+
+Lo script ufficiale CodePen viene caricato soltanto nel browser e soltanto quando è necessario inizializzare almeno una demo.
+
+Ogni demo viene osservata separatamente tramite `IntersectionObserver` e inizializzata quando si avvicina alla viewport. Se `IntersectionObserver` non è disponibile, l'embed viene inizializzato senza lazy loading.
+
+Il caricamento dello script viene condiviso tra gli embed della stessa applicazione e ciascuna demo viene inizializzata una sola volta.
 
 ### Indicizzazione degli embed
 
@@ -2720,7 +2747,8 @@ In particolare, per CodePen devono essere verificati:
 - applicazione lato frontend delle impostazioni comuni dell'embed senza duplicarle nei body;
 - caricamento dello script CodePen esclusivamente nel browser;
 - inizializzazione controllata tramite `__CPEmbed()` e compatibilità con Angular SSR/hydration;
-- eventuale inizializzazione differita quando la demo è vicina alla viewport;
+- corretta inizializzazione differita quando la demo si avvicina alla viewport;
+- verificare manualmente il lazy loading CodePen con un articolo abbastanza lungo da avere almeno un embed inizialmente lontano dalla viewport;
 - esclusione completa dei discendenti di `.codepen-demo` dalla segmentazione della ricerca;
 - fallback ai blocchi `pre` locali quando l'enhancement non è disponibile;
 - comportamento responsive e assenza di layout shift significativo durante la trasformazione nell'iframe.

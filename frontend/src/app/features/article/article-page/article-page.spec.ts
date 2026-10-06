@@ -25,6 +25,7 @@ import {
 import {
   SearchResultGroup
 } from '../../search/models/search-result.model';
+import { CodePenEmbedService } from '../services/codepen-embed.service';
 
 describe('ArticlePage', () => {
   let fixture: ComponentFixture<ArticlePage>;
@@ -58,6 +59,10 @@ describe('ArticlePage', () => {
     weight: 0
   };
 
+  const codePenEmbedMock = {
+    enhance: vi.fn()
+  };
+
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -89,6 +94,10 @@ describe('ArticlePage', () => {
         {
           provide: SearchService,
           useValue: searchMock
+        },
+        {
+          provide: CodePenEmbedService,
+          useValue: codePenEmbedMock
         }
       ]
     }).compileComponents();
@@ -159,6 +168,52 @@ describe('ArticlePage', () => {
     expect(
       element.querySelector('.article-body')?.textContent
     ).toContain('Contenuto dell\'articolo.');
+  });
+
+  it('prepara gli embed CodePen dopo il rendering dell\'articolo', async () => {
+    const codePenArticle: Article = {
+      ...article,
+      body: `
+        <p>Prima del CodePen.</p>
+
+        <div
+          class="codepen-demo"
+          data-prefill
+        >
+          <pre data-lang="html">
+            &lt;button&gt;Test&lt;/button&gt;
+          </pre>
+        </div>
+      `
+    };
+
+    contentRepositoryMock
+      .getArticlesByArea
+      .mockReturnValue(
+        of([codePenArticle])
+      );
+
+    createComponent();
+
+    await fixture.whenStable();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const renderedBody =
+      element.querySelector<HTMLElement>(
+        '.article-body'
+      );
+
+    expect(renderedBody).toBeTruthy();
+
+    expect(
+      codePenEmbedMock.enhance
+    ).toHaveBeenCalledWith(
+      renderedBody,
+      codePenArticle.body,
+      codePenArticle.area
+    );
   });
 
   it('mostra i link di approfondimento', () => {

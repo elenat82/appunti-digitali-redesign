@@ -31,6 +31,7 @@ import {
 } from '../../search/utils/article-search-dom';
 import { SearchResultOccurrence } from '../../search/models/search-result.model';
 import { SearchService } from '../../search/services/search.service';
+import { CodePenEmbedService } from '../services/codepen-embed.service';
 
 interface ArticlePageState {
   status: 'loading' | 'ready' | 'not-found' | 'error';
@@ -49,9 +50,9 @@ interface ArticlePageState {
 export class ArticlePage {
   private readonly route = inject(ActivatedRoute);
   private readonly contentRepository = inject(ContentRepositoryService);
-  private readonly host =
-    inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly search = inject(SearchService);
+  private readonly codePenEmbed = inject(CodePenEmbedService);
 
   private readonly queryParamMap = toSignal(
     this.route.queryParamMap,
@@ -75,6 +76,8 @@ export class ArticlePage {
         }
 
         this.highlightCode();
+
+        this.enhanceCodePen(article.body, article.area);
 
         const params = this.queryParamMap();
 
@@ -532,6 +535,31 @@ export class ArticlePage {
 
       code.dataset['prismHighlighted'] = 'true';
     }
+  }
+
+  /**
+ * Applica il progressive enhancement agli embed CodePen dell'articolo.
+ *
+ * @param rawBodyHtml Markup originale ricevuto da Drupal.
+ */
+  private enhanceCodePen(
+    rawBodyHtml: string,
+    area: string
+  ): void {
+    const body =
+      this.host.nativeElement.querySelector<HTMLElement>(
+        '.article-body'
+      );
+
+    if (!body) {
+      return;
+    }
+
+    this.codePenEmbed.enhance(
+      body,
+      rawBodyHtml,
+      area
+    );
   }
 
   /**
