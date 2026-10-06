@@ -1,0 +1,40 @@
+uuid: a083c7b2-15f3-49db-9f5e-0256f7ab4a62
+langcode: it
+status: true
+dependencies:
+  enforced:
+    module:
+      - appunti_digitali_migrate
+id: appunti_digitali_article_images
+class: null
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - 'Appunti Digitali'
+migration_group: null
+label: 'Appunti Digitali - Article images'
+source:
+  plugin: appunti_digitali_legacy_article_image
+  key: legacy
+process:
+  uuid: uuid
+  filename: filename
+  uri:
+    plugin: file_copy
+    source:
+      - source_path
+      - destination_uri
+    move: false
+  filemime: filemime
+  filesize: filesize
+  status: status
+  uid:
+    plugin: default_value
+    default_value: 1
+destination:
+  plugin: 'entity:file'
+idMap: {  }
+migration_dependencies:
+  required: {  }
+  optional: {  }
+include: null

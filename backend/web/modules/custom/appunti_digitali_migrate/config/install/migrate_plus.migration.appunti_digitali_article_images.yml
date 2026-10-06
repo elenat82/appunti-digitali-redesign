@@ -1,0 +1,41 @@
+id: appunti_digitali_article_images
+label: 'Appunti Digitali - Article images'
+langcode: it
+
+migration_tags:
+  - 'Appunti Digitali'
+
+migration_dependencies:
+  required: []
+  optional: []
+
+source:
+  plugin: appunti_digitali_legacy_article_image
+  key: legacy
+
+process:
+  uuid: uuid
+  filename: filename
+
+  uri:
+    plugin: file_copy
+    source:
+      - source_path
+      - destination_uri
+    move: false
+
+  filemime: filemime
+  filesize: filesize
+  status: status
+
+  uid:
+    plugin: default_value
+    default_value: 1
+
+destination:
+  plugin: 'entity:file'
+
+dependencies:
+  enforced:
+    module:
+      - appunti_digitali_migrate

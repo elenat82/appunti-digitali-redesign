@@ -99,7 +99,7 @@ settings:
 image_upload:
   status: true
   scheme: public
-  directory: inline-images
+  directory: article-images
   max_size: null
   max_dimensions:
     width: null

@@ -5,6 +5,7 @@ package: Custom
 core_version_requirement: ^11
 
 dependencies:
+  - drupal:file
   - drupal:migrate
   - migrate_plus:migrate_plus
   - migrate_tools:migrate_tools

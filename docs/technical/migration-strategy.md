@@ -264,6 +264,59 @@ Il mapping è:
 
 Il markup HTML del body deve essere preservato, salvo le trasformazioni esplicitamente previste dalla pipeline di migrazione.
 
+### Immagini legacy
+
+L'analisi dei body legacy ha individuato 116 riferimenti a immagini negli articoli tecnici.
+
+Le immagini si dividono in tre categorie.
+
+#### Immagini Drupal gestite
+
+23 immagini appartengono ad articoli pubblicati e sono registrate nel Drupal 8 come file entity utilizzate dall'editor.
+
+I file sono memorizzati nel filesystem privato legacy sotto:
+
+    private://inline-images/
+
+I relativi file fisici sono disponibili nella directory `private-files`.
+
+Queste immagini devono essere migrate nel Drupal 11 come file gestiti.
+
+Nel nuovo sito tutte le immagini originali utilizzate nei body degli articoli vengono memorizzate nella stessa directory pubblica:
+
+    public://article-images/
+
+corrispondente sul filesystem Drupal a:
+
+    sites/default/files/article-images/
+
+Non vengono create sottodirectory per articolo, area tematica o data.
+
+La stessa directory viene utilizzata anche per le nuove immagini caricate in futuro dal body degli articoli tramite Drupal.
+
+La migrazione deve aggiornare i riferimenti presenti nel body in modo che puntino correttamente ai file del nuovo Drupal.
+
+#### Immagini legacy escluse dalla migrazione
+
+90 immagini sono utilizzate esclusivamente da quattro articoli Drupal non pubblicati destinati a essere riscritti:
+
+- `nid 490`: 1 immagine appartenente al vecchio tema Corkedscrewer;
+- `nid 495`: 46 immagini sotto `sites/default/files/variabiliglobali/`;
+- `nid 506`: 21 immagini sotto `sites/default/files/install-localhost/`;
+- `nid 510`: 22 immagini sotto `sites/default/files/drush/`.
+
+I nodi vengono mantenuti come contenuti non pubblicati, ma queste immagini non vengono migrate nel Drupal 11.
+
+I relativi file vengono conservati esclusivamente come backup del sito legacy.
+
+Non viene introdotta nella pipeline una gestione specifica per questi asset, perché gli articoli verranno riscritti prima di un'eventuale ripubblicazione.
+
+#### Immagini esterne
+
+Tre immagini utilizzate negli articoli pubblicati provengono da servizi esterni e sono referenziate tramite URL assoluto.
+
+Questi riferimenti non vengono trasformati dalla migrazione e rimangono esterni.
+
 ### Approfondimenti legacy
 
 Il campo `field_approfondimenti` è un campo Link multivalore.
@@ -436,6 +489,9 @@ Per ogni articolo campione devono essere controllati almeno:
 - titolo;
 - stato di pubblicazione;
 - body HTML;
+- immagini locali migrate;
+- riferimenti alle immagini nel body;
+- rendering delle immagini nel frontend;
 - gerarchia degli heading;
 - liste;
 - tabelle;
@@ -483,7 +539,6 @@ I seguenti aspetti richiedono ulteriori analisi o verranno definiti durante l'im
 - meccanismo tecnico utilizzato per leggere il database Drupal 8;
 - migration necessarie e relative dipendenze;
 - trasformazioni definitive degli heading;
-- gestione di immagini e file locali;
 - gestione di eventuali embed diversi da CodePen;
 - gestione degli alias URL;
 - eventuale preservazione delle date di creazione e modifica;

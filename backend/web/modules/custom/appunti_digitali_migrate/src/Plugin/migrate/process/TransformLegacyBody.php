@@ -12,7 +12,8 @@ use Drupal\migrate\Row;
 /**
  * Transforms legacy article body markup for Drupal 11.
  *
- * Converts legacy CodePen markup to the format used by the new frontend while preserving the remaining body HTML unchanged.
+ * Converts legacy CodePen markup to the format used by the new frontend
+ * while preserving the remaining body HTML unchanged.
  */
 #[MigrateProcess('appunti_digitali_transform_legacy_body')]
 final class TransformLegacyBody extends ProcessPluginBase {
@@ -33,9 +34,24 @@ final class TransformLegacyBody extends ProcessPluginBase {
     $codepen_depth = 0;
 
     return preg_replace_callback(
-      '/<\/?div\b[^>]*>|<pre\b[^>]*>/i',
+      '/<\/?div\b[^>]*>|<pre\b[^>]*>|<img\b[^>]*>/i',
       static function (array $matches) use (&$codepen_depth): string {
         $tag = $matches[0];
+
+        if (
+          preg_match('/^<img\b/i', $tag)
+          && preg_match(
+            '/\bdata-entity-type\s*=\s*(["\'])file\1/i',
+            $tag,
+          )
+        ) {
+          return preg_replace(
+            '#(\bsrc\s*=\s*["\'])/web/system/files/inline-images/#i',
+            '$1/sites/default/files/article-images/',
+            $tag,
+            1,
+          ) ?? $tag;
+        }
 
         if (preg_match('/^<\/div\b/i', $tag)) {
           if ($codepen_depth > 0) {

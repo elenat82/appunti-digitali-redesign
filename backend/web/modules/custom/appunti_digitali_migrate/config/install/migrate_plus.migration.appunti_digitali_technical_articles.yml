@@ -1,10 +1,12 @@
 id: appunti_digitali_technical_articles
 label: 'Appunti Digitali - Technical articles'
+langcode: it
 migration_tags:
   - 'Appunti Digitali'
 
 migration_dependencies:
-  required: []
+  required:
+    - appunti_digitali_article_images
   optional: []
 
 source:

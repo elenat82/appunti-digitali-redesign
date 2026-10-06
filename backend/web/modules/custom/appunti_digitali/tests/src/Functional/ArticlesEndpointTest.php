@@ -235,4 +235,57 @@ final class ArticlesEndpointTest extends BrowserTestBase {
     );
   }
 
+  /**
+   * Verifica la normalizzazione degli URL delle immagini nel body.
+   */
+  public function testArticleImageUrls(): void {
+    Node::create([
+      'type' => 'html',
+      'title' => 'Articolo con immagini',
+      'status' => TRUE,
+      'field_body' => [
+        'value' => '<p>Immagini di prova.</p>'
+        . '<img '
+        . 'src="/sites/default/files/article-images/example.png" '
+        . 'alt="Immagine locale">'
+        . '<img '
+        . 'src="https://example.com/external.png" '
+        . 'alt="Immagine esterna">',
+        'format' => 'full_html',
+      ],
+      'field_weight' => 0,
+    ])->save();
+
+    $this->drupalGet('/api/articles/html');
+
+    $this->assertSession()->statusCodeEquals(200);
+
+    $articles = json_decode(
+      $this->getSession()->getPage()->getContent(),
+      TRUE,
+      512,
+      JSON_THROW_ON_ERROR,
+    );
+
+    $this->assertCount(1, $articles);
+
+    $body = $articles[0]['body'];
+
+    $this->assertMatchesRegularExpression(
+      '#src="https?://[^"]+'
+        . '/sites/default/files/article-images/example\.png"#',
+      $body,
+    );
+
+    $this->assertStringNotContainsString(
+      'src="/sites/default/files/article-images/example.png"',
+      $body,
+    );
+
+    $this->assertStringContainsString(
+      'src="https://example.com/external.png"',
+      $body,
+    );
+  }
+
 }

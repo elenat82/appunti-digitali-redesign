@@ -12,6 +12,7 @@ use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\text\Plugin\Field\FieldType\TextLongItem;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Espone gli articoli pubblicati appartenenti a un'area tematica.
@@ -23,6 +24,7 @@ final class ArticlesController implements ContainerInjectionInterface {
    */
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
+    private readonly RequestStack $requestStack,
   ) {}
 
   /**
@@ -31,6 +33,7 @@ final class ArticlesController implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container): self {
     return new self(
       $container->get('entity_type.manager'),
+      $container->get('request_stack'),
     );
   }
 
@@ -96,7 +99,9 @@ final class ArticlesController implements ContainerInjectionInterface {
         if ($body_item instanceof TextLongItem) {
           $processed_body = $body_item->get('processed');
 
-          $body = (string) $processed_body->getValue();
+          $body = $this->absolutizeImageUrls(
+            (string) $processed_body->getValue(),
+          );
           $cache_dependencies[] = $processed_body;
         }
       }
@@ -143,7 +148,35 @@ final class ArticlesController implements ContainerInjectionInterface {
       $node_definition->getListCacheContexts(),
     );
 
+    $response->getCacheableMetadata()->addCacheContexts([
+      'url.site',
+    ]);
+
     return $response;
+  }
+
+  /**
+   * Converts root-relative image URLs to absolute backend URLs.
+   */
+  private function absolutizeImageUrls(string $body): string {
+    $request = $this->requestStack->getCurrentRequest();
+
+    if ($body === '' || $request === NULL) {
+      return $body;
+    }
+
+    $origin = $request->getSchemeAndHttpHost();
+
+    return preg_replace_callback(
+      '/(<img\b[^>]*\bsrc\s*=\s*)(["\'])(\/(?!\/)[^"\']*)\2/i',
+      static fn(array $matches): string =>
+      $matches[1]
+        . $matches[2]
+        . $origin
+        . $matches[3]
+        . $matches[2],
+      $body,
+    ) ?? $body;
   }
 
 }

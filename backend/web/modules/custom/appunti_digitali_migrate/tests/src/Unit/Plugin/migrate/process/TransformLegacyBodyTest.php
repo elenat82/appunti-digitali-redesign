@@ -152,6 +152,47 @@ final class TransformLegacyBodyTest extends UnitTestCase {
   }
 
   /**
+   * Tests conversion of a managed legacy inline image.
+   */
+  public function testTransformsManagedInlineImage(): void {
+    $input = '<p>'
+      . '<img src="/web/system/files/inline-images/box-model.png" '
+      . 'data-entity-type="file" '
+      . 'data-entity-uuid="7a2fe291-7a8f-4315-bc46-abdc6bc3af37" '
+      . 'alt="Box model">'
+      . '</p>';
+
+    $expected = '<p>'
+      . '<img src="/sites/default/files/article-images/box-model.png" '
+      . 'data-entity-type="file" '
+      . 'data-entity-uuid="7a2fe291-7a8f-4315-bc46-abdc6bc3af37" '
+      . 'alt="Box model">'
+      . '</p>';
+
+    $this->assertSame($expected, $this->transform($input));
+  }
+
+  /**
+   * Tests that external images remain unchanged.
+   */
+  public function testPreservesExternalImage(): void {
+    $input = '<img src="https://example.com/image.png" alt="Example">';
+
+    $this->assertSame($input, $this->transform($input));
+  }
+
+  /**
+   * Tests that unmanaged legacy images remain unchanged.
+   */
+  public function testPreservesUnmanagedLegacyImage(): void {
+    $input = '<img '
+    . 'src="http://www.appunti-digitali.it/sites/default/files/drush/1.png" '
+    . 'alt="Drush">';
+
+    $this->assertSame($input, $this->transform($input));
+  }
+
+  /**
    * Runs the process plugin.
    */
   private function transform(string $value): mixed {
