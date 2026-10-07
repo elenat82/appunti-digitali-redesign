@@ -359,6 +359,7 @@ L'account utilizza i seguenti campi pubblici:
 - `field_phone`: numero di telefono opzionale;
 - `field_linkedin`: profilo LinkedIn;
 - `field_github`: profilo GitHub;
+- `field_github_username`: username GitHub utilizzato dalle integrazioni backend;
 - `field_cv`: file PDF del CV;
 - `user_picture`: avatar.
 

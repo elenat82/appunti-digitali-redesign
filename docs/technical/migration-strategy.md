@@ -518,6 +518,32 @@ Per gli embed CodePen la trasformazione sistematica è già definita nella sezio
 
 Nel frontend Angular il titolo dell'articolo è un `h1`; il body non deve quindi introdurre un secondo `h1`.
 
+## Profilo pubblico
+
+L'account utente del sito Drupal 8 non viene migrato.
+
+Nel sito legacy è presente un solo account amministrativo (`uid = 1`) e le informazioni pubbliche dell'amministratore non sono modellate tramite campi dedicati, fatta eccezione per `user_picture`.
+
+Drupal 11 utilizza invece due account con responsabilità distinte:
+
+- l'account amministrativo del sito;
+- un account dedicato al profilo pubblico, identificato dal ruolo `public_profile`.
+
+I dati del profilo pubblico vengono configurati direttamente nel nuovo sito tramite i campi dell'entità `User`.
+
+Non vengono quindi migrati:
+
+- username legacy;
+- password;
+- email tecnica dell'account;
+- ruoli e permessi;
+- date e metadati dell'account;
+- avatar legacy.
+
+Nome pubblico, ruolo professionale, presentazione, email pubblica, telefono, link social, username GitHub, CV e avatar vengono inseriti o caricati direttamente nel profilo pubblico Drupal 11.
+
+Questa scelta evita di accoppiare il nuovo profilo pubblico all'account amministrativo del sito legacy e non comporta perdita significativa di dati, poiché le informazioni interessate sono limitate e riferite a un unico profilo.
+
 ### Normalizzazione degli heading
 
 Nel sito legacy il titolo dell'articolo non è contenuto nel body.
