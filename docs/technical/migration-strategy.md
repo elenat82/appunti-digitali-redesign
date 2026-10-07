@@ -125,7 +125,11 @@ L'analisi del database Drupal 8 ha rilevato i seguenti content type tecnici:
 | php | 32 | 0 |
 | varie | 26 | 1 |
 
-Sono inoltre presenti i content type `feed_rss` e `strumenti_utili`, che non rientrano nella migrazione iniziale degli articoli tecnici.
+Sono inoltre presenti i content type `feed_rss` e `strumenti_utili`.
+
+I nodi `feed_rss` non vengono migrati. L'analisi del sito legacy ha infatti verificato che il frontend Angular pubblico non utilizza questi nodi per la sezione Notizie, ma recupera direttamente il feed XML esposto dal modulo Aggregator tramite `/aggregator/rss`.
+
+Il content type `strumenti_utili` viene analizzato separatamente rispetto agli articoli tecnici.
 
 I 52 contenuti dell'area Drupal devono essere mantenuti integralmente, preservandone lo stato di pubblicazione.
 
@@ -568,6 +572,132 @@ Il contenuto e gli eventuali attributi degli heading vengono preservati.
 
 La trasformazione viene applicata dal process plugin `appunti_digitali_transform_legacy_body`.
 
+## Sorgenti RSS
+
+Nel sito Drupal 8 sono presenti due meccanismi distinti per la gestione dei feed RSS:
+
+- il modulo Aggregator, che mantiene le sorgenti nella tabella `aggregator_feed` e gli elementi recuperati in `aggregator_item`;
+- il modulo Feeds, che utilizza configurazioni `feed_reader` e crea nodi di tipo `feed_rss`.
+
+L'analisi del frontend Angular legacy ha verificato che la sezione Notizie utilizza il primo meccanismo.
+
+La configurazione di produzione del frontend utilizza infatti:
+
+    rssfeed: "aggregator/rss"
+
+e il relativo servizio recupera il documento XML da `/aggregator/rss`.
+
+La View REST `/api-rss`, basata sui nodi `feed_rss`, non viene utilizzata dal frontend pubblico legacy.
+
+La sorgente autorevole per la migrazione RSS è quindi `aggregator_feed`.
+
+### Sorgenti legacy
+
+Nel Drupal 8 sono configurate 12 sorgenti Aggregator:
+
+| Sorgente | URL |
+| --- | --- |
+| Google Italia | `http://feeds.feedburner.com/GoogleItaliaBlog` |
+| Eric Meyer | `http://meyerweb.com/eric/thoughts/feed/` |
+| Giorgio Taverniti | `https://seoblog.giorgiotave.it/feed/` |
+| Lea Verou | `http://feeds.feedburner.com/leaverou` |
+| Sara Soueidan | `http://feeds.feedburner.com/sarasoueidan` |
+| Addy Osmani | `https://addyosmani.com/rss.xml` |
+| A List Apart | `http://www.alistapart.com/rss.xml` |
+| Brad Frost | `http://feeds.feedburner.com/brad-frosts-blog` |
+| David Walsh | `http://feeds.feedburner.com/Bludice` |
+| Paul Irish | `http://feeds.feedburner.com/paul-irish` |
+| Smashing Magazine | `https://www.smashingmagazine.com/feed/` |
+| Css Tricks | `http://feeds.feedburner.com/CssTricks` |
+
+Tutte le sorgenti utilizzano `langcode = en`.
+
+Nel Drupal 8 tutte le sorgenti hanno intervallo di aggiornamento pari a `86400` secondi, con la sola eccezione di Eric Meyer, configurato a `3600`.
+
+Nel nuovo sito l'intervallo viene normalizzato a `86400` secondi per tutte le sorgenti.
+
+### Modello di destinazione
+
+Drupal 11 utilizza il modulo Aggregator anche come modello di destinazione.
+
+Le sorgenti vengono quindi migrate direttamente come entity `aggregator_feed`.
+
+Il mapping è:
+
+| Drupal 8 `aggregator_feed` | Drupal 11 `aggregator_feed` |
+| --- | --- |
+| `langcode` | `langcode` |
+| `title` | `title` |
+| `url` | `url` |
+| `refresh` | `86400` |
+
+Il `fid` legacy viene utilizzato esclusivamente come identificatore della riga sorgente della migration e non viene assegnato all'entity di destinazione.
+
+Non vengono preservati:
+
+- `uuid`;
+- `checked`;
+- `queued`;
+- `link`;
+- `description`;
+- `image`;
+- `etag`;
+- `modified`.
+
+Si tratta di identificatori o metadati relativi allo stato del recupero dei feed che possono essere rigenerati dal nuovo Drupal.
+
+Gli elementi presenti in `aggregator_item` non vengono migrati. Dopo la migrazione delle sorgenti Aggregator recupera nuovamente gli item dalle rispettive sorgenti RSS.
+
+Non vengono inoltre migrati i 389 nodi legacy di tipo `feed_rss` né le configurazioni del modulo Feeds, perché non costituiscono il meccanismo utilizzato dalla sezione Notizie del frontend pubblico.
+
+### Implementazione della migration
+
+La sorgente legacy viene letta dal source plugin:
+
+    appunti_digitali_legacy_aggregator_feed
+
+implementato dalla classe:
+
+    LegacyAggregatorFeed
+
+La migration è identificata da:
+
+    appunti_digitali_rss_sources
+
+e utilizza come destination plugin:
+
+    entity:aggregator_feed
+
+Il modulo `appunti_digitali_migrate` dichiara quindi una dipendenza esplicita dal modulo `aggregator`.
+
+La migration delle sorgenti RSS è indipendente dalla migration degli articoli tecnici e delle relative immagini.
+
+### Verifica
+
+La migration è stata verificata sull'intero insieme delle sorgenti legacy.
+
+Il primo import ha prodotto:
+
+    Total:         12
+    Imported:      12
+    Unprocessed:   0
+    Message Count: 0
+
+Nel Drupal 11 risultavano presenti 12 sorgenti, con titolo e URL corrispondenti alla sorgente legacy e `refresh = 86400` per tutte.
+
+È stato quindi eseguito il rollback completo della migration.
+
+Il rollback ha eliminato tutte le 12 sorgenti e ha riportato lo stato a:
+
+    Imported:    0
+    Unprocessed: 12
+
+Nel Drupal 11 non risultava più alcuna entity `aggregator_feed`.
+
+Un successivo reimport completo ha ripristinato correttamente le 12 sorgenti.
+
+La prova import → rollback → reimport conferma quindi che la migration delle sorgenti RSS è ripetibile e rollbackabile.
+
 ## Verifica della migrazione
 
 La migrazione parziale deve essere verificata sia nel backend Drupal sia nel frontend Angular.
@@ -649,6 +779,16 @@ Il dry run ha confermato il corretto funzionamento delle migration e delle relat
 1. migration delle file entity utilizzate nei body degli articoli;
 2. migration degli articoli tecnici.
 
+La migration `appunti_digitali_rss_sources` è indipendente dalle migration degli articoli tecnici e delle immagini e non introduce dipendenze di esecuzione rispetto a esse.
+
+La pipeline di migrazione attualmente implementata comprende quindi:
+
+- `appunti_digitali_article_images`;
+- `appunti_digitali_technical_articles`;
+- `appunti_digitali_rss_sources`.
+
+Le prime due devono rispettare l'ordine immagini → articoli; la migration delle sorgenti RSS può essere eseguita indipendentemente.
+
 La migration degli articoli dipende quindi dalla migration delle immagini e deve essere eseguita successivamente, in modo che i riferimenti alle file entity e il relativo `file_usage` possano essere creati correttamente durante l'import dei nodi.
 
 Per il rilascio definitivo verrà utilizzata la stessa pipeline già verificata, applicata a una copia aggiornata della sorgente Drupal 8.
@@ -688,7 +828,7 @@ La procedura completa di rilascio verrà aggiornata con i comandi effettivamente
 I seguenti aspetti richiedono ulteriori analisi o verranno definiti durante l'implementazione della pipeline:
 
 - meccanismo tecnico utilizzato per leggere il database Drupal 8;
-- migration necessarie e relative dipendenze;
+- eventuali ulteriori migration necessarie per i dati legacy non ancora analizzati;
 - gestione di eventuali embed diversi da CodePen;
 - gestione degli alias URL;
 - eventuale preservazione delle date di creazione e modifica;

@@ -1525,17 +1525,44 @@ Drupal trasforma, quando necessario, i dati esterni nel formato richiesto dal fr
 
 ### Feed RSS
 
-I feed RSS continuano a essere recuperati da Drupal.
+La gestione dei feed RSS utilizza il modulo Drupal Aggregator.
 
-Drupal ha la responsabilità di:
+Le sorgenti vengono configurate e amministrate nel backend Drupal tramite l'interfaccia di Aggregator. Ogni sorgente mantiene almeno nome, URL e intervallo di aggiornamento.
 
-- interrogare le sorgenti RSS configurate;
-- conservare temporaneamente i dati recuperati;
-- esporre al frontend le notizie attraverso la relativa API.
+L'intervallo previsto per le sorgenti di Appunti Digitali è di 86400 secondi.
 
-Angular utilizza esclusivamente i dati esposti da Drupal e non contatta direttamente le sorgenti RSS.
+Aggregator è responsabile di:
 
-Il recupero dei feed non deve essere eseguito nuovamente per ogni visita alla home.
+- interrogare periodicamente le sorgenti RSS;
+- creare e aggiornare gli elementi `aggregator_item`;
+- associare ogni elemento alla relativa sorgente `aggregator_feed`;
+- mantenere nel backend Drupal i dati recuperati.
+
+La lettura destinata al frontend viene effettuata dal `NewsService` del modulo `appunti_digitali_integrations`.
+
+Il servizio legge direttamente le entity `aggregator_feed` e `aggregator_item`.
+
+Per ogni sorgente vengono considerate al massimo le cinque notizie più recenti. I risultati di tutte le sorgenti vengono successivamente ordinati globalmente per data decrescente.
+
+Ogni notizia viene normalizzata secondo il modello:
+
+    NewsItem
+    ├── id
+    ├── title
+    ├── url
+    ├── source
+    ├── author
+    └── date
+
+`source` contiene il nome della sorgente Aggregator.
+
+`author` può essere nullo quando il feed non fornisce l'autore.
+
+Angular utilizza i dati normalizzati esposti dal backend Drupal e non deve conoscere né il formato XML del feed originale né la struttura interna delle entity Aggregator.
+
+La nuova implementazione non utilizza quindi il vecchio flusso Angular che interrogava direttamente `/aggregator/rss` e parsava l'XML tramite `xml2js`.
+
+Gli item RSS non vengono duplicati in nodi Drupal custom e non viene introdotta una seconda cache applicativa dedicata ai feed: persistenza e aggiornamento delle notizie sono responsabilità di Aggregator.
 
 ### Stack Overflow
 
@@ -1640,9 +1667,11 @@ Anche se appartengono al sito, la loro visualizzazione nella home è considerata
 
 ### Strategia di cache
 
-Feed RSS, Stack Overflow e GitHub utilizzano cache indipendenti lato Drupal.
+Stack Overflow e GitHub utilizzano cache indipendenti lato Drupal.
 
-La frequenza di aggiornamento della cache può essere differente per ciascuna integrazione e viene definita durante l'implementazione in base a:
+I feed RSS seguono invece il ciclo di aggiornamento e persistenza fornito dal modulo Aggregator: le sorgenti vengono aggiornate secondo il relativo intervallo e gli elementi recuperati vengono mantenuti come entity `aggregator_item`.
+
+Per Stack Overflow e GitHub, la strategia e la durata della cache possono essere differenti e vengono definite durante l'implementazione in base a:
 
 - frequenza con cui il dato cambia;
 - limiti imposti dal provider;
