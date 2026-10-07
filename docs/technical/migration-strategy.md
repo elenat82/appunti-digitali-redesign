@@ -575,25 +575,87 @@ Per ogni articolo campione devono essere controllati almeno:
 
 Le anomalie che riguardano pattern sistematici devono essere risolte modificando la pipeline e rieseguendo la migrazione. Le sole eccezioni manuali previste devono essere documentate e ricontrollate dopo ogni esecuzione completa.
 
+### Full dry run degli articoli tecnici
+
+La pipeline completa è stata eseguita su una copia aggiornata del database Drupal 8 dopo aver effettuato il rollback delle migration di sviluppo.
+
+L'esecuzione completa ha prodotto:
+
+- 23 file entity migrate su 23;
+- 187 articoli tecnici migrati su 187;
+- 0 elementi falliti;
+- 0 elementi ignorati;
+- 0 elementi non processati;
+- 0 messaggi di errore.
+
+La riconciliazione quantitativa tra Drupal 8 e Drupal 11 ha verificato:
+
+- identica distribuzione degli articoli per content type;
+- identico stato di pubblicazione per tutti i 187 articoli;
+- 0 differenze nei titoli;
+- 0 differenze nei `field_weight`;
+- 126 approfondimenti migrati su 126, associati agli stessi 58 articoli;
+- 0 differenze negli URI degli approfondimenti;
+- 0 differenze nei titoli degli approfondimenti;
+- 0 differenze nell'ordine dei valori multivalore.
+
+La verifica delle trasformazioni del body ha confermato:
+
+- 187 body su 187 con formato `full_html`;
+- 1153 heading legacy `h3` trasformati in `h2`;
+- 306 heading legacy `h4` trasformati in `h3`;
+- nessun `h1` o `h4` residuo nei body migrati;
+- 23 riferimenti alle immagini Drupal gestite aggiornati al nuovo percorso;
+- nessun riferimento residuo a `/web/system/files/inline-images/`;
+- 23 file entity migrate con relativo `file_usage`;
+- 43 wrapper CodePen legacy `.penny` trasformati in 43 `.codepen-demo`;
+- nessun wrapper `.penny` residuo;
+- normalizzazione di `data-option-autoprefixer` in `data-options-autoprefixer`.
+
+Il full dry run conferma quindi che la pipeline degli articoli tecnici è ripetibile e produce il dataset atteso.
+
 ## Migrazione definitiva
 
-Quando mapping e trasformazioni sono stati verificati sul campione, la stessa pipeline viene utilizzata per l'intero dataset.
+La pipeline degli articoli tecnici è stata verificata tramite un full dry run sull'intero dataset legacy.
 
-Prima dell'import definitivo deve essere acquisita una copia aggiornata della sorgente Drupal 8, in modo da includere le modifiche ai contenuti avvenute durante lo sviluppo del nuovo sito.
+Il dry run ha confermato il corretto funzionamento delle migration e delle relative dipendenze, con il seguente ordine di esecuzione:
+
+1. migration delle file entity utilizzate nei body degli articoli;
+2. migration degli articoli tecnici.
+
+La migration degli articoli dipende quindi dalla migration delle immagini e deve essere eseguita successivamente, in modo che i riferimenti alle file entity e il relativo `file_usage` possano essere creati correttamente durante l'import dei nodi.
+
+Per il rilascio definitivo verrà utilizzata la stessa pipeline già verificata, applicata a una copia aggiornata della sorgente Drupal 8.
+
+Prima dell'import definitivo deve quindi essere acquisita una nuova copia del database Drupal 8 e dei file legacy necessari, in modo da includere eventuali modifiche ai contenuti avvenute durante lo sviluppo del nuovo sito.
 
 La procedura definitiva dovrà prevedere:
 
 1. acquisizione della sorgente Drupal 8 aggiornata;
-2. preparazione del database Drupal 11;
-3. esecuzione completa delle migration;
-4. esecuzione delle correzioni manuali eccezionali documentate nella checklist post-migrazione;
-5. verifica dei risultati;
-6. verifica delle API Drupal;
-7. verifica dei contenuti nel frontend Angular;
-8. verifica della ricerca;
-9. verifica degli eventuali file migrati.
+2. acquisizione dei file legacy necessari alla migrazione;
+3. preparazione del database e della configurazione Drupal 11;
+4. esecuzione delle migration nell'ordine definito dalle relative dipendenze;
+5. esecuzione delle eventuali correzioni manuali eccezionali documentate nella checklist post-migrazione;
+6. verifica quantitativa dei dati migrati;
+7. verifica qualitativa di un campione rappresentativo;
+8. verifica delle API Drupal;
+9. verifica dei contenuti nel frontend Angular;
+10. verifica della ricerca;
+11. verifica dei file migrati e dei relativi riferimenti.
 
-La procedura utilizzata per il rilascio dovrà essere documentata con i comandi effettivamente necessari una volta completata l'implementazione.
+Per gli articoli tecnici, il full dry run ha già verificato con successo:
+
+- 23 file entity migrate su 23;
+- 187 articoli tecnici migrati su 187;
+- preservazione di content type, titolo, stato di pubblicazione e ordinamento;
+- preservazione dei 126 link di approfondimento;
+- trasformazione degli heading;
+- trasformazione del markup CodePen;
+- migrazione e aggiornamento dei riferimenti alle immagini;
+- creazione del `file_usage`;
+- assenza di elementi falliti, ignorati o non processati.
+
+La procedura completa di rilascio verrà aggiornata con i comandi effettivamente necessari quando saranno state implementate e verificate anche le migration degli altri dati del sito.
 
 ## Aspetti ancora da definire
 
