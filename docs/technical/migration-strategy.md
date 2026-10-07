@@ -216,16 +216,57 @@ Il sito Drupal 8 utilizza due campi distinti per l'ordinamento.
 
 `field_weight` determina invece l'ordine dei singoli articoli all'interno della relativa area.
 
-Nel nuovo Drupal i due concetti rimangono separati:
+Nel database legacy `field_content_type_weight` è memorizzato sui singoli nodi, ma il valore è uniforme all'interno di ciascun content type:
 
-- `field_content_type_weight` non viene migrato sui nodi, ma viene trasferito nella configurazione dell'area associata al content type;
-- `field_weight` viene migrato nel campo `field_weight` del nodo.
+| Area | `field_content_type_weight` Drupal 8 |
+| --- | ---: |
+| HTML | 10 |
+| CSS | 20 |
+| JavaScript | 30 |
+| Angular | 40 |
+| PHP | 50 |
+| Drupal | 60 |
+| Varie | 70 |
+
+Nel nuovo Drupal l'ordine delle aree non viene memorizzato sui nodi.
+
+Ogni content type configurato come area tematica utilizza invece il third-party setting `appunti_digitali.weight`.
+
+I valori legacy vengono normalizzati preservandone l'ordine relativo:
+
+| Area | Drupal 8 | Drupal 11 |
+| --- | ---: | ---: |
+| HTML | 10 | 0 |
+| CSS | 20 | 1 |
+| JavaScript | 30 | 2 |
+| Angular | 40 | 3 |
+| PHP | 50 | 4 |
+| Drupal | 60 | 5 |
+| Varie | 70 | 6 |
+
+Non è necessario preservare i valori numerici originali, perché il loro significato applicativo consiste esclusivamente nell'ordine relativo delle aree.
+
+La configurazione dei weight delle aree fa parte della configurazione versionata del Drupal 11 e viene quindi mantenuta tramite `config/sync`; non viene generata dalla migration dei nodi.
+
+L'endpoint `/api/areas` utilizza questi weight per restituire le aree nel seguente ordine:
+
+    html
+    css
+    javascript
+    angular
+    php
+    drupal
+    varie
+
+L'ordine restituito dall'API è stato verificato rispetto alla sorgente legacy.
+
+`field_weight`, invece, rimane un dato appartenente al singolo articolo e viene migrato direttamente nel corrispondente campo `field_weight` del nodo Drupal 11.
 
 Il mapping è quindi:
 
 | Drupal 8 | Drupal 11 |
 | --- | --- |
-| `field_content_type_weight` | weight della configurazione dell'area |
+| `field_content_type_weight` | ordine normalizzato nel third-party setting `appunti_digitali.weight` del content type |
 | `field_weight` | `field_weight` del nodo |
 
 ### Stato di pubblicazione
