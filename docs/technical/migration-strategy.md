@@ -111,6 +111,22 @@ Per ogni area tematica devono essere verificati almeno:
 
 Il mapping definitivo deve essere basato sui dati effettivamente presenti nel sito legacy e non su assunzioni relative ai nomi dei campi.
 
+### Identificativi legacy
+
+Gli identificativi numerici interni delle entity Drupal 8 non vengono preservati nel Drupal 11.
+
+Per gli articoli tecnici il `nid` legacy viene utilizzato come identificatore della riga sorgente della migration, ma non viene assegnato al nodo di destinazione. Drupal 11 genera quindi autonomamente il nuovo `nid` e il nuovo `uuid`.
+
+Per le immagini migrate il `fid` legacy viene utilizzato come identificatore della riga sorgente e non viene assegnato alla file entity di destinazione. Il `uuid` del file viene invece preservato esplicitamente dalla migration.
+
+Per le sorgenti RSS il `fid` legacy identifica esclusivamente la riga sorgente; Drupal 11 genera autonomamente sia il nuovo `fid` sia il nuovo `uuid`.
+
+La Migrate API mantiene comunque nelle proprie mappe la relazione tra gli identificativi della sorgente e quelli delle entity create nel Drupal 11.
+
+Gli URL pubblici del frontend non dipendono dagli ID interni Drupal, ma dal percorso stabile `/appunti/{area}/{slug}`.
+
+Non è quindi necessario preservare i `nid` o i `fid` legacy per mantenere la compatibilità degli URL pubblici.
+
 ### Content type legacy
 
 L'analisi del database Drupal 8 ha rilevato i seguenti content type tecnici:
@@ -129,7 +145,9 @@ Sono inoltre presenti i content type `feed_rss` e `strumenti_utili`.
 
 I nodi `feed_rss` non vengono migrati. L'analisi del sito legacy ha infatti verificato che il frontend Angular pubblico non utilizza questi nodi per la sezione Notizie, ma recupera direttamente il feed XML esposto dal modulo Aggregator tramite `/aggregator/rss`.
 
-Il content type `strumenti_utili` viene analizzato separatamente rispetto agli articoli tecnici.
+Il content type `strumenti_utili` non viene migrato.
+
+I contenuti presenti in questo tipo non fanno parte del modello dati del nuovo sito. Se in futuro una delle risorse legacy risultasse ancora utile, verrà eventualmente reinserita come nuova risorsa salvata, senza mantenere il precedente content type né introdurre una migration dedicata.
 
 I 52 contenuti dell'area Drupal devono essere mantenuti integralmente, preservandone lo stato di pubblicazione.
 
@@ -460,6 +478,38 @@ Questa eccezione non viene riprodotta nella nuova pipeline né nel nuovo fronten
 Il body dell'articolo contiene già un'istruzione che invita a procurarsi una Google Maps API key, aprire l'esempio su CodePen e configurare la risorsa esterna. Poiché si tratta di un unico contenuto, dopo la migrazione definitiva l'articolo viene verificato e, se necessario, corretto manualmente per rendere esplicita la modalità corrente di aggiunta della risorsa JavaScript esterna.
 
 La correzione manuale del contenuto viene registrata nella checklist post-migrazione e non costituisce una regola generale della migration.
+
+## URL pubblici e alias legacy
+
+Nel frontend Angular legacy gli articoli utilizzano URL nella forma:
+
+    /appunti/{area}/{slug}
+
+Lo slug viene generato a partire dal titolo dell'articolo.
+
+Il nuovo frontend mantiene la stessa struttura:
+
+    /appunti/{area}/{slug}
+
+Drupal 11 genera gli alias tramite Pathauto utilizzando il pattern:
+
+    /appunti/[node:content-type]/[node:title]
+
+Per mantenere lo stesso comportamento del frontend legacy, Pathauto non elimina stop word durante la generazione degli slug:
+
+    ignore_words: ''
+
+È stato eseguito un confronto automatico tra gli URL dei 187 articoli tecnici legacy e gli alias generati nel Drupal 11.
+
+Il risultato è:
+
+    Totale:      187
+    Uguali:      187
+    Differenze:  0
+
+Gli URL pubblici degli articoli risultano quindi completamente compatibili con quelli del sito legacy.
+
+Non è necessario migrare gli alias Drupal 8 né introdurre redirect per gli articoli tecnici.
 
 ## Strategia di esecuzione
 
@@ -830,7 +880,6 @@ I seguenti aspetti richiedono ulteriori analisi o verranno definiti durante l'im
 - meccanismo tecnico utilizzato per leggere il database Drupal 8;
 - eventuali ulteriori migration necessarie per i dati legacy non ancora analizzati;
 - gestione di eventuali embed diversi da CodePen;
-- gestione degli alias URL;
 - eventuale preservazione delle date di creazione e modifica;
 - eventuali altri dati del sito legacy da migrare oltre agli articoli.
 

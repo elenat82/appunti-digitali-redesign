@@ -166,7 +166,7 @@ La navigazione proveniente dalla ricerca utilizza la stessa pagina articolo, agg
 
 Il routing non deve dipendere dagli identificativi interni delle tabelle Drupal.
 
-Gli articoli utilizzano URL pubblici nella forma /{area}/{slug}. Il percorso viene generato in Drupal tramite Pathauto utilizzando il pattern [node:content-type]/[node:title] ed esposto al frontend attraverso l'API come path relativo. Angular utilizza tale percorso per il routing pubblico senza ricostruire autonomamente lo slug.
+Gli articoli utilizzano URL pubblici nella forma `/appunti/{area}/{slug}`. Il percorso viene generato in Drupal tramite Pathauto utilizzando il pattern `/appunti/[node:content-type]/[node:title]` ed esposto al frontend attraverso l'API come path relativo. Angular utilizza tale percorso per il routing pubblico senza ricostruire autonomamente lo slug.
 
 ### Accesso ai dati
 
