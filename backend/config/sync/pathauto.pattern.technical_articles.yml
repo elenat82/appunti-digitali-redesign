@@ -15,7 +15,7 @@ dependencies:
 id: technical_articles
 label: 'Technical articles'
 type: 'canonical_entities:node'
-pattern: '/[node:content-type]/[node:title]'
+pattern: '/appunti/[node:content-type]/[node:title]'
 selection_criteria:
   c95d3035-7980-40eb-bb3c-2b5cb941528e:
     id: 'entity_bundle:node'

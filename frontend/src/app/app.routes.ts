@@ -10,7 +10,7 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: ':area/:slug',
+    path: 'appunti/:area/:slug',
     component: ArticlePage,
   },
 ];
