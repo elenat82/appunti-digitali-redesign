@@ -1,0 +1,32 @@
+id: appunti_digitali_rss_sources
+label: 'Appunti Digitali - RSS sources'
+
+migration_tags:
+  - 'Appunti Digitali'
+
+migration_dependencies:
+  required: []
+  optional: []
+
+source:
+  plugin: appunti_digitali_legacy_aggregator_feed
+  key: legacy
+
+process:
+  langcode: langcode
+  title: title
+  url: url
+
+  refresh:
+    plugin: default_value
+    default_value: 86400
+
+destination:
+  plugin: 'entity:aggregator_feed'
+
+dependencies:
+  module:
+    - aggregator
+  enforced:
+    module:
+      - appunti_digitali_migrate
