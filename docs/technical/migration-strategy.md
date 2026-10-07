@@ -477,7 +477,29 @@ Per gli embed CodePen la trasformazione sistematica è già definita nella sezio
 
 Nel frontend Angular il titolo dell'articolo è un `h1`; il body non deve quindi introdurre un secondo `h1`.
 
-La trasformazione definitiva degli heading verrà stabilita dopo aver analizzato un campione dei body Drupal 8 e verificato che la struttura sia coerente tra i diversi articoli.
+### Normalizzazione degli heading
+
+Nel sito legacy il titolo dell'articolo non è contenuto nel body.
+
+L'analisi dei 187 articoli tecnici ha rilevato che la gerarchia interna utilizza esclusivamente:
+
+- `h3` come primo livello di sezione;
+- `h4` come secondo livello di sezione.
+
+Tre articoli legacy contenevano erroneamente `h4` senza un precedente `h3`; questi casi sono stati corretti direttamente nel Drupal 8 prima della migrazione.
+
+Nel nuovo frontend il titolo dell'articolo viene renderizzato come `h1`.
+
+La migration normalizza quindi gli heading del body secondo il mapping:
+
+| Drupal 8 | Drupal 11 / frontend |
+| --- | --- |
+| `h3` | `h2` |
+| `h4` | `h3` |
+
+Il contenuto e gli eventuali attributi degli heading vengono preservati.
+
+La trasformazione viene applicata dal process plugin `appunti_digitali_transform_legacy_body`.
 
 ## Verifica della migrazione
 
@@ -538,7 +560,6 @@ I seguenti aspetti richiedono ulteriori analisi o verranno definiti durante l'im
 
 - meccanismo tecnico utilizzato per leggere il database Drupal 8;
 - migration necessarie e relative dipendenze;
-- trasformazioni definitive degli heading;
 - gestione di eventuali embed diversi da CodePen;
 - gestione degli alias URL;
 - eventuale preservazione delle date di creazione e modifica;

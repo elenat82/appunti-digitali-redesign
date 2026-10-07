@@ -34,9 +34,22 @@ final class TransformLegacyBody extends ProcessPluginBase {
     $codepen_depth = 0;
 
     return preg_replace_callback(
-      '/<\/?div\b[^>]*>|<pre\b[^>]*>|<img\b[^>]*>/i',
+      '/<\/?div\b[^>]*>|<pre\b[^>]*>|<img\b[^>]*>|<\/?h[34]\b[^>]*>/i',
       static function (array $matches) use (&$codepen_depth): string {
         $tag = $matches[0];
+
+        if (preg_match('/^<\/?h[34]\b/i', $tag)) {
+          return preg_replace_callback(
+          '/^<(\/?)h([34])\b/i',
+          static fn(array $matches): string =>
+            '<'
+            . $matches[1]
+            . 'h'
+            . ((int) $matches[2] - 1),
+            $tag,
+            1,
+          ) ?? $tag;
+        }
 
         if (
           preg_match('/^<img\b/i', $tag)

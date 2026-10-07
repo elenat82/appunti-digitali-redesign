@@ -204,4 +204,42 @@ final class TransformLegacyBodyTest extends UnitTestCase {
     );
   }
 
+  /**
+   * Tests conversion of legacy article headings.
+   */
+  public function testTransformsLegacyHeadings(): void {
+    $input = '<h3>Section</h3>'
+    . '<p>Text</p>'
+    . '<h4>Subsection</h4>';
+
+    $expected = '<h2>Section</h2>'
+    . '<p>Text</p>'
+    . '<h3>Subsection</h3>';
+
+    $this->assertSame($expected, $this->transform($input));
+  }
+
+  /**
+   * Tests that heading attributes are preserved.
+   */
+  public function testPreservesHeadingAttributes(): void {
+    $input = '<h3 class="example" id="section">Section</h3>';
+
+    $expected = '<h2 class="example" id="section">Section</h2>';
+
+    $this->assertSame($expected, $this->transform($input));
+  }
+
+  /**
+   * Tests that unrelated heading levels remain unchanged.
+   */
+  public function testPreservesOtherHeadingLevels(): void {
+    $input = '<h1>One</h1>'
+    . '<h2>Two</h2>'
+    . '<h5>Five</h5>'
+    . '<h6>Six</h6>';
+
+    $this->assertSame($input, $this->transform($input));
+  }
+
 }
