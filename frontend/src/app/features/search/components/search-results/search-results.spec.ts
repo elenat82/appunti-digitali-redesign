@@ -21,6 +21,8 @@ describe('SearchResults', () => {
 
   const resultsOpenState = signal(false);
 
+  const queryPendingState = signal(false);
+
   const searchMock = {
     query: queryState.asReadonly(),
     indexStatus: indexStatusState.asReadonly(),
@@ -32,12 +34,15 @@ describe('SearchResults', () => {
       resultGroupsState.asReadonly(),
     isResultsOpen:
       resultsOpenState.asReadonly(),
+    isQueryPending:
+      queryPendingState.asReadonly(),
     closeResults: vi.fn(() => {
       resultsOpenState.set(false);
     })
   };
 
   beforeEach(async () => {
+    queryPendingState.set(false);
     resultsOpenState.set(false);
     vi.clearAllMocks();
     queryState.set('');
@@ -431,5 +436,18 @@ describe('SearchResults', () => {
     ).toBe(searchInput);
 
     searchInput.remove();
+  });
+
+  it('mostra lo stato di ricerca in corso durante il debounce', () => {
+    queryState.set('Drupal');
+    resultsOpenState.set(true);
+    indexStatusState.set('ready');
+    queryPendingState.set(true);
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.textContent
+    ).toContain('Ricerca...');
   });
 });

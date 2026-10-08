@@ -24,37 +24,41 @@ export class SearchResults {
   private readonly document = inject(DOCUMENT);
 
   protected readonly statusMessage =
-  computed(() => {
-    if (
-      !this.search.isResultsOpen() ||
-      !this.search.query().trim()
-    ) {
-      return '';
-    }
+    computed(() => {
+      if (
+        !this.search.isResultsOpen() ||
+        !this.search.query().trim()
+      ) {
+        return '';
+      }
 
-    if (
-      this.search.indexStatus() ===
-      'preparing'
-    ) {
-      return 'Preparazione della ricerca...';
-    }
+      if (
+        this.search.indexStatus() ===
+        'preparing'
+      ) {
+        return 'Preparazione della ricerca...';
+      }
 
-    if (
-      this.search.occurrenceCount() === 0
-    ) {
+      if (this.search.isQueryPending()) {
+        return 'Ricerca in corso...';
+      }
+
+      if (
+        this.search.occurrenceCount() === 0
+      ) {
+        return (
+          'Nessun risultato per ' +
+          this.search.query()
+        );
+      }
+
       return (
-        'Nessun risultato per ' +
-        this.search.query()
+        `${this.search.query()}: ` +
+        `${this.search.occurrenceCount()} ` +
+        'occorrenze in ' +
+        `${this.search.articleCount()} articoli`
       );
-    }
-
-    return (
-      `${this.search.query()}: ` +
-      `${this.search.occurrenceCount()} ` +
-      'occorrenze in ' +
-      `${this.search.articleCount()} articoli`
-    );
-  });
+    });
 
   protected closeResultsAndFocusSearch(): void {
     this.search.closeResults();

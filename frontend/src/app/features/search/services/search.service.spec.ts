@@ -70,6 +70,14 @@ describe('SearchService', () => {
     };
   }
 
+  // Attende più del debounce configurato (150 ms) per lasciare margine anche alla propagazione asincrona tra signal,
+  // toObservable() e toSignal(), evitando test sensibili al timing dell'ambiente.
+  async function waitForSearchDebounce(): Promise<void> {
+    await new Promise((resolve) =>
+      setTimeout(resolve, 250)
+    );
+  }
+
   it('mantiene la query anche quando l\'indice non è ancora pronto', () => {
     const service = TestBed.inject(SearchService);
 
@@ -80,7 +88,7 @@ describe('SearchService', () => {
     expect(service.indexStatus()).toBe('preparing');
   });
 
-  it('esegue automaticamente la ricerca quando l\'indice diventa pronto', () => {
+  it('esegue automaticamente la ricerca quando l\'indice diventa pronto', async () => {
     const service = TestBed.inject(SearchService);
 
     segmentsState.set([
@@ -92,6 +100,8 @@ describe('SearchService', () => {
     ]);
 
     service.setQuery('Drupal');
+
+    await waitForSearchDebounce();
 
     expect(service.occurrences()).toEqual([]);
 
@@ -107,7 +117,7 @@ describe('SearchService', () => {
     ]);
   });
 
-  it('aggiorna automaticamente i risultati quando cambia la query', () => {
+  it('aggiorna automaticamente i risultati quando cambia la query', async () => {
     const service = TestBed.inject(SearchService);
 
     segmentsState.set([
@@ -122,9 +132,13 @@ describe('SearchService', () => {
 
     service.setQuery('Drupal');
 
+    await waitForSearchDebounce();
+
     expect(service.occurrenceCount()).toBe(1);
 
     service.setQuery('Angular');
+
+    await waitForSearchDebounce();
 
     expect(service.occurrences()).toEqual([
       {
@@ -136,7 +150,7 @@ describe('SearchService', () => {
     ]);
   });
 
-  it('riesegue la ricerca quando viene aggiornato l\'indice', () => {
+  it('riesegue la ricerca quando viene aggiornato l\'indice', async () => {
     const service = TestBed.inject(SearchService);
 
     statusState.set('ready');
@@ -150,6 +164,8 @@ describe('SearchService', () => {
     ]);
 
     service.setQuery('Drupal');
+
+    await waitForSearchDebounce();
 
     expect(service.occurrenceCount()).toBe(1);
 
@@ -170,7 +186,7 @@ describe('SearchService', () => {
     expect(service.articleCount()).toBe(2);
   });
 
-  it('calcola separatamente numero di occorrenze e numero di articoli', () => {
+  it('calcola separatamente numero di occorrenze e numero di articoli', async () => {
     const service = TestBed.inject(SearchService);
 
     segmentsState.set([
@@ -188,6 +204,8 @@ describe('SearchService', () => {
 
     statusState.set('ready');
     service.setQuery('Drupal');
+
+    await waitForSearchDebounce();
 
     expect(service.occurrenceCount()).toBe(3);
     expect(service.articleCount()).toBe(2);
@@ -212,7 +230,7 @@ describe('SearchService', () => {
     expect(service.occurrences()).toEqual([]);
   });
 
-  it('aggiorna gli articoli e richiede la ricostruzione dell’indice', () => {
+  it('aggiorna gli articoli e richiede la ricostruzione dell\'indice', () => {
     const service = TestBed.inject(SearchService);
 
     const articles = [
@@ -230,7 +248,7 @@ describe('SearchService', () => {
     ).toHaveBeenCalledWith(articles);
   });
 
-  it('costruisce i risultati raggruppati per articolo', () => {
+  it('costruisce i risultati raggruppati per articolo', async () => {
     const service = TestBed.inject(SearchService);
 
     service.updateArticles([
@@ -253,6 +271,8 @@ describe('SearchService', () => {
 
     service.setQuery('Drupal');
 
+    await waitForSearchDebounce();
+
     const groups = service.resultGroups();
 
     expect(groups).toHaveLength(1);
@@ -271,5 +291,50 @@ describe('SearchService', () => {
     expect(
       groups[0].occurrences[0].snippet.match
     ).toBe('Drupal');
+  });
+
+  it('non apre né esegue la ricerca sotto i tre caratteri', async () => {
+    const service = TestBed.inject(SearchService);
+
+    segmentsState.set([
+      createSegment(
+        'article-1-segment-1',
+        1,
+        'Drupal service'
+      )
+    ]);
+
+    statusState.set('ready');
+
+    service.setQuery('Dr');
+
+    await waitForSearchDebounce();
+
+    expect(service.query()).toBe('Dr');
+    expect(service.isResultsOpen()).toBe(false);
+    expect(service.occurrences()).toEqual([]);
+  });
+
+  it('avvia la ricerca da tre caratteri', async () => {
+    const service = TestBed.inject(SearchService);
+
+    segmentsState.set([
+      createSegment(
+        'article-1-segment-1',
+        1,
+        'Drupal service'
+      )
+    ]);
+
+    statusState.set('ready');
+
+    service.setQuery('Dru');
+
+    expect(service.isResultsOpen()).toBe(true);
+    expect(service.occurrences()).toEqual([]);
+
+    await waitForSearchDebounce();
+
+    expect(service.occurrenceCount()).toBe(1);
   });
 });

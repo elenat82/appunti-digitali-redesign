@@ -5,12 +5,24 @@ import {
   signal
 } from '@angular/core';
 
+import {
+  toObservable,
+  toSignal
+} from '@angular/core/rxjs-interop';
+
+import {
+  debounceTime,
+  distinctUntilChanged
+} from 'rxjs';
+
 import { SearchOccurrence } from '../models/search-occurrence.model';
 import { findSearchOccurrences } from '../utils/find-search-occurrences';
 import { SearchIndexService } from './search-index.service';
 import { Article } from '../../../core/models/article.model';
 import { SearchResultGroup } from '../models/search-result.model';
 import { buildSearchResultGroups } from '../utils/build-search-result-groups';
+
+const MIN_QUERY_LENGTH = 3;
 
 /**
  * Gestisce lo stato condiviso e l'esecuzione della ricerca.
@@ -22,6 +34,30 @@ export class SearchService {
   private readonly searchIndex = inject(SearchIndexService);
 
   private readonly queryState = signal('');
+
+  private readonly debouncedQuery = toSignal(
+    toObservable(this.queryState).pipe(
+      debounceTime(150),
+      distinctUntilChanged()
+    ),
+    {
+      initialValue: ''
+    }
+  );
+
+  readonly isQueryPending = computed(() => {
+    const query = this.queryState().trim();
+
+    if (query.length < MIN_QUERY_LENGTH) {
+      return false;
+    }
+
+    return (
+      query !==
+      this.debouncedQuery().trim()
+    );
+  });
+
   private readonly resultsOpenState = signal(false);
 
   /**
@@ -45,11 +81,22 @@ export class SearchService {
    * Occorrenze corrispondenti alla query corrente.
    */
   readonly occurrences = computed<SearchOccurrence[]>(() => {
-    const query = this.queryState();
+    const currentQuery =
+      this.queryState().trim();
+
+    const query =
+      this.debouncedQuery().trim();
+
+    const indexStatus =
+      this.searchIndex.status();
+
+    const isPending =
+      this.isQueryPending();
 
     if (
-      this.searchIndex.status() !== 'ready' ||
-      !query.trim()
+      currentQuery.length < MIN_QUERY_LENGTH ||
+      isPending ||
+      indexStatus !== 'ready'
     ) {
       return [];
     }
@@ -122,7 +169,7 @@ export class SearchService {
     this.queryState.set(query);
 
     this.resultsOpenState.set(
-      query.trim().length > 0
+      query.trim().length >= MIN_QUERY_LENGTH
     );
   }
 

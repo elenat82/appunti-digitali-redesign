@@ -12,6 +12,8 @@ search.query().trim()
   </h1>
   @if (search.indexStatus() === 'preparing') {
   <p>Preparazione della ricerca...</p>
+  } @else if (search.isQueryPending()) {
+  <p>Ricerca...</p>
   } @else if (search.occurrenceCount() === 0) {
   <p>
     Nessun risultato per
