@@ -450,8 +450,8 @@ describe('ArticlePage', () => {
           configurable: true,
           value: vi.fn(
             () => ({
-              top: 0,
-              height: 0
+              top: 300,
+              height: 20
             } as DOMRect)
           )
         }
@@ -460,10 +460,62 @@ describe('ArticlePage', () => {
       return range;
     });
 
+    const scrollContainer =
+      document.createElement('main');
+
+    scrollContainer.classList.add('app-main');
+
+    scrollContainer.scrollTop = 40;
+
+    Object.defineProperty(
+      scrollContainer,
+      'clientHeight',
+      {
+        configurable: true,
+        value: 400
+      }
+    );
+
     vi.spyOn(
-      window,
-      'scrollTo'
-    ).mockImplementation(() => { });
+      scrollContainer,
+      'getBoundingClientRect'
+    ).mockReturnValue(
+      {
+        top: 100,
+        height: 400
+      } as DOMRect
+    );
+
+    const scrollToMock = vi.fn();
+
+    Object.defineProperty(
+      scrollContainer,
+      'scrollTo',
+      {
+        configurable: true,
+        value: scrollToMock
+      }
+    );
+
+    const nativeClosest =
+      Element.prototype.closest;
+
+    vi.spyOn(
+      Element.prototype,
+      'closest'
+    ).mockImplementation(function (
+      this: Element,
+      selectors: string
+    ) {
+      if (selectors === '.app-main') {
+        return scrollContainer;
+      }
+
+      return nativeClosest.call(
+        this,
+        selectors
+      );
+    });
 
     createComponent(
       'html',
@@ -487,11 +539,19 @@ describe('ArticlePage', () => {
         '.article-body p'
       );
 
+    expect(
+      scrollToMock
+    ).toHaveBeenCalledWith({
+      top: 50,
+      behavior: 'auto'
+    });
+
     expect(target).toBeTruthy();
 
     expect(
       document.activeElement
     ).toBe(target);
+
 
     expect(
       target?.getAttribute('tabindex')

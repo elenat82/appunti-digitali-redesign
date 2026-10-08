@@ -282,6 +282,20 @@ export class ArticlePage {
       endOffset
     );
 
+    const scrollContainer =
+      this.host.nativeElement.closest<HTMLElement>(
+        '.app-main'
+      );
+
+    if (!scrollContainer) {
+      element.scrollIntoView({
+        block: 'center',
+        behavior: 'auto'
+      });
+
+      return;
+    }
+
     if (!range) {
       element.scrollIntoView({
         block: 'center',
@@ -291,22 +305,20 @@ export class ArticlePage {
       return;
     }
 
-    const document = element.ownerDocument;
-    const view = document.defaultView;
+    const rangeRect =
+      range.getBoundingClientRect();
 
-    if (!view) {
-      return;
-    }
-
-    const rect = range.getBoundingClientRect();
+    const containerRect =
+      scrollContainer.getBoundingClientRect();
 
     const targetTop =
-      view.scrollY +
-      rect.top -
-      view.innerHeight / 2 +
-      rect.height / 2;
+      scrollContainer.scrollTop +
+      rangeRect.top -
+      containerRect.top -
+      scrollContainer.clientHeight / 2 +
+      rangeRect.height / 2;
 
-    view.scrollTo({
+    scrollContainer.scrollTo({
       top: targetTop,
       behavior: 'auto'
     });
