@@ -1,3 +1,22 @@
+.app-footer {
+  height: 64px;
+  background-color: color-mix(in srgb,
+      var(--color-background) 85%,
+      var(--color-primary));
+  display: flex;
+  box-sizing: border-box;
+  padding: 0 16px;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.footer-content {
+  display: flex;
+  gap: 1rem;
+}
+
 .footer-tech {
   position: relative;
 }
@@ -6,11 +25,22 @@
   content: attr(data-tooltip);
 
   position: absolute;
+  top: -1.3rem;
+  left: -50%;
+  background-color: color-mix(in srgb,
+      var(--color-text) 35%,
+      var(--color-primary));
+  color: #fff;
+  padding: 0.2rem;
+  font-size: .7rem;
+  border-radius: 5px;
 
   opacity: 0;
   pointer-events: auto;
+  transition: all 0.5s ease;
 }
 
 .footer-tech:hover::after {
   opacity: 1;
+  transition: all 0.5s ease;
 }

@@ -17,11 +17,11 @@ search.query().trim()
   } @else if (search.occurrenceCount() === 0) {
   <p>
     Nessun risultato per
-    <strong>{{ search.query() }}</strong>
+    <strong class="search-query">"{{ search.query() }}"</strong>
   </p>
   } @else {
   <p>
-    <strong>{{ search.query() }}</strong>:
+    <strong class="search-query">"{{ search.query() }}"</strong>:
     {{ search.occurrenceCount() }} occorrenze in
     {{ search.articleCount() }} articoli
   </p>

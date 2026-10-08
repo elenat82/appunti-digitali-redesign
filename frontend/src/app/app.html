@@ -1,18 +1,29 @@
 <a class="skip-link" href="#main-content">
   Vai al contenuto principale
 </a>
+
 <div class="app-shell">
-  <app-header />
+  <app-sidebar
+    [areas]="areas()"
+    [articlesByArea]="articlesByArea()"
+  />
 
-  <div class="app-layout">
-    <app-sidebar [areas]="areas()" [articlesByArea]="articlesByArea()" />
+  <div class="app-content">
+    <app-header />
 
-    <main id="main-content" tabindex="-1" class="app-main" [attr.inert]=" isSearchResultsOpen() ? '' : null">
-      <router-outlet />
-    </main>
+    <div class="app-layout">
+      <main
+        id="main-content"
+        tabindex="-1"
+        class="app-main"
+        [attr.inert]="isSearchResultsOpen() ? '' : null"
+      >
+        <router-outlet />
+      </main>
 
-    <app-search-results class="search-overlay" />
+      <app-search-results class="search-overlay" />
+    </div>
+
+    <app-footer />
   </div>
-
-  <app-footer />
 </div>

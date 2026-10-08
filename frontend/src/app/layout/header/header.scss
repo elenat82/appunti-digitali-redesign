@@ -1,7 +1,10 @@
 .app-header {
-  position: sticky;
-  top: 0;
   z-index: 10;
+
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-right: 3rem;
+  padding-left: 3rem;
 
   display: flex;
   align-items: center;
@@ -10,13 +13,17 @@
   box-sizing: border-box;
   min-height: var(--app-header-height);
 
-  background-color: var(--color-background);
+  background-color: var(--color-primary);
 }
 
 .app-title {
   flex: 0 0 auto;
   white-space: nowrap;
   text-decoration: none;
+  font-size: 20px;
+  font-family: var(--font-decorative);
+  color: var(--color-background);
+  margin-right: 3rem;
 }
 
 app-search-bar {

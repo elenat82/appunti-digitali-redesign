@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  flex: 1 1 auto;
+  max-width: 42rem;
+}
+
+input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 2.75rem;
+
+  padding: 0 1rem;
+
+  font: inherit;
+  color: var(--color-text);
+
+  background-color: #fff;
+
+  border: 2px solid transparent;
+  border-radius: 0.25rem;
+
+  outline: none;
+}
+
+input::placeholder {
+  color: rgb(51 51 51 / 60%);
+}
+
+input:hover {
+  border-color: var(--color-accent-green);
+}
+
+input:focus-visible {
+  border-color: var(--color-accent-pink);
+  box-shadow: 0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--color-accent-pink) 35%,
+      transparent
+    );
+}

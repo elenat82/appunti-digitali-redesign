@@ -7,22 +7,25 @@
 :root {
   --color-primary: #284283;
   --color-accent-green: #008b8b;
+  --color-accent-green-light: #66cdaa;
+  ;
   --color-accent-pink: #ffbdde;
   --color-highlight:
-    color-mix(
-      in srgb,
+    color-mix(in srgb,
       var(--color-accent-pink) 30%,
-      transparent
-    );
+      transparent);
   --color-highlight-selected:
-    color-mix(
-      in srgb,
+    color-mix(in srgb,
       var(--color-accent-pink) 75%,
-      transparent
-    );
+      transparent);
 
-  --color-text: rgb(51 51 51 / 87%);
+  --color-text: rgba(51, 51, 51, .87);
   --color-background: #f5f6f7;
+
+  --font-primary: 'Lato', sans-serif;
+  --font-decorative: 'Rock Salt', cursive;
+
+  --app-header-height: 64px;
 }
 
 ::highlight(search-occurrence) {
@@ -36,6 +39,85 @@
   text-decoration: underline;
   text-decoration-thickness: 2px;
 }
+
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/lato/Lato-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lato';
+  src: url('/assets/fonts/lato/Lato-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rock Salt';
+  src: url('/assets/fonts/rock-salt/RockSalt-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* -------------------------- Mini reset.css -------------------------  */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+
+  font-family: var(--font-primary);
+  font-size: 16px;
+  letter-spacing: .0179em;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-image:  url('/assets/images/stelline.png'), url('/assets/images/sfondo-appunti.jpg');
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+}
+
+/* -------------------------- Fine mini reset.css -------------------------  */
 
 .article-body {
   min-width: 0;

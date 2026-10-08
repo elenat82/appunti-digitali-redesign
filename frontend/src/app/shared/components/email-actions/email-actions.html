@@ -2,7 +2,7 @@
   <button #emailTrigger type="button" class="profile-email" [attr.aria-expanded]="isEmailActionsOpen()"
     [attr.aria-controls]="actionsId" (click)="toggleEmailActions()">
     <span>
-      {{ email() }}
+      <i class="icon-app-mail" aria-hidden="true"></i> {{ email() }}
     </span>
 
     <svg class="profile-email-stroke" viewBox="0 0 154 13" aria-hidden="true" focusable="false">
