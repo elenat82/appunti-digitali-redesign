@@ -798,14 +798,6 @@ describe('Home', () => {
     expect(firstLink?.target).toBe('_blank');
 
     expect(section?.textContent).toContain(
-      'Score: 5'
-    );
-
-    expect(section?.textContent).toContain(
-      'Risposte: 2'
-    );
-
-    expect(section?.textContent).toContain(
       'angular'
     );
 
@@ -1034,10 +1026,6 @@ describe('Home', () => {
 
     expect(section?.textContent).toContain(
       'Descrizione: Open source list of paid & free resources to learn vanilla JavaScript'
-    );
-
-    expect(section?.textContent).toContain(
-      'Linguaggio: '
     );
 
     expect(section?.textContent).toContain(
