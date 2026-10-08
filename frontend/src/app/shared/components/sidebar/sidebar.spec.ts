@@ -198,7 +198,9 @@ describe('Sidebar', () => {
     ).toBe('https://example.com/css.svg');
 
     expect(
-      activeArea?.querySelector('summary span')
+      activeArea?.querySelector(
+        '.sidebar-area-label'
+      )
     ).toBeNull();
   });
 
@@ -283,9 +285,6 @@ describe('Sidebar', () => {
       button?.getAttribute('aria-label')
     ).toBe('Apri barra laterale');
 
-    expect(
-      button?.getAttribute('data-tooltip')
-    ).toBe('Apri barra laterale');
   });
 
   it('mantiene visibili le icone quando la sidebar è chiusa', () => {
@@ -319,7 +318,9 @@ describe('Sidebar', () => {
     fixture.detectChanges();
 
     expect(
-      element.querySelectorAll('summary span')
+      element.querySelectorAll(
+        '.sidebar-area-label'
+      )
     ).toHaveLength(0);
 
     expect(
@@ -347,7 +348,9 @@ describe('Sidebar', () => {
     ).toBe(true);
 
     expect(
-      element.querySelectorAll('summary span')
+      element.querySelectorAll(
+        '.sidebar-area-label'
+      )
     ).toHaveLength(2);
 
     expect(
@@ -362,9 +365,6 @@ describe('Sidebar', () => {
       button?.getAttribute('aria-label')
     ).toBe('Chiudi barra laterale');
 
-    expect(
-      button?.getAttribute('data-tooltip')
-    ).toBe('Chiudi barra laterale');
   });
 
   it('plays the closing sound when the sidebar is closed', () => {
@@ -507,5 +507,31 @@ describe('Sidebar', () => {
         'data-tooltip'
       )
     ).toBe('CSS');
+  });
+
+  it('evidenzia l\'articolo corrente anche in presenza di query params', async () => {
+    await router.navigateByUrl(
+      '/html/articolo-html'
+      + '?source=body&index=0&start=0&end=3'
+    );
+
+    fixture.detectChanges();
+
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const activeArticle =
+      element.querySelector<HTMLAnchorElement>(
+        '.sidebar-article--active'
+      );
+    expect(activeArticle).toBeTruthy();
+
+    expect(
+      activeArticle?.textContent
+    ).toContain('Articolo HTML');
+
+    expect(
+      activeArticle?.getAttribute('aria-current')
+    ).toBe('page');
   });
 });

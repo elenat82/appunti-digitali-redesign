@@ -9,7 +9,8 @@ import {
 import {
   NavigationEnd,
   Router,
-  RouterLink
+  RouterLink,
+  RouterLinkActive
 } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -19,7 +20,7 @@ import { Article } from '../../../core/models/article.model';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,6 +36,15 @@ export class Sidebar {
    * Indica se il contenuto della sidebar è visibile.
    */
   readonly isOpen = signal(true);
+
+  /**
+ * Path dell'articolo attualmente visualizzato.
+ *
+ * Query string e fragment non fanno parte dell'identità dell'articolo e vengono ignorati.
+ */
+  readonly activeArticlePath = computed(() =>
+    this.currentUrl().split(/[?#]/)[0]
+  );
 
 
   private readonly currentUrl = toSignal(
@@ -54,19 +64,17 @@ export class Sidebar {
    * Area tematica associata all'articolo corrente.
    */
   readonly activeAreaId = computed<string | null>(() => {
-    const path =
-      this.currentUrl().split(/[?#]/)[0];
+    const path = this.activeArticlePath();
 
     for (
       const [areaId, articles]
       of Object.entries(this.articlesByArea())
     ) {
-      const containsCurrentArticle =
+      if (
         articles.some(
           (article) => article.path === path
-        );
-
-      if (containsCurrentArticle) {
+        )
+      ) {
         return areaId;
       }
     }

@@ -8,10 +8,12 @@
     <details #areaDetails [class.sidebar-area--active]="activeAreaId() === area.id">
       <summary class="sidebar-area-summary" [attr.aria-label]="isOpen() ? null : area.label"
         [attr.data-tooltip]="isOpen() ? null : area.label" (click)="openAreaIfCollapsed($event, areaDetails)">
-        <img [src]="area.iconUrl" alt="" width="24" height="24">
+        <img [src]="area.iconUrl" alt="" width="26" height="26">
 
         @if (isOpen()) {
-        <span>{{ area.label }}</span>
+        <span class="sidebar-area-label">{{ area.label }}</span>
+
+        <span class="sidebar-area-chevron" aria-hidden="true"></span>
         }
       </summary>
 
@@ -22,7 +24,12 @@
         track article.id
         ) {
         <li>
-          <a [routerLink]="article.path">
+          <a [routerLink]="article.path" routerLinkActive="sidebar-article--active" [routerLinkActiveOptions]="{
+    paths: 'exact',
+    queryParams: 'ignored',
+    matrixParams: 'ignored',
+    fragment: 'ignored'
+  }" ariaCurrentWhenActive="page">
             {{ article.title }}
           </a>
         </li>
@@ -38,11 +45,11 @@
       isOpen()
         ? 'Chiudi barra laterale'
         : 'Apri barra laterale'
-    " (click)="toggle()" [attr.data-tooltip]="
-    isOpen()
-      ? 'Chiudi barra laterale'
-      : 'Apri barra laterale'
-  ">
-    {{ isOpen() ? '‹' : '›' }}
+    " (click)="toggle()">
+    @if (isOpen()) {
+    <span class="icon-app-close-sidebar" aria-hidden="true"></span>
+    } @else {
+    <span class="icon-app-open-sidebar" aria-hidden="true"></span>
+    }
   </button>
 </aside>
