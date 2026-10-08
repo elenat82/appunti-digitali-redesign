@@ -47,7 +47,7 @@ describe('ArticlePage', () => {
   const article: Article = {
     id: 1,
     title: 'Articolo HTML di prova',
-    path: '/html/articolo-html-di-prova',
+    path: '/appunti/html/articolo-html-di-prova',
     area: 'html',
     body: '<p>Contenuto dell\'articolo.</p>',
     externalLinks: [
@@ -404,7 +404,7 @@ describe('ArticlePage', () => {
         articleTitle:
           'Articolo HTML di prova',
         articlePath:
-          '/html/articolo-html-di-prova',
+          '/appunti/html/articolo-html-di-prova',
         areaId: 'html',
         occurrences: [
           {

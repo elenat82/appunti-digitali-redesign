@@ -578,7 +578,7 @@ export class ArticlePage {
           });
         }
 
-        const path = `/${area}/${slug}`;
+        const path = `/appunti/${area}/${slug}`;
 
         return this.contentRepository.getArticlesByArea(area).pipe(
           last(),
