@@ -5,12 +5,14 @@ dependencies:
   config:
     - field.field.node.css.field_approfondimenti
     - field.field.node.css.field_body
+    - field.field.node.css.field_meta_description
     - field.field.node.css.field_weight
     - node.type.css
   module:
     - link
     - text
     - user
+    - weight
 id: node.css.default
 targetEntityType: node
 bundle: css
@@ -26,28 +28,27 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 101
+    weight: 1
     region: content
   field_body:
     type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 102
+    weight: 2
     region: content
   field_weight:
-    type: number_integer
+    type: default_weight
     label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    settings: {  }
     third_party_settings: {  }
-    weight: 104
+    weight: 3
     region: content
   links:
     settings: {  }
     third_party_settings: {  }
-    weight: 100
+    weight: 0
     region: content
 hidden:
+  field_meta_description: true
   langcode: true

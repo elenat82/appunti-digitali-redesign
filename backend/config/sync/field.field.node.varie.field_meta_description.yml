@@ -1,0 +1,19 @@
+uuid: 674d13ce-79bb-4e80-a9ff-2f803fcb68cd
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_description
+    - node.type.varie
+id: node.varie.field_meta_description
+field_name: field_meta_description
+entity_type: node
+bundle: varie
+label: 'Meta description'
+description: "Descrizione opzionale utilizzata dai motori di ricerca.\r\nSe lasciata vuota, viene generata automaticamente dal contenuto dell'articolo."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

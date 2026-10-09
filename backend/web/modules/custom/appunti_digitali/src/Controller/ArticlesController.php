@@ -13,6 +13,8 @@ use Drupal\node\NodeTypeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\text\Plugin\Field\FieldType\TextLongItem;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Espone gli articoli pubblicati appartenenti a un'area tematica.
@@ -104,6 +106,11 @@ final class ArticlesController implements ContainerInjectionInterface {
           );
           $cache_dependencies[] = $processed_body;
         }
+
+        $description = $this->buildDescription(
+        $node,
+        $body,
+        );
       }
 
       $external_links = [];
@@ -125,6 +132,7 @@ final class ArticlesController implements ContainerInjectionInterface {
         'area' => $area,
         'path' => $node->toUrl()->toString(),
         'body' => $body,
+        'description' => $description,
         'externalLinks' => $external_links,
         'weight' => (int) ($node->get('field_weight')->value ?? 0),
       ];
@@ -177,6 +185,91 @@ final class ArticlesController implements ContainerInjectionInterface {
         . $matches[2],
       $body,
     ) ?? $body;
+  }
+
+  /**
+   * Restituisce la meta description dell'articolo.
+   *
+   * Usa la descrizione editoriale quando presente; in caso contrario
+   * ricava un fallback dal primo paragrafo testuale significativo del body.
+   */
+  private function buildDescription(
+    NodeInterface $node,
+    string $body,
+  ): string {
+    $editorial_description = trim(
+    (string) ($node->get('field_meta_description')->value ?? ''),
+    );
+
+    if ($editorial_description !== '') {
+      return $this->normalizeDescription(
+      $editorial_description,
+      );
+    }
+
+    $body_description =
+    $this->extractDescriptionFromBody($body);
+
+    if ($body_description !== '') {
+      return $body_description;
+    }
+
+    return Unicode::truncate(
+    $this->normalizeDescription(
+      sprintf(
+        'Appunti tecnici su %s',
+        $node->label(),
+      ),
+    ),
+    160,
+    TRUE,
+    TRUE,
+    );
+  }
+
+  /**
+   * Estrae una descrizione dal primo paragrafo non vuoto del body.
+   */
+  private function extractDescriptionFromBody(
+    string $body,
+  ): string {
+    if ($body === '') {
+      return '';
+    }
+
+    $document = Html::load($body);
+
+    foreach ($document->getElementsByTagName('p') as $paragraph) {
+      $text = $this->normalizeDescription(
+      $paragraph->textContent,
+      );
+
+      if ($text === '') {
+        continue;
+      }
+
+      return Unicode::truncate(
+        $text,
+        160,
+        TRUE,
+        TRUE,
+      );
+    }
+
+    return '';
+  }
+
+  /**
+   * Normalizza il testo destinato alla meta description.
+   */
+  private function normalizeDescription(
+    string $description,
+  ): string {
+    return preg_replace(
+    '/\s+/u',
+    ' ',
+    trim($description),
+    ) ?? trim($description);
   }
 
 }

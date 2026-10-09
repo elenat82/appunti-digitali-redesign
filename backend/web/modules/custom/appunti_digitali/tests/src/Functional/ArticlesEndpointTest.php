@@ -78,6 +78,24 @@ final class ArticlesEndpointTest extends BrowserTestBase {
     ])->save();
 
     FieldStorageConfig::create([
+      'field_name' => 'field_meta_description',
+      'entity_type' => 'node',
+      'type' => 'string',
+      'cardinality' => 1,
+      'settings' => [
+        'max_length' => 255,
+      ],
+    ])->save();
+
+    FieldConfig::create([
+      'field_name' => 'field_meta_description',
+      'entity_type' => 'node',
+      'bundle' => 'html',
+      'label' => 'Meta description',
+      'required' => FALSE,
+    ])->save();
+
+    FieldStorageConfig::create([
       'field_name' => 'field_approfondimenti',
       'entity_type' => 'node',
       'type' => 'link',
@@ -118,6 +136,8 @@ final class ArticlesEndpointTest extends BrowserTestBase {
         'value' => '<h2>Introduzione</h2><p>Primo articolo.</p>',
         'format' => 'full_html',
       ],
+      'field_meta_description' =>
+      'Descrizione SEO personalizzata.',
       'field_approfondimenti' => [
         [
           'uri' => 'https://developer.mozilla.org/en-US/docs/Web/HTML',
@@ -285,6 +305,42 @@ final class ArticlesEndpointTest extends BrowserTestBase {
     $this->assertStringContainsString(
       'src="https://example.com/external.png"',
       $body,
+    );
+  }
+
+  /**
+   * Verifica il fallback della description quando manca un paragrafo.
+   */
+  public function testArticleDescriptionTitleFallback(): void {
+    Node::create([
+      'type' => 'html',
+      'title' => 'Articolo senza paragrafo',
+      'status' => TRUE,
+      'field_body' => [
+        'value' =>
+        '<h2>Introduzione</h2>'
+        . '<pre><code>const value = 1;</code></pre>',
+        'format' => 'full_html',
+      ],
+      'field_weight' => 0,
+    ])->save();
+
+    $this->drupalGet('/api/articles/html');
+
+    $this->assertSession()->statusCodeEquals(200);
+
+    $articles = json_decode(
+    $this->getSession()->getPage()->getContent(),
+    TRUE,
+    512,
+    JSON_THROW_ON_ERROR,
+    );
+
+    $this->assertCount(1, $articles);
+
+    $this->assertSame(
+    'Appunti tecnici su Articolo senza paragrafo',
+    $articles[0]['description'],
     );
   }
 

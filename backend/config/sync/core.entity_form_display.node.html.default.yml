@@ -5,6 +5,7 @@ dependencies:
   config:
     - field.field.node.html.field_approfondimenti
     - field.field.node.html.field_body
+    - field.field.node.html.field_meta_description
     - field.field.node.html.field_weight
     - node.type.html
   module:
@@ -37,6 +38,14 @@ content:
     region: content
     settings:
       rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_meta_description:
+    type: string_textfield
+    weight: 125
+    region: content
+    settings:
+      size: 60
       placeholder: ''
     third_party_settings: {  }
   field_weight:

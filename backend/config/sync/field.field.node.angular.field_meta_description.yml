@@ -1,0 +1,19 @@
+uuid: 967be1d4-6039-4381-98eb-77c69a5be82c
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_meta_description
+    - node.type.angular
+id: node.angular.field_meta_description
+field_name: field_meta_description
+entity_type: node
+bundle: angular
+label: 'Meta description'
+description: "Descrizione opzionale utilizzata dai motori di ricerca.\r\nSe lasciata vuota, viene generata automaticamente dal contenuto dell'articolo."
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
