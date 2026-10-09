@@ -67,6 +67,12 @@ interface SavedResourcesState {
 
 const LOADING_COMPLETION_DELAY_MS = 500;
 
+const HOME_TITLE =
+  'Appunti Digitali | Gli appunti di una Front End Developer';
+
+const HOME_DESCRIPTION =
+  'Gli appunti di una Front End Developer su HTML, CSS, JavaScript, Angular, Drupal e tutto ciò che riguarda il web.';
+
 /**
  * Pagina iniziale pubblica dell'applicazione.
  */
@@ -97,17 +103,22 @@ export class Home {
   readonly accessibilityStatus = signal('');
 
   constructor() {
-    this.title.setTitle(
-      'Appunti Digitali | Gli appunti di una Front End Developer'
-    );
+    this.title.setTitle(HOME_TITLE);
 
     this.meta.updateTag({
       name: 'description',
       content:
-        'Gli appunti di una Front End Developer su HTML, CSS, JavaScript, Angular, Drupal e tutto ciò che riguarda il web.'
+        HOME_DESCRIPTION
     });
 
     this.seo.setCanonical('/');
+
+    this.seo.setOpenGraph({
+      type: 'website',
+      title: HOME_TITLE,
+      description: HOME_DESCRIPTION,
+      path: '/'
+    });
   }
 
   /**
