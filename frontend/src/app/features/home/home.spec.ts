@@ -234,6 +234,17 @@ describe('Home', () => {
     ).toBe(
       'Gli appunti di una Front End Developer su HTML, CSS, JavaScript, Angular, Drupal e tutto ciò che riguarda il web.'
     );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLLinkElement>(
+          'link[rel="canonical"]'
+        )
+        ?.href
+    ).toBe(
+      'https://www.appunti-digitali.it/'
+    );
   });
 
   it('espone una live region condivisa per i feedback della home', () => {

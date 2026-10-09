@@ -29,6 +29,9 @@ import { NewsService } from './services/news.service';
 import { SavedResource } from '../../core/models/saved-resource.model';
 import { SavedResourcesService } from './services/saved-resources.service';
 import {
+  SeoService
+} from '../../core/seo/seo.service';
+import {
   LoadingIndicator
 } from '../../shared/components/loading-indicator/loading-indicator';
 import { EmailActions } from '../../shared/components/email-actions/email-actions';
@@ -80,6 +83,7 @@ export class Home {
   private readonly githubService = inject(GitHubService);
   private readonly newsService = inject(NewsService);
   private readonly savedResourcesService = inject(SavedResourcesService);
+  private readonly seo = inject(SeoService);
 
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
@@ -102,6 +106,8 @@ export class Home {
       content:
         'Gli appunti di una Front End Developer su HTML, CSS, JavaScript, Angular, Drupal e tutto ciò che riguarda il web.'
     });
+
+    this.seo.setCanonical('/');
   }
 
   /**

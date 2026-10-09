@@ -35,6 +35,9 @@ import {
 import { SearchResultOccurrence } from '../../search/models/search-result.model';
 import { SearchService } from '../../search/services/search.service';
 import { CodePenEmbedService } from '../services/codepen-embed.service';
+import {
+  SeoService
+} from '../../../core/seo/seo.service';
 
 interface ArticlePageState {
   status: 'loading' | 'ready' | 'not-found' | 'error';
@@ -58,6 +61,7 @@ export class ArticlePage {
   private readonly codePenEmbed = inject(CodePenEmbedService);
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
+  private readonly seo = inject(SeoService);
 
   private readonly queryParamMap = toSignal(
     this.route.queryParamMap,
@@ -84,12 +88,18 @@ export class ArticlePage {
           content: state.article.description
         });
 
+        this.seo.setCanonical(
+          state.article.path
+        );
+
         return;
       }
       // Rimuove la description precedente quando la pagina non dispone di un articolo valido, evitando metadata SEO non coerenti con la route corrente.
       this.meta.removeTag(
         'name="description"'
       );
+
+      this.seo.removeCanonical();
     });
     // Applica highlight e scroll solo dopo che l'articolo è stato renderizzato e i segmenti sono disponibili nel DOM.
     afterRenderEffect({

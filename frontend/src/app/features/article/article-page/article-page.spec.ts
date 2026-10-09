@@ -160,6 +160,17 @@ describe('ArticlePage', () => {
     ).toBe(
       'Descrizione SEO dell\'articolo.'
     );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLLinkElement>(
+          'link[rel="canonical"]'
+        )
+        ?.href
+    ).toBe(
+      'https://www.appunti-digitali.it/appunti/html/articolo-html-di-prova'
+    );
   });
 
   it('mostra l\'articolo corrispondente alla route', () => {
