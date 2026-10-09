@@ -145,6 +145,10 @@ describe('ArticlePage', () => {
     createComponent();
 
     expect(fixture.componentInstance).toBeTruthy();
+
+    expect(document.title).toBe(
+      'Articolo HTML di prova | Appunti Digitali'
+    );
   });
 
   it('mostra l\'articolo corrispondente alla route', () => {

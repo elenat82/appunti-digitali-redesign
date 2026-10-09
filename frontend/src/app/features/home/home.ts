@@ -16,6 +16,8 @@ import {
 } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
+import { Title } from '@angular/platform-browser';
+
 import { Profile } from '../../core/models/profile.model';
 import { ProfileService } from '../../core/data-access/profile.service';
 import { StackOverflowQuestion } from '../../core/models/stack-overflow-question.model';
@@ -79,6 +81,8 @@ export class Home {
   private readonly newsService = inject(NewsService);
   private readonly savedResourcesService = inject(SavedResourcesService);
 
+  private readonly title = inject(Title);
+
   private readonly savedResourcesRetry$ = new Subject<void>();
   private readonly newsRetry$ = new Subject<void>();
   private readonly stackOverflowRetry$ = new Subject<void>();
@@ -86,6 +90,12 @@ export class Home {
   private readonly profileRetry$ = new Subject<void>();
 
   readonly accessibilityStatus = signal('');
+
+  constructor() {
+    this.title.setTitle(
+      'Appunti Digitali | Gli appunti di una Front End Developer'
+    );
+  }
 
   /**
    * Stato del profilo pubblico mostrato nella home.

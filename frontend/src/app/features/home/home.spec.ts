@@ -220,6 +220,10 @@ describe('Home', () => {
     expect(
       fixture.componentInstance
     ).toBeTruthy();
+
+    expect(document.title).toBe(
+      'Appunti Digitali | Gli appunti di una Front End Developer'
+    );
   });
 
   it('espone una live region condivisa per i feedback della home', () => {

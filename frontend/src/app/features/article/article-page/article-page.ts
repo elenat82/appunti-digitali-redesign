@@ -3,11 +3,14 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  effect,
   inject
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, last, map, of, switchMap } from 'rxjs';
+
+import { Title } from '@angular/platform-browser';
 
 import Prism from 'prismjs';
 
@@ -53,6 +56,7 @@ export class ArticlePage {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly search = inject(SearchService);
   private readonly codePenEmbed = inject(CodePenEmbedService);
+  private readonly title = inject(Title);
 
   private readonly queryParamMap = toSignal(
     this.route.queryParamMap,
@@ -62,6 +66,19 @@ export class ArticlePage {
   );
 
   constructor() {
+
+    effect(() => {
+      const state = this.state();
+
+      if (
+        state.status === 'ready' &&
+        state.article
+      ) {
+        this.title.setTitle(
+          `${state.article.title} | Appunti Digitali`
+        );
+      }
+    });
     // Applica highlight e scroll solo dopo che l'articolo è stato renderizzato e i segmenti sono disponibili nel DOM.
     afterRenderEffect({
       mixedReadWrite: () => {
