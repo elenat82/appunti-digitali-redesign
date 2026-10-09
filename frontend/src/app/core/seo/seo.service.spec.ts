@@ -72,4 +72,107 @@ describe('SeoService', () => {
       'https://www.appunti-digitali.it/appunti/html/articolo-di-prova'
     );
   });
+
+  it('imposta i metadata Open Graph', () => {
+    service.setOpenGraph({
+      type: 'article',
+      title: 'Articolo di prova | Appunti Digitali',
+      description: 'Descrizione di prova.',
+      path: '/appunti/html/articolo-di-prova'
+    });
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:type"]'
+        )
+        ?.content
+    ).toBe('article');
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:title"]'
+        )
+        ?.content
+    ).toBe(
+      'Articolo di prova | Appunti Digitali'
+    );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:description"]'
+        )
+        ?.content
+    ).toBe(
+      'Descrizione di prova.'
+    );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:url"]'
+        )
+        ?.content
+    ).toBe(
+      'https://www.appunti-digitali.it/appunti/html/articolo-di-prova'
+    );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:site_name"]'
+        )
+        ?.content
+    ).toBe(
+      'Appunti Digitali'
+    );
+  });
+
+  it('rimuove i metadata Open Graph', () => {
+    service.setOpenGraph({
+      type: 'article',
+      title: 'Articolo di prova | Appunti Digitali',
+      description: 'Descrizione di prova.',
+      path: '/appunti/html/articolo-di-prova'
+    });
+
+    service.removeOpenGraph();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:type"]'
+      )
+    ).toBeNull();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:title"]'
+      )
+    ).toBeNull();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:description"]'
+      )
+    ).toBeNull();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:url"]'
+      )
+    ).toBeNull();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:site_name"]'
+      )
+    ).toBeNull();
+  });
 });

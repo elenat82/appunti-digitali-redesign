@@ -79,8 +79,11 @@ export class ArticlePage {
         state.status === 'ready' &&
         state.article
       ) {
+        const pageTitle =
+          `${state.article.title} | Appunti Digitali`;
+
         this.title.setTitle(
-          `${state.article.title} | Appunti Digitali`
+          pageTitle
         );
 
         this.meta.updateTag({
@@ -92,15 +95,25 @@ export class ArticlePage {
           state.article.path
         );
 
+        this.seo.setOpenGraph({
+          type: 'article',
+          title: pageTitle,
+          description: state.article.description,
+          path: state.article.path
+        });
+
         return;
       }
-      // Rimuove la description precedente quando la pagina non dispone di un articolo valido, evitando metadata SEO non coerenti con la route corrente.
+
+      // Rimuove i metadata della pagina precedente quando la route non dispone più di un articolo valido.
       this.meta.removeTag(
         'name="description"'
       );
 
       this.seo.removeCanonical();
+      this.seo.removeOpenGraph();
     });
+
     // Applica highlight e scroll solo dopo che l'articolo è stato renderizzato e i segmenti sono disponibili nel DOM.
     afterRenderEffect({
       mixedReadWrite: () => {

@@ -171,6 +171,39 @@ describe('ArticlePage', () => {
     ).toBe(
       'https://www.appunti-digitali.it/appunti/html/articolo-html-di-prova'
     );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:type"]'
+        )
+        ?.content
+    ).toBe('article');
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:title"]'
+        )
+        ?.content
+    ).toBe(
+      'Articolo HTML di prova | Appunti Digitali'
+    );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:url"]'
+        )
+        ?.content
+    ).toBe(
+      'https://www.appunti-digitali.it/appunti/html/articolo-html-di-prova'
+    );
+
+
   });
 
   it('mostra l\'articolo corrispondente alla route', () => {
@@ -384,6 +417,24 @@ describe('ArticlePage', () => {
     expect(
       fixture.nativeElement.textContent
     ).toContain('Articolo non trovato');
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:type"]'
+      )
+    ).toBeNull();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:title"]'
+      )
+    ).toBeNull();
+
+    expect(
+      document.head.querySelector(
+        'meta[property="og:url"]'
+      )
+    ).toBeNull();
   });
 
   it('mostra articolo non trovato quando manca un parametro della route', () => {

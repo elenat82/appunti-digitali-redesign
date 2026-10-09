@@ -245,6 +245,38 @@ describe('Home', () => {
     ).toBe(
       'https://www.appunti-digitali.it/'
     );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:type"]'
+        )
+        ?.content
+    ).toBe('website');
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:title"]'
+        )
+        ?.content
+    ).toBe(
+      'Appunti Digitali | Gli appunti di una Front End Developer'
+    );
+
+    expect(
+      document
+        .head
+        .querySelector<HTMLMetaElement>(
+          'meta[property="og:url"]'
+        )
+        ?.content
+    ).toBe(
+      'https://www.appunti-digitali.it/'
+    );
+
   });
 
   it('espone una live region condivisa per i feedback della home', () => {
