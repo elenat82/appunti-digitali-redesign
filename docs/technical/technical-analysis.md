@@ -104,6 +104,18 @@ L'application shell comprende gli elementi persistenti del layout, come:
 - area principale destinata al contenuto;
 - footer.
 
+Nel layout desktop la sidebar occupa l'intera altezza della viewport e rimane persistente nella colonna sinistra.
+
+La colonna principale contiene:
+
+- header;
+- area centrale del contenuto;
+- footer.
+
+Header e footer rimangono visibili mentre lo scrolling avviene all'interno dell'area centrale `.app-main`.
+
+Il pannello dei risultati di ricerca viene sovrapposto esclusivamente all'area centrale del contenuto e non copre sidebar, header o footer.
+
 Il caricamento dei dati non deve impedire la visualizzazione e l'utilizzo degli elementi dell'interfaccia che sono già disponibili.
 
 Le diverse sezioni vengono popolate progressivamente quando i relativi dati diventano disponibili e ciascuna area gestisce autonomamente loading ed eventuali errori.
@@ -670,20 +682,21 @@ I risultati vengono aggiornati mentre l'utente modifica la query.
 
 Non viene prevista una pagina separata dei risultati né è necessario inviare esplicitamente la ricerca tramite un pulsante.
 
-L'eventuale introduzione di un breve debounce viene valutata durante l'implementazione in base al costo reale della ricerca e non costituisce un requisito architetturale.
+Per evitare di eseguire e renderizzare una ricerca a ogni singolo carattere digitato, la query effettiva utilizza un debounce di 150 ms.
+
+Il valore digitato nell'input viene invece aggiornato immediatamente, in modo che il debounce non introduca ritardi percepibili nella scrittura.
 
 ### Soglia minima della query
 
-Rimane da definire il numero minimo di caratteri che devono essere presenti nella query prima di eseguire effettivamente la ricerca.
+La ricerca viene eseguita a partire da 3 caratteri.
 
-La scelta deve tenere conto di:
+Con query di lunghezza inferiore:
 
-- quantità di risultati prodotti da query molto brevi;
-- costo della ricerca sul dataset reale;
-- necessità di ricercare frammenti tecnici brevi;
-- qualità e utilità dei risultati mostrati durante la digitazione.
+- il testo inserito rimane nell'input;
+- il pannello dei risultati non viene aperto;
+- non viene eseguita la ricerca sull'indice.
 
-La soglia viene definita dopo una verifica sul dataset reale e rimane distinta dall'eventuale utilizzo di un debounce.
+La soglia di 3 caratteri limita il numero di occorrenze prodotte da query troppo generiche mantenendo comunque ricercabili termini tecnici brevi come CSS, PHP, DOM, API e Git.
 
 ### Contenuti esclusi
 
@@ -1063,13 +1076,13 @@ Non è quindi necessario salvare un identificativo permanente aggiuntivo nel bac
 
 ### Posizionamento della viewport
 
-Dopo aver individuato l'occorrenza selezionata, Angular porta la viewport sull'elemento corrispondente.
+Dopo aver individuato l'occorrenza selezionata, Angular porta l'esatta posizione del match nell'area visibile.
 
-La navigazione deve posizionare il risultato in modo che rimanga chiaramente visibile e non venga nascosto dall'header persistente.
+Poiché nel layout corrente lo scrolling della pagina articolo avviene nel contenitore `.app-main` e non sulla `window`, il posizionamento viene calcolato rispetto a tale scroll container.
 
-Per questo possono essere utilizzati meccanismi come `scrollIntoView()` insieme a un adeguato `scroll-margin` definito sul target.
+Quando è disponibile il `Range` dell'occorrenza, Angular utilizza le coordinate del match per portarlo indicativamente al centro dell'area visibile.
 
-Il comportamento deve funzionare sia nel layout desktop sia nel layout mobile, dove l'altezza dell'header può essere differente.
+Se il Range o il contenitore di scroll non sono disponibili, `scrollIntoView()` viene utilizzato come fallback.
 
 ### Accessibilità della navigazione
 

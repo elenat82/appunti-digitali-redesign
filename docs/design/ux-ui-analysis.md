@@ -189,6 +189,22 @@ Nello stato espanso mostra il logo del sito e l'elenco completo delle aree temat
 
 Il pannello può essere collassato quando l'utente desidera lasciare maggiore spazio al contenuto principale.
 
+### Indicazione del contenuto corrente
+
+Quando l'utente sta visualizzando un articolo, il pannello laterale deve rendere riconoscibile sia l'area tematica di appartenenza sia il singolo articolo corrente.
+
+Nello stato espanso:
+
+- l'area tematica dell'articolo corrente rimane evidenziata;
+- il link dell'articolo corrente utilizza uno stile visivo distinto dagli altri articoli della stessa area;
+- l'indicazione deve rimanere corretta anche quando l'articolo è stato raggiunto tramite un risultato di ricerca e l'URL contiene parametri relativi all'occorrenza selezionata.
+
+L'evidenziazione dell'articolo corrente ha funzione di orientamento: permette all'utente di capire immediatamente dove si trova rispetto alla struttura dei contenuti senza dover ricavare questa informazione dal titolo della pagina.
+
+Lo stato corrente non deve essere comunicato esclusivamente attraverso il colore. Il link dell'articolo visualizzato deve inoltre essere identificato semanticamente come pagina corrente, in modo che la stessa informazione sia disponibile anche alle tecnologie assistive.
+
+Quando il pannello viene collassato, i titoli degli articoli non sono più visibili; rimane quindi evidenziata soltanto l'area tematica corrispondente all'articolo corrente.
+
 Nello stato collassato:
 
 - il logo del sito rimane visibile in forma ridotta e continua a funzionare come collegamento alla home;
@@ -264,16 +280,21 @@ La ricerca globale deve essere disponibile da qualunque pagina.
 
 Il campo di ricerca deve essere facilmente individuabile e deve comunicare chiaramente che la ricerca riguarda tutti i contenuti pubblicati del sito.
 
-La ricerca deve aggiornare i risultati durante la digitazione.
+La ricerca aggiorna i risultati durante la digitazione.
 
-Per evitare risultati troppo rumorosi, l'interfaccia può prevedere uno stato iniziale prima dell'avvio effettivo della ricerca. Per esempio, il sistema può invitare l'utente a inserire una parola più specifica quando la query è troppo breve o troppo generica.
+Per evitare di eseguire ricerche troppo generiche e di mostrare un numero eccessivo di occorrenze, la ricerca viene avviata soltanto quando la query contiene almeno 3 caratteri.
 
-La soglia esatta di avvio della ricerca non viene fissata in questo documento. Sarà valutata in seguito, tenendo conto dei termini tecnici brevi che potrebbero comunque essere utili.
+La soglia di 3 caratteri permette di limitare il rumore prodotto da query molto brevi mantenendo comunque ricercabili termini tecnici significativi come `CSS`, `PHP`, `DOM`, `API` e `Git`.
+
+Quando la query raggiunge la lunghezza minima, l'esecuzione della ricerca utilizza un breve debounce di 150 ms. Il testo digitato nell'input rimane invece aggiornato immediatamente, in modo che l'interazione continui a risultare fluida.
+
+Con meno di 3 caratteri il campo di ricerca rimane utilizzabile, ma non viene aperto il pannello dei risultati e non viene eseguita la ricerca sull'indice.
 
 L'interfaccia deve gestire almeno questi stati:
 
 - campo vuoto;
-- query troppo breve o troppo generica;
+- query inferiore a 3 caratteri;
+- ricerca in attesa del debounce;
 - ricerca attiva;
 - risultati trovati;
 - nessun risultato;
@@ -455,11 +476,13 @@ L'apertura in una nuova scheda può essere usata per consentire la consultazione
 
 La sezione dedicata ai feed RSS deve mostrare notizie provenienti da fonti selezionate.
 
-Ogni notizia dovrebbe mostrare almeno:
+Ogni notizia mostra:
 
 - titolo;
 - fonte;
-- data.
+- autore, quando disponibile;
+- data;
+- collegamento alla risorsa originale.
 
 L'obiettivo della sezione è offrire aggiornamenti tecnici consultabili rapidamente.
 
@@ -473,21 +496,26 @@ Ogni domanda mostra:
 
 - titolo;
 - tag;
-- score;
-- numero di risposte;
 - collegamento alla domanda originale.
 
-I tag possono aiutare a capire rapidamente l'argomento della domanda, ma non devono appesantire la sezione.
+I tag aiutano a capire rapidamente l'argomento della domanda senza appesantire la sezione.
+
+Informazioni come score e numero di risposte continuano a essere disponibili nei dati forniti dal backend, ma non vengono mostrate nella home perché non sono necessarie per l'obiettivo principale della sezione.
 
 ## Repository GitHub starred
 
 La sezione dedicata ai repository GitHub starred deve mostrare repository selezionati dall'amministratore.
 
-Ogni repository dovrebbe mostrare almeno:
+Ogni repository mostra:
 
 - nome del repository;
-- eventuale descrizione breve, se disponibile;
+- descrizione, quando disponibile;
+- topic associati;
 - collegamento al repository originale.
+
+I topic permettono di comprendere rapidamente l'ambito del repository senza introdurre ulteriori sistemi di classificazione nell'interfaccia.
+
+Il linguaggio principale del repository continua a essere disponibile nei dati forniti dal backend, ma non viene mostrato nella home perché aggiunge poco valore rispetto a descrizione e topic.
 
 La sezione deve aiutare a valorizzare risorse tecniche utili, senza diventare una replica completa di GitHub.
 
@@ -497,13 +525,13 @@ Eventuali funzioni di filtro o ricerca interna ai repository starred non fanno p
 
 La sezione dedicata alle risorse salvate tramite web clipper deve mostrare link selezionati dall'amministratore.
 
-Ogni risorsa salvata deve mostrare almeno:
+Ogni risorsa salvata mostra:
 
 - titolo;
-- URL o dominio;
-- tag associato.
+- URL;
+- tag associati, quando presenti.
 
-Il tag serve a dare un contesto minimo alla risorsa salvata, ma non deve trasformarsi in un sistema generale di classificazione degli articoli tecnici.
+I tag forniscono un contesto minimo alla risorsa salvata, ma non costituiscono un sistema generale di classificazione degli articoli tecnici.
 
 La sezione deve permettere di recuperare rapidamente link utili salvati durante la navigazione.
 
@@ -608,14 +636,6 @@ L'interfaccia deve privilegiare una modalità chiara, leggibile e coerente con l
 
 Le seguenti decisioni saranno approfondite nelle fasi successive.
 
-### Soglia di avvio della ricerca
-
-La ricerca non dovrebbe produrre risultati inutilmente rumorosi fin dalla prima lettera digitata.
-
-Resta da definire se introdurre una soglia minima di caratteri o un messaggio per query troppo generiche.
-
-La decisione dovrà tenere conto anche di termini tecnici brevi.
-
 ### Presentazione dei link di approfondimento
 
 Resta da definire come distinguere visivamente:
@@ -626,16 +646,6 @@ Resta da definire come distinguere visivamente:
 ### Gestione mobile dei blocchi di codice
 
 Resta da definire la soluzione migliore per rendere i blocchi di codice leggibili e copiabili anche su schermi piccoli.
-
-### Metadati aggiuntivi delle sezioni informative
-
-Resta da definire quali eventuali metadati aggiuntivi mostrare per:
-
-- notizie RSS;
-- repository GitHub starred;
-- risorse salvate.
-
-La decisione dovrà bilanciare utilità, leggibilità e densità informativa.
 
 ### Uso delle liste GitHub starred
 
