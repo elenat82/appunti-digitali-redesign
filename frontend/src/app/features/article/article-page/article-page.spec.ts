@@ -50,6 +50,7 @@ describe('ArticlePage', () => {
     path: '/appunti/html/articolo-html-di-prova',
     area: 'html',
     body: '<p>Contenuto dell\'articolo.</p>',
+    description: 'Descrizione SEO dell\'articolo.',
     externalLinks: [
       {
         title: 'MDN',
@@ -148,6 +149,16 @@ describe('ArticlePage', () => {
 
     expect(document.title).toBe(
       'Articolo HTML di prova | Appunti Digitali'
+    );
+
+    expect(
+      document
+        .querySelector<HTMLMetaElement>(
+          'meta[name="description"]'
+        )
+        ?.content
+    ).toBe(
+      'Descrizione SEO dell\'articolo.'
     );
   });
 

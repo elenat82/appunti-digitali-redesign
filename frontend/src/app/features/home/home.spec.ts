@@ -224,6 +224,16 @@ describe('Home', () => {
     expect(document.title).toBe(
       'Appunti Digitali | Gli appunti di una Front End Developer'
     );
+
+    expect(
+      document
+        .querySelector<HTMLMetaElement>(
+          'meta[name="description"]'
+        )
+        ?.content
+    ).toBe(
+      'Gli appunti di una Front End Developer su HTML, CSS, JavaScript, Angular, Drupal e tutto ciò che riguarda il web.'
+    );
   });
 
   it('espone una live region condivisa per i feedback della home', () => {

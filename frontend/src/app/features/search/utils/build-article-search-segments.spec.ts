@@ -8,6 +8,7 @@ describe('buildArticleSearchSegments', () => {
     path: 'drupal/titolo-drupal',
     area: 'drupal',
     body,
+    description: 'Descrizione SEO di prova.',
     externalLinks: [],
     weight: 0
   });

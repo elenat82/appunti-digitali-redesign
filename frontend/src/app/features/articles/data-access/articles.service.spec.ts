@@ -38,6 +38,7 @@ describe('ArticlesService', () => {
         path: 'html/primo-articolo-html',
         area: 'html',
         body: '<p>Lorem ipsum</p>',
+        description: 'Descrizione SEO di prova.',
         externalLinks: [],
         weight: 0
       },
@@ -47,6 +48,7 @@ describe('ArticlesService', () => {
         path: 'html/secondo-articolo-html',
         area: 'html',
         body: '<p>Lorem ipsum 2</p>',
+        description: 'Descrizione SEO di prova.',
         externalLinks: [],
         weight: 1
       }

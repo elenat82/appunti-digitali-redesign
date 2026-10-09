@@ -32,6 +32,76 @@ function deleteDatabase(): Promise<void> {
   });
 }
 
+function createVersion1Database(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(
+      DATABASE_NAME,
+      1
+    );
+
+    request.onupgradeneeded = () => {
+      const database = request.result;
+
+      database.createObjectStore('areas');
+      database.createObjectStore('articles');
+    };
+
+    request.onsuccess = () => {
+      const database = request.result;
+
+      const transaction = database.transaction(
+        ['areas', 'articles'],
+        'readwrite'
+      );
+
+      transaction
+        .objectStore('areas')
+        .put(
+          [
+            {
+              id: 'html',
+              label: 'HTML',
+              iconUrl: '/html.svg',
+              weight: 0
+            }
+          ],
+          'areas'
+        );
+
+      transaction
+        .objectStore('articles')
+        .put(
+          [
+            {
+              id: 1,
+              title: 'Articolo legacy',
+              path: '/appunti/html/articolo-legacy',
+              area: 'html',
+              body: '<p>Legacy</p>',
+              externalLinks: [],
+              weight: 0
+            }
+          ],
+          'html'
+        );
+
+      transaction.oncomplete = () => {
+        database.close();
+        resolve();
+      };
+
+      transaction.onerror = () => {
+        database.close();
+        reject(transaction.error);
+      };
+    };
+
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+}
+
 describe('ContentCacheService', () => {
   beforeEach(async () => {
     TestBed.resetTestingModule();
@@ -105,6 +175,7 @@ describe('ContentCacheService', () => {
         path: 'html/html',
         area: 'html',
         body: '<p>HTML</p>',
+        description: 'Descrizione SEO di prova.',
         externalLinks: [],
         weight: 0,
       },
@@ -117,6 +188,7 @@ describe('ContentCacheService', () => {
         path: 'css/css',
         area: 'css',
         body: '<p>CSS</p>',
+        description: 'Descrizione SEO di prova.',
         externalLinks: [],
         weight: 0,
       },
@@ -149,5 +221,37 @@ describe('ContentCacheService', () => {
     await expect(service.setArticles('html', [])).resolves.toBeUndefined();
 
     expect(openSpy).not.toHaveBeenCalled();
+  });
+
+  it('invalida gli articoli salvati con la versione precedente del database', async () => {
+    await createVersion1Database();
+
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: PLATFORM_ID,
+          useValue: 'browser'
+        }
+      ]
+    });
+
+    const service = TestBed.inject(
+      ContentCacheService
+    );
+
+    expect(
+      await service.getAreas()
+    ).toEqual([
+      {
+        id: 'html',
+        label: 'HTML',
+        iconUrl: '/html.svg',
+        weight: 0
+      }
+    ]);
+
+    expect(
+      await service.getArticles('html')
+    ).toBeNull();
   });
 });

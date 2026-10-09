@@ -47,6 +47,11 @@ export interface Article {
   body: string;
 
   /**
+ * Descrizione utilizzata per i metadata SEO dell'articolo.
+ */
+  description: string;
+
+  /**
    * Link di approfondimento associati all'articolo.
    */
   externalLinks: ExternalLink[];

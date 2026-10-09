@@ -11,6 +11,7 @@ describe('buildSearchResultGroups', () => {
       path: '/drupal/articolo-drupal',
       area: 'drupal',
       body: '',
+      description: 'Descrizione SEO di prova.',
       externalLinks: [],
       weight: 0
     },
@@ -20,6 +21,7 @@ describe('buildSearchResultGroups', () => {
       path: '/angular/articolo-angular',
       area: 'angular',
       body: '',
+      description: 'Descrizione SEO di prova.',
       externalLinks: [],
       weight: 0
     }

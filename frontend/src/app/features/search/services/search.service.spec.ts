@@ -65,6 +65,7 @@ describe('SearchService', () => {
       path: `/${area}/article-${id}`,
       area,
       body: '',
+      description: 'Descrizione SEO di prova.',
       externalLinks: [],
       weight: 0
     };

@@ -46,6 +46,7 @@ describe('Sidebar', () => {
         path: '/html/articolo-html',
         area: 'html',
         body: '<p>HTML</p>',
+        description: 'Descrizione SEO di prova.',
         externalLinks: [],
         weight: 0
       }
@@ -57,6 +58,7 @@ describe('Sidebar', () => {
         path: '/css/articolo-css',
         area: 'css',
         body: '<p>CSS</p>',
+        description: 'Descrizione SEO di prova.',
         externalLinks: [],
         weight: 0
       }

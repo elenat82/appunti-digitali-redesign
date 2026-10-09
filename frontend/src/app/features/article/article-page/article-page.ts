@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, last, map, of, switchMap } from 'rxjs';
 
-import { Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 
 import Prism from 'prismjs';
 
@@ -56,6 +56,7 @@ export class ArticlePage {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly search = inject(SearchService);
   private readonly codePenEmbed = inject(CodePenEmbedService);
+  private readonly meta = inject(Meta);
   private readonly title = inject(Title);
 
   private readonly queryParamMap = toSignal(
@@ -77,7 +78,18 @@ export class ArticlePage {
         this.title.setTitle(
           `${state.article.title} | Appunti Digitali`
         );
+
+        this.meta.updateTag({
+          name: 'description',
+          content: state.article.description
+        });
+
+        return;
       }
+      // Rimuove la description precedente quando la pagina non dispone di un articolo valido, evitando metadata SEO non coerenti con la route corrente.
+      this.meta.removeTag(
+        'name="description"'
+      );
     });
     // Applica highlight e scroll solo dopo che l'articolo è stato renderizzato e i segmenti sono disponibili nel DOM.
     afterRenderEffect({

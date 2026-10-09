@@ -5,7 +5,7 @@ import { Area } from '../models/area.model';
 import { Article } from '../models/article.model';
 
 const DATABASE_NAME = 'appunti-digitali';
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 2;
 
 const AREAS_STORE = 'areas';
 const ARTICLES_STORE = 'articles';
@@ -104,7 +104,7 @@ export class ContentCacheService {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
 
-      request.onupgradeneeded = () => {
+      request.onupgradeneeded = (event) => {
         const database = request.result;
 
         if (!database.objectStoreNames.contains(AREAS_STORE)) {
@@ -113,6 +113,13 @@ export class ContentCacheService {
 
         if (!database.objectStoreNames.contains(ARTICLES_STORE)) {
           database.createObjectStore(ARTICLES_STORE);
+        }
+        else if (event.oldVersion < 2) {
+          // Gli articoli salvati con la versione precedente non contengono la description SEO introdotta nel nuovo contratto Article.
+          // La cache può quindi essere eliminata e ricostruita da Drupal.
+          request.transaction
+            ?.objectStore(ARTICLES_STORE)
+            .clear();
         }
       };
 

@@ -52,6 +52,7 @@ describe('ContentRepositoryService', () => {
       path: 'html/html-cached',
       area: 'html',
       body: '<p>Cached</p>',
+      description: 'Descrizione SEO di prova.',
       externalLinks: [],
       weight: 0
     }
@@ -64,6 +65,7 @@ describe('ContentRepositoryService', () => {
       path: 'html/html',
       area: 'html',
       body: '<p>Remote</p>',
+      description: 'Descrizione SEO di prova.',
       externalLinks: [],
       weight: 0
     }

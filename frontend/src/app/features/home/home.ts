@@ -16,7 +16,7 @@ import {
 } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
-import { Title } from '@angular/platform-browser';
+import { Meta, Title } from '@angular/platform-browser';
 
 import { Profile } from '../../core/models/profile.model';
 import { ProfileService } from '../../core/data-access/profile.service';
@@ -81,6 +81,7 @@ export class Home {
   private readonly newsService = inject(NewsService);
   private readonly savedResourcesService = inject(SavedResourcesService);
 
+  private readonly meta = inject(Meta);
   private readonly title = inject(Title);
 
   private readonly savedResourcesRetry$ = new Subject<void>();
@@ -95,6 +96,12 @@ export class Home {
     this.title.setTitle(
       'Appunti Digitali | Gli appunti di una Front End Developer'
     );
+
+    this.meta.updateTag({
+      name: 'description',
+      content:
+        'Gli appunti di una Front End Developer su HTML, CSS, JavaScript, Angular, Drupal e tutto ciò che riguarda il web.'
+    });
   }
 
   /**
