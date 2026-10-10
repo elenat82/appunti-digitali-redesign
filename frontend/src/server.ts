@@ -6,11 +6,22 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+import {
+  environment
+} from './environments/environment';
+
+import {
+  buildSitemapXml
+} from './server/sitemap';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+
+interface SitemapResponse {
+  paths: string[];
+}
 
 /**
  * Example Express Rest API endpoints can be defined here.
@@ -23,6 +34,39 @@ const angularApp = new AngularNodeAppEngine();
  * });
  * ```
  */
+
+app.get(
+  '/sitemap.xml',
+  async (_req, res, next) => {
+    try {
+      const response = await fetch(
+        `${environment.apiBaseUrl}/api/sitemap`
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Sitemap API returned ${response.status}`
+        );
+      }
+
+      const data =
+        await response.json() as SitemapResponse;
+
+      const xml = buildSitemapXml(
+        data.paths,
+        environment.siteBaseUrl
+      );
+
+      res
+        .status(200)
+        .type('application/xml')
+        .send(xml);
+    }
+    catch (error) {
+      next(error);
+    }
+  }
+);
 
 /**
  * Serve static files from /browser

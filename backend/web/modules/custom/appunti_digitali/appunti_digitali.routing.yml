@@ -24,3 +24,12 @@ appunti_digitali.saved_resources:
     # Public endpoint consumed by the unauthenticated frontend.
     _access: 'TRUE'
   methods: [GET]
+
+appunti_digitali.sitemap:
+  path: '/api/sitemap'
+  defaults:
+    _controller: '\Drupal\appunti_digitali\Controller\SitemapController::get'
+  requirements:
+    # Public read-only endpoint used to expose indexable article paths.
+    _access: 'TRUE'
+  methods: [GET]
