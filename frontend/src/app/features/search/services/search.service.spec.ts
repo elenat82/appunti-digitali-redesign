@@ -102,7 +102,11 @@ describe('SearchService', () => {
 
     service.setQuery('Drupal');
 
-    await waitForSearchDebounce();
+    await vi.waitFor(() => {
+      expect(
+        service.isQueryPending()
+      ).toBe(false);
+    });
 
     expect(service.occurrences()).toEqual([]);
 
