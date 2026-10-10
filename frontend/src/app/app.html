@@ -3,21 +3,13 @@
 </a>
 
 <div class="app-shell">
-  <app-sidebar
-    [areas]="areas()"
-    [articlesByArea]="articlesByArea()"
-  />
+  <app-sidebar [areas]="areas()" [articlesByArea]="articlesByArea()" />
 
   <div class="app-content">
     <app-header />
 
     <div class="app-layout">
-      <main
-        id="main-content"
-        tabindex="-1"
-        class="app-main"
-        [attr.inert]="isSearchResultsOpen() ? '' : null"
-      >
+      <main id="main-content" tabindex="-1" class="app-main" [attr.inert]="isSearchResultsOpen() ? '' : null">
         <router-outlet />
       </main>
 
@@ -27,3 +19,5 @@
     <app-footer />
   </div>
 </div>
+
+<app-codepen-consent-prompt />

@@ -5,8 +5,10 @@ import {
 import {
   inject,
   Injectable,
-  PLATFORM_ID
+  PLATFORM_ID,
+  signal
 } from '@angular/core';
+import { CodePenConsentService } from '../../../core/privacy/codepen-consent.service';
 
 interface CodePenWindow extends Window {
   __CPEmbed?: (selector?: string) => void;
@@ -14,11 +16,13 @@ interface CodePenWindow extends Window {
   IntersectionObserver?: typeof globalThis.IntersectionObserver;
 }
 
-const CODEPEN_SCRIPT_ID =
-  'codepen-embed-script';
+const CODEPEN_SCRIPT_ID = 'codepen-embed-script';
 
-const CODEPEN_SCRIPT_SRC =
-  'https://public.codepenassets.com/embed/index.js';
+const CODEPEN_SCRIPT_SRC = 'https://public.codepenassets.com/embed/index.js';
+
+const CODEPEN_PLACEHOLDER_CLASS = 'codepen-consent-placeholder';
+
+const CODEPEN_PLACEHOLDER_ATTRIBUTE = 'data-codepen-placeholder-for';
 
 /**
  * Gestisce il progressive enhancement degli embed CodePen presenti nel body degli articoli.
@@ -31,8 +35,10 @@ const CODEPEN_SCRIPT_SRC =
 })
 export class CodePenEmbedService {
   private readonly document = inject(DOCUMENT);
-  private readonly platformId =
-    inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly codePenConsent = inject(CodePenConsentService);
+  private readonly consentRequiredState = signal(false);
+  readonly consentRequired = this.consentRequiredState.asReadonly();
 
   private scriptPromise:
     Promise<void> | null = null;
@@ -64,6 +70,8 @@ export class CodePenEmbedService {
     );
 
     if (renderedDemos.length === 0) {
+      this.consentRequiredState.set(false);
+
       return;
     }
 
@@ -154,6 +162,38 @@ export class CodePenEmbedService {
         );
       }
     );
+
+    const consentStatus =
+      this.codePenConsent.status();
+
+    this.consentRequiredState.set(
+      consentStatus === 'unknown'
+    );
+
+    for (const demo of demosToObserve) {
+      if (
+        consentStatus === 'granted'
+      ) {
+        demo.hidden = false;
+
+        this.removeConsentPlaceholder(
+          demo
+        );
+      }
+      else {
+        demo.hidden = true;
+
+        this.showConsentPlaceholder(
+          demo
+        );
+      }
+    }
+
+    if (
+      consentStatus !== 'granted'
+    ) {
+      return;
+    }
 
     this.observeDemos(demosToObserve);
   }
@@ -429,6 +469,104 @@ export class CodePenEmbedService {
       default:
         return 'result';
     }
+  }
+
+  /**
+ * Mostra un placeholder al posto di una demo CodePen bloccata.
+ *
+ * Il consenso concesso dal placeholder vale globalmente per tutti gli embed CodePen del sito.
+ */
+  private showConsentPlaceholder(
+    demo: HTMLElement
+  ): void {
+    const id =
+      demo.dataset['codepenId'];
+
+    if (!id) {
+      return;
+    }
+
+    const existingPlaceholder =
+      demo.parentElement?.querySelector<HTMLElement>(
+        `[${CODEPEN_PLACEHOLDER_ATTRIBUTE}="${id}"]`
+      );
+
+    if (existingPlaceholder) {
+      return;
+    }
+
+    const placeholder =
+      this.document.createElement(
+        'div'
+      );
+
+    placeholder.classList.add(
+      CODEPEN_PLACEHOLDER_CLASS
+    );
+
+    placeholder.setAttribute(
+      CODEPEN_PLACEHOLDER_ATTRIBUTE,
+      id
+    );
+
+    const message =
+      this.document.createElement(
+        'p'
+      );
+
+    message.textContent =
+      'Demo CodePen non caricata.';
+
+    const button =
+      this.document.createElement(
+        'button'
+      );
+
+    button.type = 'button';
+
+    button.textContent =
+      'Consenti CodePen';
+
+    button.classList.add(
+      'codepen-consent-placeholder__button'
+    );
+
+    button.addEventListener(
+      'click',
+      () => {
+        this.codePenConsent.grant();
+      }
+    );
+
+    placeholder.append(
+      message,
+      button
+    );
+
+    demo.insertAdjacentElement(
+      'beforebegin',
+      placeholder
+    );
+  }
+
+  /**
+   * Rimuove l'eventuale placeholder associato a una demo CodePen.
+   */
+  private removeConsentPlaceholder(
+    demo: HTMLElement
+  ): void {
+    const id =
+      demo.dataset['codepenId'];
+
+    if (!id) {
+      return;
+    }
+
+    demo.parentElement
+      ?.querySelector(
+        `[${CODEPEN_PLACEHOLDER_ATTRIBUTE}="${id}"]`
+      )
+      ?.remove();
   }
 
 }

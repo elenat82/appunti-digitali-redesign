@@ -2,11 +2,16 @@ import {
   DOCUMENT
 } from '@angular/common';
 import {
-  PLATFORM_ID
+  PLATFORM_ID, signal, WritableSignal
 } from '@angular/core';
 import {
   TestBed
 } from '@angular/core/testing';
+
+import {
+  CodePenConsentService,
+  CodePenConsentStatus
+} from '../../../core/privacy/codepen-consent.service';
 
 import {
   CodePenEmbedService
@@ -22,14 +27,28 @@ describe('CodePenEmbedService', () => {
   let service: CodePenEmbedService;
   let document: Document;
   let codePenWindow: CodePenWindow;
+  let consentStatus: WritableSignal<CodePenConsentStatus>;
+  const grantConsent = vi.fn();
 
   beforeEach(() => {
+    vi.clearAllMocks();
+    consentStatus = signal<CodePenConsentStatus>('granted');
+
     TestBed.configureTestingModule({
       providers: [
         CodePenEmbedService,
         {
           provide: PLATFORM_ID,
           useValue: 'browser'
+        },
+        {
+          provide: CodePenConsentService,
+          useValue: {
+            status:
+              consentStatus.asReadonly(),
+            grant:
+              grantConsent
+          }
         }
       ]
     });
@@ -383,6 +402,483 @@ describe('CodePenEmbedService', () => {
         'data-default-tab'
       )
     ).toBe(expectedTab);
+  });
+
+  it.each([
+    'unknown',
+    'denied'
+  ] as const)(
+    'non inizializza CodePen quando il consenso è %s',
+    async (status) => {
+      consentStatus.set(status);
+
+      const body =
+        document.createElement('div');
+
+      body.innerHTML = `
+      <div class="codepen-demo">
+        <pre>test</pre>
+      </div>
+    `;
+
+      const rawBody = `
+      <div
+        class="codepen-demo"
+        data-prefill
+      >
+        <pre data-lang="html">
+          test
+        </pre>
+      </div>
+    `;
+
+      service.enhance(
+        body,
+        rawBody,
+        'html'
+      );
+
+      await Promise.resolve();
+
+      expect(
+        codePenWindow.__CPEmbed
+      ).not.toHaveBeenCalled();
+    }
+  );
+
+  it('inizializza CodePen dopo che il consenso viene concesso', async () => {
+    consentStatus.set('unknown');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    await Promise.resolve();
+
+    expect(
+      codePenWindow.__CPEmbed
+    ).not.toHaveBeenCalled();
+
+    consentStatus.set('granted');
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    await Promise.resolve();
+
+    expect(
+      codePenWindow.__CPEmbed
+    ).toHaveBeenCalledOnce();
+  });
+
+  it('richiede il consenso quando trova un CodePen e la scelta è unknown', () => {
+    consentStatus.set('unknown');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    expect(
+      service.consentRequired()
+    ).toBe(true);
+  });
+
+  it('non richiede nuovamente il consenso quando CodePen è stato rifiutato', () => {
+    consentStatus.set('denied');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    expect(
+      service.consentRequired()
+    ).toBe(false);
+
+    expect(
+      codePenWindow.__CPEmbed
+    ).not.toHaveBeenCalled();
+  });
+
+  it('rimuove la richiesta di consenso quando il body non contiene CodePen', () => {
+    consentStatus.set('unknown');
+
+    const codePenBody =
+      document.createElement('div');
+
+    codePenBody.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawCodePenBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      codePenBody,
+      rawCodePenBody,
+      'html'
+    );
+
+    expect(
+      service.consentRequired()
+    ).toBe(true);
+
+    const plainBody =
+      document.createElement('div');
+
+    plainBody.innerHTML =
+      '<p>Nessun CodePen.</p>';
+
+    service.enhance(
+      plainBody,
+      '<p>Nessun CodePen.</p>',
+      'html'
+    );
+
+    expect(
+      service.consentRequired()
+    ).toBe(false);
+  });
+
+  it('nasconde il markup CodePen quando il consenso è negato', () => {
+    consentStatus.set('denied');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    const demo =
+      body.querySelector<HTMLElement>(
+        '.codepen-demo'
+      );
+
+    expect(
+      demo?.hidden
+    ).toBe(true);
+
+    expect(
+      codePenWindow.__CPEmbed
+    ).not.toHaveBeenCalled();
+  });
+
+  it('rende visibile il CodePen quando viene concesso il consenso', async () => {
+    consentStatus.set('unknown');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    const demo =
+      body.querySelector<HTMLElement>(
+        '.codepen-demo'
+      );
+
+    expect(
+      demo?.hidden
+    ).toBe(true);
+
+    consentStatus.set('granted');
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    await Promise.resolve();
+
+    expect(
+      demo?.hidden
+    ).toBe(false);
+
+    expect(
+      codePenWindow.__CPEmbed
+    ).toHaveBeenCalledOnce();
+  });
+
+  it('mostra un placeholder quando il consenso a CodePen è negato', () => {
+    consentStatus.set('denied');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    const demo =
+      body.querySelector<HTMLElement>(
+        '.codepen-demo'
+      );
+
+    const placeholder =
+      body.querySelector<HTMLElement>(
+        '.codepen-consent-placeholder'
+      );
+
+    expect(
+      demo?.hidden
+    ).toBe(true);
+
+    expect(
+      placeholder
+    ).toBeTruthy();
+
+    expect(
+      placeholder?.textContent
+    ).toContain(
+      'Demo CodePen non caricata.'
+    );
+
+    expect(
+      placeholder?.textContent
+    ).toContain(
+      'Consenti CodePen'
+    );
+  });
+
+  it('consente CodePen dal placeholder', () => {
+    consentStatus.set('denied');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    const button =
+      body.querySelector<HTMLButtonElement>(
+        '.codepen-consent-placeholder__button'
+      );
+
+    expect(button).toBeTruthy();
+
+    button?.click();
+
+    expect(
+      grantConsent
+    ).toHaveBeenCalledOnce();
+  });
+
+  it('rimuove il placeholder quando CodePen viene autorizzato', async () => {
+    consentStatus.set('denied');
+
+    const body =
+      document.createElement('div');
+
+    body.innerHTML = `
+    <div class="codepen-demo">
+      <pre>test</pre>
+    </div>
+  `;
+
+    const rawBody = `
+    <div
+      class="codepen-demo"
+      data-prefill
+    >
+      <pre data-lang="html">
+        test
+      </pre>
+    </div>
+  `;
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    expect(
+      body.querySelector(
+        '.codepen-consent-placeholder'
+      )
+    ).toBeTruthy();
+
+    consentStatus.set(
+      'granted'
+    );
+
+    service.enhance(
+      body,
+      rawBody,
+      'html'
+    );
+
+    await Promise.resolve();
+
+    expect(
+      body.querySelector(
+        '.codepen-consent-placeholder'
+      )
+    ).toBeNull();
+
+    expect(
+      body.querySelector<HTMLElement>(
+        '.codepen-demo'
+      )?.hidden
+    ).toBe(false);
   });
 
 });

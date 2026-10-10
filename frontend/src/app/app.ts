@@ -23,6 +23,7 @@ import { SearchResults } from './features/search/components/search-results/searc
 import { Sidebar } from './shared/components/sidebar/sidebar';
 import { Header } from './layout/header/header';
 import { Footer } from './layout/footer/footer';
+import { CodePenConsentPrompt } from './features/article/components/codepen-consent-prompt/codepen-consent-prompt';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ import { Footer } from './layout/footer/footer';
     SearchResults,
     Sidebar,
     Header,
-    Footer
+    Footer,
+    CodePenConsentPrompt
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

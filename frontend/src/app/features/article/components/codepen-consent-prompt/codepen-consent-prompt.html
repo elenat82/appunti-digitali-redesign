@@ -1,0 +1,34 @@
+@if (isVisible()) {
+<section class="codepen-consent" aria-labelledby="codepen-consent-title" aria-describedby="codepen-consent-description">
+  <div class="codepen-consent__content">
+    <h2 id="codepen-consent-title">
+      Contenuti interattivi CodePen
+    </h2>
+
+    <p id="codepen-consent-description">
+      Questo articolo contiene demo interattive fornite da CodePen.
+      Per mostrarle, il browser deve collegarsi a CodePen, che può impostare cookie di terze parti.
+      La scelta varrà per tutti i CodePen del sito e potrai modificarla in seguito.
+    </p>
+
+    <a href="https://blog.codepen.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">
+      Informativa privacy di CodePen
+      <span class="visually-hidden">
+        (si apre in una nuova scheda)
+      </span>
+    </a>
+  </div>
+
+  <div class="codepen-consent__actions">
+    <button type="button" class="codepen-consent__button
+             codepen-consent__button--reject" (click)="reject()">
+      Non consentire
+    </button>
+
+    <button type="button" class="codepen-consent__button
+             codepen-consent__button--accept" (click)="accept()">
+      Consenti CodePen
+    </button>
+  </div>
+</section>
+}

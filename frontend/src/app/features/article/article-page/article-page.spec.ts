@@ -67,12 +67,24 @@ describe('ArticlePage', () => {
     weight: 0
   };
 
+  const codePenConsentStatus =
+    signal<
+      'unknown' |
+      'granted' |
+      'denied'
+    >('unknown');
+
   const codePenEmbedMock = {
-    enhance: vi.fn()
+    enhance: vi.fn(() => {
+      codePenConsentStatus();
+    })
   };
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    codePenConsentStatus.set(
+      'unknown'
+    );
 
     routeParamMap = new ReplaySubject<ParamMap>(1);
     routeQueryParamMap = new ReplaySubject<ParamMap>(1);
@@ -283,6 +295,63 @@ describe('ArticlePage', () => {
       renderedBody,
       codePenArticle.body,
       codePenArticle.area
+    );
+  });
+
+  it('riesegue l\'enhancement CodePen quando viene concesso il consenso', async () => {
+    const codePenArticle: Article = {
+      ...article,
+      body: `
+      <p>Prima del CodePen.</p>
+
+      <div
+        class="codepen-demo"
+        data-prefill
+      >
+        <pre data-lang="html">
+          &lt;button&gt;Test&lt;/button&gt;
+        </pre>
+      </div>
+    `
+    };
+
+    contentRepositoryMock
+      .getArticlesByArea
+      .mockReturnValue(
+        of([codePenArticle])
+      );
+
+    createComponent();
+
+    await fixture.whenStable();
+
+    const callsBeforeConsent =
+      codePenEmbedMock
+        .enhance
+        .mock
+        .calls
+        .length;
+
+    expect(
+      callsBeforeConsent
+    ).toBeGreaterThan(0);
+
+    codePenConsentStatus.set(
+      'granted'
+    );
+
+    fixture.detectChanges();
+
+    await fixture.whenStable();
+
+    expect(
+      codePenEmbedMock
+        .enhance
+        .mock
+        .calls
+        .length
+    ).toBeGreaterThan(
+      callsBeforeConsent
     );
   });
 
