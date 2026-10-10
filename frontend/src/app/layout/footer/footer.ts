@@ -18,11 +18,15 @@ import {
 import {
   EmailActions
 } from '../../shared/components/email-actions/email-actions';
+import {
+  PrivacyActions
+} from '../../shared/components/privacy-actions/privacy-actions';
 
 @Component({
   selector: 'app-footer',
   imports: [
-    EmailActions
+    EmailActions,
+    PrivacyActions
   ],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',

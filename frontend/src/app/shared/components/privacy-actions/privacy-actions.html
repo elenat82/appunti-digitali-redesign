@@ -1,0 +1,52 @@
+<div class="privacy-actions-wrapper" (keydown.escape)="close()">
+  <button #privacyTrigger type="button" class="privacy-trigger" [attr.aria-expanded]="isOpen()"
+    [attr.aria-controls]="actionsId" (click)="toggle()">
+    Privacy
+  </button>
+
+  @if (isOpen()) {
+  <div #privacyPanel [id]="actionsId" class="privacy-actions">
+    <a class="privacy-action" routerLink="/privacy" (click)="close()">
+      Informativa privacy
+    </a>
+
+    <div class="privacy-codepen">
+      <p class="privacy-codepen__title">
+        CodePen
+      </p>
+
+      @switch (consentStatus()) {
+      @case ('granted') {
+      <p class="privacy-codepen__status">
+        Contenuti CodePen consentiti.
+      </p>
+
+      <button type="button" class="privacy-action" (click)="denyCodePen()">
+        Disabilita CodePen
+      </button>
+      }
+
+      @case ('denied') {
+      <p class="privacy-codepen__status">
+        CodePen disabilitato.
+      </p>
+
+      <button type="button" class="privacy-action" (click)="grantCodePen()">
+        Consenti CodePen
+      </button>
+      }
+
+      @default {
+      <p class="privacy-codepen__status">
+        CodePen non autorizzato.
+      </p>
+
+      <button type="button" class="privacy-action" (click)="grantCodePen()">
+        Consenti CodePen
+      </button>
+      }
+      }
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,22 @@
+<article class="privacy-page">
+  <h1>Informativa privacy</h1>
+
+  @switch (contentState().status) {
+  @case ('loading') {
+  <p>
+    Caricamento informativa...
+  </p>
+  }
+
+  @case ('error') {
+  <p role="status">
+    Impossibile caricare
+    l'informativa privacy.
+  </p>
+  }
+
+  @case ('ready') {
+  <div class="privacy-content" [innerHTML]="contentState().content"></div>
+  }
+  }
+</article>
