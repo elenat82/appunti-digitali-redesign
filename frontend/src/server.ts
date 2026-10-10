@@ -17,7 +17,18 @@ import {
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+
+const allowedHosts = [
+  new URL(environment.siteBaseUrl).hostname
+];
+
+if (!environment.production) {
+  allowedHosts.push('localhost');
+}
+
+const angularApp = new AngularNodeAppEngine({
+  allowedHosts
+});
 
 interface SitemapResponse {
   paths: string[];
@@ -64,6 +75,52 @@ app.get(
     }
     catch (error) {
       next(error);
+    }
+  }
+);
+
+app.get(
+  '/appunti/:area/:slug',
+  async (req, res, next) => {
+    try {
+      const response = await fetch(
+        `${environment.apiBaseUrl}${req.path}`,
+        {
+          method: 'HEAD',
+          redirect: 'manual'
+        }
+      );
+
+      const location =
+        response.headers.get('location');
+
+      if (
+        response.status >= 300 &&
+        response.status < 400 &&
+        location
+      ) {
+        const targetUrl = new URL(
+          location,
+          environment.apiBaseUrl
+        );
+
+        const target =
+          `${targetUrl.pathname}` +
+          `${targetUrl.search}` +
+          `${targetUrl.hash}`;
+
+        res.redirect(
+          response.status,
+          target
+        );
+
+        return;
+      }
+
+      next();
+    }
+    catch {
+      next();
     }
   }
 );
