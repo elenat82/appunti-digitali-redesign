@@ -125,12 +125,32 @@ app.get(
   }
 );
 
+const contentFolder = join(
+  browserDistFolder,
+  'content'
+);
+
+app.use(
+  '/content',
+  express.static(
+    contentFolder,
+    {
+      maxAge: 0,
+      index: false,
+      redirect: false,
+    }
+  ),
+);
+
 /**
  * Serve static files from /browser
  */
 app.use(
   express.static(browserDistFolder, {
-    maxAge: '1y',
+    maxAge:
+      environment.production
+        ? '1y'
+        : 0,
     index: false,
     redirect: false,
   }),
