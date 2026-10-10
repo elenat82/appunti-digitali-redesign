@@ -6,9 +6,9 @@ import {
   effect,
   inject
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, last, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -55,6 +55,7 @@ interface ArticlePageState {
 })
 export class ArticlePage {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly contentRepository = inject(ContentRepositoryService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly search = inject(SearchService);
@@ -644,29 +645,63 @@ export class ArticlePage {
 
         const path = `/appunti/${area}/${slug}`;
 
-        return this.contentRepository.getArticlesByArea(area).pipe(
-          last(),
-          map((articles) => {
-            const article =
-              articles.find((item) => item.path === path) ?? null;
+        let articleId: number | null = null;
 
-            return article
-              ? {
-                status: 'ready' as const,
-                article,
+        return this.contentRepository
+          .getArticlesByArea(area)
+          .pipe(
+            map((articles) => {
+              const articleByPath =
+                articles.find(
+                  (item) => item.path === path
+                ) ?? null;
+
+              if (articleByPath) {
+                articleId = articleByPath.id;
+
+                return {
+                  status: 'ready' as const,
+                  article: articleByPath,
+                };
               }
-              : {
+
+              if (articleId !== null) {
+                const articleById =
+                  articles.find(
+                    (item) => item.id === articleId
+                  ) ?? null;
+
+                if (articleById) {
+                  if (
+                    articleById.path !== path
+                  ) {
+                    void this.router.navigateByUrl(
+                      articleById.path,
+                      {
+                        replaceUrl: true
+                      }
+                    );
+                  }
+
+                  return {
+                    status: 'ready' as const,
+                    article: articleById,
+                  };
+                }
+              }
+
+              return {
                 status: 'not-found' as const,
                 article: null,
               };
-          }),
-          catchError(() =>
-            of<ArticlePageState>({
-              status: 'error',
-              article: null,
             }),
-          ),
-        );
+            catchError(() =>
+              of<ArticlePageState>({
+                status: 'error',
+                article: null,
+              })
+            ),
+          );
       }),
     ),
     {

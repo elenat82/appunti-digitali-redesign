@@ -1,4 +1,7 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import {
+  isPlatformBrowser
+} from '@angular/common';
+import { Component, computed, effect, inject, PLATFORM_ID } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   catchError,
@@ -36,6 +39,7 @@ import { Footer } from './layout/footer/footer';
 export class App {
   private readonly contentRepository = inject(ContentRepositoryService);
   private readonly search = inject(SearchService);
+  private readonly platformId = inject(PLATFORM_ID);
   protected readonly isSearchResultsOpen = this.search.isResultsOpen;
 
   private readonly areas$ = this.contentRepository.getAreas().pipe(
@@ -68,32 +72,48 @@ export class App {
   );
 
   private readonly articlesByArea$ = this.areaIds$.pipe(
-    switchMap((areaIds) =>
-      from(areaIds).pipe(
+    switchMap((areaIds) => {
+      if (
+        !isPlatformBrowser(
+          this.platformId
+        )
+      ) {
+        return of(
+          {} as Record<string, Article[]>
+        );
+      }
+
+      return from(areaIds).pipe(
         mergeMap((areaId) =>
-          this.contentRepository.getArticlesByArea(areaId).pipe(
-            map((articles) => ({
-              areaId,
-              articles
-            })),
-            catchError(() =>
-              of({
+          this.contentRepository
+            .getArticlesByArea(areaId)
+            .pipe(
+              map((articles) => ({
                 areaId,
-                articles: [] as Article[]
-              })
+                articles
+              })),
+              catchError(() =>
+                of({
+                  areaId,
+                  articles: [] as Article[]
+                })
+              )
             )
-          )
         ),
         scan(
           (articlesByArea, result) => ({
             ...articlesByArea,
-            [result.areaId]: result.articles
+            [result.areaId]:
+              result.articles
           }),
           {} as Record<string, Article[]>
         )
-      )
-    ),
-    shareReplay({ bufferSize: 1, refCount: true })
+      );
+    }),
+    shareReplay({
+      bufferSize: 1,
+      refCount: true
+    })
   );
 
   protected readonly areas = toSignal(

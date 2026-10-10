@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
-import { signal } from '@angular/core';
+import { signal, PLATFORM_ID } from '@angular/core';
 
 import { App } from './app';
 import { ContentRepositoryService } from './core/data-access/content-repository.service';
@@ -208,6 +208,47 @@ describe('App', () => {
     expect(
       main?.hasAttribute('inert')
     ).toBe(false);
+  });
+
+  it('non precarica gli articoli durante SSR', async () => {
+    TestBed.resetTestingModule();
+
+    vi.clearAllMocks();
+
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: [
+        provideRouter([]),
+        {
+          provide: PLATFORM_ID,
+          useValue: 'server'
+        },
+        {
+          provide:
+            ContentRepositoryService,
+          useValue:
+            contentRepositoryMock
+        },
+        {
+          provide: SearchService,
+          useValue: searchMock
+        }
+      ]
+    }).compileComponents();
+
+    const fixture =
+      TestBed.createComponent(App);
+
+    await fixture.whenStable();
+
+    expect(
+      contentRepositoryMock
+        .getArticlesByArea
+    ).not.toHaveBeenCalled();
+
+    expect(
+      searchMock.updateArticles
+    ).not.toHaveBeenCalled();
   });
 
 });

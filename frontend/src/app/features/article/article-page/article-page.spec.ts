@@ -5,7 +5,8 @@ import {
 import {
   ActivatedRoute,
   convertToParamMap,
-  ParamMap
+  ParamMap,
+  Router
 } from '@angular/router';
 import {
   of,
@@ -42,6 +43,12 @@ describe('ArticlePage', () => {
   const searchMock = {
     resultGroups:
       resultGroupsState.asReadonly()
+  };
+
+  const routerMock = {
+    navigateByUrl: vi.fn(
+      () => Promise.resolve(true)
+    )
   };
 
   const article: Article = {
@@ -87,6 +94,10 @@ describe('ArticlePage', () => {
               queryParamMap: emptyQueryParamMap
             }
           }
+        },
+        {
+          provide: Router,
+          useValue: routerMock
         },
         {
           provide: ContentRepositoryService,
@@ -633,5 +644,147 @@ describe('ArticlePage', () => {
     expect(
       target?.getAttribute('tabindex')
     ).toBe('-1');
+  });
+
+  it('mostra subito l\'articolo in cache e lo aggiorna quando arriva la versione remota', () => {
+    const cachedArticle: Article = {
+      ...article,
+      title: 'Articolo cached',
+      body: '<p>Contenuto cached.</p>',
+      description: 'Descrizione cached.'
+    };
+
+    const remoteArticle: Article = {
+      ...article,
+      title: 'Articolo aggiornato',
+      body: '<p>Contenuto aggiornato.</p>',
+      description: 'Descrizione aggiornata.'
+    };
+
+    const articles$ =
+      new ReplaySubject<Article[]>(1);
+
+    contentRepositoryMock
+      .getArticlesByArea
+      .mockReturnValue(
+        articles$.asObservable()
+      );
+
+    articles$.next([
+      cachedArticle
+    ]);
+
+    createComponent();
+
+    expect(
+      fixture.nativeElement
+        .querySelector('h1')
+        ?.textContent
+    ).toContain(
+      'Articolo cached'
+    );
+
+    expect(
+      fixture.nativeElement
+        .querySelector('.article-body')
+        ?.textContent
+    ).toContain(
+      'Contenuto cached.'
+    );
+
+    expect(document.title).toBe(
+      'Articolo cached | Appunti Digitali'
+    );
+
+    articles$.next([
+      remoteArticle
+    ]);
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement
+        .querySelector('h1')
+        ?.textContent
+    ).toContain(
+      'Articolo aggiornato'
+    );
+
+    expect(
+      fixture.nativeElement
+        .querySelector('.article-body')
+        ?.textContent
+    ).toContain(
+      'Contenuto aggiornato.'
+    );
+
+    expect(document.title).toBe(
+      'Articolo aggiornato | Appunti Digitali'
+    );
+  });
+
+  it('aggiorna la URL quando l\'articolo remoto mantiene lo stesso id ma cambia path', () => {
+    const cachedArticle: Article = {
+      ...article,
+      title: 'Introduzione',
+      path:
+        '/appunti/angular/introduzione',
+      area: 'angular'
+    };
+
+    const remoteArticle: Article = {
+      ...cachedArticle,
+      title:
+        'Concetti fondamentali comuni a tutte le versioni di Angular',
+      path:
+        '/appunti/angular/concetti-fondamentali-comuni-a-tutte-le-versioni-di-angular'
+    };
+
+    const articles$ =
+      new ReplaySubject<Article[]>(1);
+
+    contentRepositoryMock
+      .getArticlesByArea
+      .mockReturnValue(
+        articles$.asObservable()
+      );
+
+    articles$.next([
+      cachedArticle
+    ]);
+
+    createComponent(
+      'angular',
+      'introduzione'
+    );
+
+    expect(
+      fixture.nativeElement
+        .querySelector('h1')
+        ?.textContent
+    ).toContain('Introduzione');
+
+    articles$.next([
+      remoteArticle
+    ]);
+
+    fixture.detectChanges();
+
+    expect(
+      routerMock.navigateByUrl
+    ).toHaveBeenCalledWith(
+      '/appunti/angular/concetti-fondamentali-comuni-a-tutte-le-versioni-di-angular',
+      {
+        replaceUrl: true
+      }
+    );
+
+    expect(
+      fixture.nativeElement
+        .querySelector('h1')
+        ?.textContent
+    ).toContain(
+      'Concetti fondamentali comuni a tutte le versioni di Angular'
+    );
   });
 });
