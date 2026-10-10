@@ -1,0 +1,22 @@
+/* TEAM */
+
+Developer: Elena Trudini
+Role: Front End Developer
+Website: https://www.appunti-digitali.it
+GitHub: https://github.com/elenat82
+
+Developer: ChatGPT
+Role: Code Collaboration & Content Assistant
+
+
+/* SITE */
+
+Name: Appunti Digitali
+Description: Appunti personali su sviluppo web e programmazione.
+
+Frontend: Angular
+Backend: Drupal 11
+Language: TypeScript, PHP, HTML, SCSS
+Rendering: Server-Side Rendering
+Repository: https://github.com/elenat82/appunti-digitali-redesign
+
