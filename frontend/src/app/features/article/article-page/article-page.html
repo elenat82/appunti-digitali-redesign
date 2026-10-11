@@ -1,16 +1,19 @@
-@switch (state().status) {
+@let currentState = state();
+
+@switch (currentState.status) {
 @case ('loading') {
 <p>Caricamento articolo...</p>
 }
 
 @case ('ready') {
-@if (state().article; as article) {
+@if (currentState.article; as article) {
 <article class="article-layout" [class.article-layout--with-resources]="article.externalLinks.length > 0">
   <div class="article-main">
     <h1>{{ article.title }}</h1>
 
     <div class="article-body" data-prismjs-copy="Copia" data-prismjs-copy-success="Copiato!"
-      data-prismjs-copy-error="Premi Ctrl+C per copiare" data-prismjs-copy-timeout="2000" [innerHTML]="article.body">
+      data-prismjs-copy-error="Premi Ctrl+C per copiare" data-prismjs-copy-timeout="2000"
+      [innerHTML]="currentState.renderedBody">
     </div>
   </div>
 

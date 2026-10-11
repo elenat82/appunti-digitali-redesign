@@ -38,10 +38,14 @@ import { CodePenEmbedService } from '../services/codepen-embed.service';
 import {
   SeoService
 } from '../../../core/seo/seo.service';
+import {
+  ArticleBodyRenderingService
+} from '../services/article-body-rendering.service';
 
 interface ArticlePageState {
   status: 'loading' | 'ready' | 'not-found' | 'error';
   article: Article | null;
+  renderedBody: string;
 }
 
 /**
@@ -63,6 +67,7 @@ export class ArticlePage {
   private readonly meta = inject(Meta);
   private readonly title = inject(Title);
   private readonly seo = inject(SeoService);
+  private readonly articleBodyRendering = inject(ArticleBodyRenderingService);
 
   private readonly queryParamMap = toSignal(
     this.route.queryParamMap,
@@ -126,6 +131,26 @@ export class ArticlePage {
 
         if (!article) {
           return;
+        }
+
+        const body =
+          this.host.nativeElement
+            .querySelector<HTMLElement>(
+              '.article-body'
+            );
+
+        if (body) {
+          this.articleBodyRendering
+            .restoreAllowedStyles(
+              body,
+              article.body
+            );
+
+          this.articleBodyRendering
+            .restoreAllowedDataAttributes(
+              body,
+              article.body
+            );
         }
 
         this.highlightCode();
@@ -640,6 +665,7 @@ export class ArticlePage {
           return of<ArticlePageState>({
             status: 'not-found',
             article: null,
+            renderedBody: ''
           });
         }
 
@@ -650,7 +676,7 @@ export class ArticlePage {
         return this.contentRepository
           .getArticlesByArea(area)
           .pipe(
-            map((articles) => {
+            map((articles): ArticlePageState => {
               const articleByPath =
                 articles.find(
                   (item) => item.path === path
@@ -662,6 +688,11 @@ export class ArticlePage {
                 return {
                   status: 'ready' as const,
                   article: articleByPath,
+                  renderedBody:
+                    this.articleBodyRendering
+                      .prepareForRendering(
+                        articleByPath.body
+                      )
                 };
               }
 
@@ -686,6 +717,11 @@ export class ArticlePage {
                   return {
                     status: 'ready' as const,
                     article: articleById,
+                    renderedBody:
+                      this.articleBodyRendering
+                        .prepareForRendering(
+                          articleById.body
+                        )
                   };
                 }
               }
@@ -693,12 +729,14 @@ export class ArticlePage {
               return {
                 status: 'not-found' as const,
                 article: null,
+                renderedBody: ''
               };
             }),
             catchError(() =>
               of<ArticlePageState>({
                 status: 'error',
                 article: null,
+                renderedBody: ''
               })
             ),
           );
@@ -708,6 +746,7 @@ export class ArticlePage {
       initialValue: {
         status: 'loading',
         article: null,
+        renderedBody: ''
       } satisfies ArticlePageState,
     },
   );
