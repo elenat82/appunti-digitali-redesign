@@ -71,12 +71,16 @@ describe('SearchService', () => {
     };
   }
 
-  // Attende più del debounce configurato (150 ms) per lasciare margine anche alla propagazione asincrona tra signal,
-  // toObservable() e toSignal(), evitando test sensibili al timing dell'ambiente.
-  async function waitForSearchDebounce(): Promise<void> {
-    await new Promise((resolve) =>
-      setTimeout(resolve, 250)
-    );
+  // Attende che la query debounced raggiunga la query corrente,
+  // evitando dipendenze da timeout fissi e dal timing dell'ambiente di test.
+  async function waitForSearchDebounce(
+    service: SearchService
+  ): Promise<void> {
+    await vi.waitFor(() => {
+      expect(
+        service.isQueryPending()
+      ).toBe(false);
+    });
   }
 
   it('mantiene la query anche quando l\'indice non è ancora pronto', () => {
@@ -137,13 +141,13 @@ describe('SearchService', () => {
 
     service.setQuery('Drupal');
 
-    await waitForSearchDebounce();
+    await waitForSearchDebounce(service);
 
     expect(service.occurrenceCount()).toBe(1);
 
     service.setQuery('Angular');
 
-    await waitForSearchDebounce();
+    await waitForSearchDebounce(service);
 
     expect(service.occurrences()).toEqual([
       {
@@ -170,7 +174,7 @@ describe('SearchService', () => {
 
     service.setQuery('Drupal');
 
-    await waitForSearchDebounce();
+    await waitForSearchDebounce(service);
 
     expect(service.occurrenceCount()).toBe(1);
 
@@ -210,7 +214,7 @@ describe('SearchService', () => {
     statusState.set('ready');
     service.setQuery('Drupal');
 
-    await waitForSearchDebounce();
+    await waitForSearchDebounce(service);
 
     expect(service.occurrenceCount()).toBe(3);
     expect(service.articleCount()).toBe(2);
@@ -276,7 +280,7 @@ describe('SearchService', () => {
 
     service.setQuery('Drupal');
 
-    await waitForSearchDebounce();
+    await waitForSearchDebounce(service);
 
     const groups = service.resultGroups();
 
@@ -298,7 +302,7 @@ describe('SearchService', () => {
     ).toBe('Drupal');
   });
 
-  it('non apre né esegue la ricerca sotto i tre caratteri', async () => {
+  it('non apre né esegue la ricerca sotto i tre caratteri', () => {
     const service = TestBed.inject(SearchService);
 
     segmentsState.set([
@@ -312,8 +316,6 @@ describe('SearchService', () => {
     statusState.set('ready');
 
     service.setQuery('Dr');
-
-    await waitForSearchDebounce();
 
     expect(service.query()).toBe('Dr');
     expect(service.isResultsOpen()).toBe(false);
@@ -338,7 +340,7 @@ describe('SearchService', () => {
     expect(service.isResultsOpen()).toBe(true);
     expect(service.occurrences()).toEqual([]);
 
-    await waitForSearchDebounce();
+    await waitForSearchDebounce(service);
 
     expect(service.occurrenceCount()).toBe(1);
   });
