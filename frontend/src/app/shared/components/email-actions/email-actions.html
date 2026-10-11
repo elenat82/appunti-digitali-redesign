@@ -15,10 +15,12 @@
   @if (isEmailActionsOpen()) {
   <div #actionsPanel [id]="actionsId" class="profile-email-actions">
     <a class="profile-email-action" [href]="'mailto:' + email()" (click)="scheduleEmailActionsClose()">
-      Scrivi email
+      <i class="icon-app-mail" aria-hidden="true"></i> Scrivi email
     </a>
 
     <button type="button" class="profile-email-action" (click)="copyEmail()">
+      <i class="icon-app-copy" aria-hidden="true"></i>
+
       <span aria-live="polite" aria-atomic="true">
         @switch (emailCopyStatus()) {
         @case ('copied') {

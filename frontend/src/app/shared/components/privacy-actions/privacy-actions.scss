@@ -20,10 +20,7 @@
 
   inset-block-end:
     calc(100% + 0.75rem);
-  inset-inline-start: 50%;
-
-  transform:
-    translateX(-50%);
+  inset-inline-end: 0;
 
   display: flex;
   flex-direction: column;
@@ -44,10 +41,7 @@
 
   position: absolute;
   inset-block-start: 100%;
-  inset-inline-start: 50%;
-
-  transform:
-    translateX(-50%);
+  inset-inline-end: 1rem;
 
   border:
     0.5rem solid transparent;

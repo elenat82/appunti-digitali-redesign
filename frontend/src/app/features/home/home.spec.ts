@@ -1288,8 +1288,17 @@ describe('Home', () => {
       'Angular Signals'
     );
 
-    expect(section?.textContent).toContain(
-      'https://example.com/drupal'
+    const resourceLink =
+      section?.querySelector<HTMLAnchorElement>(
+        'a[href="https://example.com/drupal"]'
+      );
+
+    expect(resourceLink).toBeTruthy();
+
+    expect(
+      resourceLink?.textContent
+    ).toContain(
+      'Drupal Entity API'
     );
 
     expect(section?.textContent).toContain(

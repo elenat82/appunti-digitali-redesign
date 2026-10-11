@@ -370,7 +370,7 @@ describe('ArticlePage', () => {
     );
 
     const link: HTMLAnchorElement | null =
-      element.querySelector('section a');
+      element.querySelector('.article-resources a');
 
     expect(link?.textContent).toContain('MDN');
 

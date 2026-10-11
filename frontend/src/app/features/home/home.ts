@@ -65,6 +65,12 @@ interface SavedResourcesState {
   resources: SavedResource[];
 }
 
+type HomeExternalSection =
+  | 'news'
+  | 'stack-overflow'
+  | 'github'
+  | 'saved-resources';
+
 const LOADING_COMPLETION_DELAY_MS = 500;
 
 const HOME_TITLE =
@@ -101,6 +107,22 @@ export class Home {
   private readonly profileRetry$ = new Subject<void>();
 
   readonly accessibilityStatus = signal('');
+
+  readonly openExternalSection =
+    signal<HomeExternalSection | null>(
+      'news'
+    );
+
+  toggleExternalSectionPanel(
+    section: HomeExternalSection
+  ): void {
+    this.openExternalSection.update(
+      currentSection =>
+        currentSection === section
+          ? null
+          : section
+    );
+  }
 
   constructor() {
     this.title.setTitle(HOME_TITLE);

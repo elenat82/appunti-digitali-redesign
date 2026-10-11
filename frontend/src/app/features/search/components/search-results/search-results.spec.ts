@@ -8,6 +8,7 @@ import { provideRouter } from '@angular/router';
 import { SearchService } from '../../services/search.service';
 import { SearchResults } from './search-results';
 import { SearchResultGroup } from '../../models/search-result.model';
+import { Area } from '../../../../core/models/area.model';
 
 describe('SearchResults', () => {
   let fixture: ComponentFixture<SearchResults>;
@@ -41,6 +42,15 @@ describe('SearchResults', () => {
     })
   };
 
+  const areas: Area[] = [
+    {
+      id: 'drupal',
+      label: 'Drupal',
+      iconUrl: 'https://example.com/drupal.svg',
+      weight: 0
+    }
+  ];
+
   beforeEach(async () => {
     queryPendingState.set(false);
     resultsOpenState.set(false);
@@ -63,6 +73,11 @@ describe('SearchResults', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(SearchResults);
+
+    fixture.componentRef.setInput(
+      'areas',
+      areas
+    );
     fixture.detectChanges();
   });
 

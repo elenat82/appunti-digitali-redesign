@@ -1,11 +1,16 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   input,
   signal
 } from '@angular/core';
+import {
+  DOCUMENT
+} from '@angular/common';
 import {
   NavigationEnd,
   Router,
@@ -31,6 +36,12 @@ export class Sidebar {
   readonly articlesByArea = input.required<Record<string, Article[]>>();
 
   private readonly router = inject(Router);
+
+  private readonly document = inject(DOCUMENT);
+
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly responsiveBreakpoint = '(max-width: 1000px)';
 
   /**
    * Indica se il contenuto della sidebar è visibile.
@@ -59,6 +70,49 @@ export class Sidebar {
       initialValue: this.router.url
     }
   );
+
+  constructor() {
+    afterNextRender(() => {
+      const window =
+        this.document.defaultView;
+
+      if (!window) {
+        return;
+      }
+
+      const mediaQuery =
+        window.matchMedia(
+          this.responsiveBreakpoint
+        );
+
+      const updateSidebar =
+        (
+          event:
+            MediaQueryListEvent |
+            MediaQueryList
+        ): void => {
+          this.isOpen.set(
+            !event.matches
+          );
+        };
+
+      updateSidebar(mediaQuery);
+
+      mediaQuery.addEventListener(
+        'change',
+        updateSidebar
+      );
+
+      this.destroyRef.onDestroy(
+        () => {
+          mediaQuery.removeEventListener(
+            'change',
+            updateSidebar
+          );
+        }
+      );
+    });
+  }
 
   /**
    * Area tematica associata all'articolo corrente.

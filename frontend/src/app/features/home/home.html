@@ -84,279 +84,388 @@
   }
 </section>
 <div class="external-resources-container">
-  <section class="home-section home-news" aria-labelledby="news-title"
-    [attr.aria-busy]="newsState().status === 'loading' ? 'true' : 'false'">
-
+  <!-- ------------------ SEZIONE NOTIZIE --------------------------- -->
+  <section class="home-section home-news" aria-labelledby="news-title" [attr.aria-busy]="
+    newsState().status === 'loading'
+      ? 'true'
+      : 'false'
+  " [class.home-section--open]="
+    openExternalSection() === 'news'
+  ">
     <div class="home-section-header">
       <h2 id="news-title">
-        <i class="icon-app-news" aria-hidden="true"></i> Notizie
+        <i class="icon-app-news" aria-hidden="true"></i>
+        Notizie
       </h2>
 
       @if (newsState().status === 'error') {
       <button type="button" class="home-section-retry" (click)="retryNews()">
         Riprova
+
         <span class="visually-hidden">
           il caricamento delle notizie
         </span>
       </button>
       }
+
+      <button type="button" class="home-section-toggle" aria-controls="news-content" [attr.aria-expanded]="
+        openExternalSection() === 'news'
+      " (click)="
+        toggleExternalSectionPanel('news')
+      ">
+        <span class="home-section-chevron" aria-hidden="true"></span>
+
+        <span class="visually-hidden">
+          {{
+          openExternalSection() === 'news'
+          ? 'Notizie aperte'
+          : 'Mostra Notizie'
+          }}
+        </span>
+      </button>
     </div>
 
-    @switch (newsState().status) {
-    @case ('loading') {
-    <app-loading-indicator />
-    }
-
-    @case ('empty') {
-    <p>Nessuna notizia disponibile.</p>
-    }
-
-    @case ('error') {
-    <p role="status">
-      Impossibile caricare le notizie.
-    </p>
-    }
-
-    @case ('ready') {
-    <ul class="news-list">
-      @for (
-      item of newsState().news;
-      track item.id
-      ) {
-      <li>
-        <a [href]="item.url" target="_blank" rel="noopener noreferrer">
-          {{ item.title }}
-          <span class="visually-hidden">
-            (si apre in una nuova scheda)
-          </span>
-        </a>
-
-        <div class="news-meta">
-          <span>
-            Fonte: {{ item.source }}
-          </span>
-
-          @if (item.author) {
-          <span>
-            Autore: {{ item.author }}
-          </span>
-          }
-
-          <span>
-            Data: {{ item.date * 1000 | date:'dd/MM/yyyy' }}
-          </span>
-        </div>
-
-      </li>
+    <div id="news-content" class="home-section-content">
+      @switch (newsState().status) {
+      @case ('loading') {
+      <app-loading-indicator />
       }
-    </ul>
-    }
-    }
+
+      @case ('empty') {
+      <p>Nessuna notizia disponibile.</p>
+      }
+
+      @case ('error') {
+      <p role="status">
+        Impossibile caricare le notizie.
+      </p>
+      }
+
+      @case ('ready') {
+      <ul class="news-list">
+        @for (
+        item of newsState().news;
+        track item.id
+        ) {
+        <li>
+          <a [href]="item.url" target="_blank" rel="noopener noreferrer">
+            <span class="item-title">
+              {{ item.title }}
+            </span>
+
+            <span class="visually-hidden">
+              (si apre in una nuova scheda)
+            </span>
+
+            <div class="news-meta">
+              <span class="news-source">
+                <em>Fonte:</em>
+                {{ item.source }}
+              </span>
+
+              @if (item.author) {
+              <span>
+                <em>Autore:</em>
+                {{ item.author }}
+              </span>
+              }
+
+              <span>
+                <em>Data:</em>
+                {{
+                item.date * 1000
+                | date:'dd/MM/yyyy'
+                }}
+              </span>
+            </div>
+          </a>
+        </li>
+        }
+      </ul>
+      }
+      }
+    </div>
   </section>
-  <section class="home-section home-stack-overflow" aria-labelledby="stack-overflow-title"
-    [attr.aria-busy]="stackOverflowState().status === 'loading' ? 'true' : 'false'">
+  <!-- ------------------ SEZIONE STACK OVERFLOW --------------------------- -->
+  <section class="home-section home-stack-overflow" aria-labelledby="stack-overflow-title" [attr.aria-busy]="
+    stackOverflowState().status === 'loading'
+      ? 'true'
+      : 'false'
+  " [class.home-section--open]="
+    openExternalSection() === 'stack-overflow'
+  ">
     <div class="home-section-header">
       <h2 id="stack-overflow-title">
-        <i class="icon-app-stackoverflow" aria-hidden="true"></i> Stack Overflow
+        <i class="icon-app-stackoverflow" aria-hidden="true"></i>
+        Stack Overflow
       </h2>
 
       @if (stackOverflowState().status === 'error') {
       <button type="button" class="home-section-retry" (click)="retryStackOverflow()">
         Riprova
+
         <span class="visually-hidden">
           il caricamento delle domande Stack Overflow
         </span>
       </button>
       }
+
+      <button type="button" class="home-section-toggle" aria-controls="stack-overflow-content" [attr.aria-expanded]="
+        openExternalSection() === 'stack-overflow'
+      " (click)="
+        toggleExternalSectionPanel('stack-overflow')
+      ">
+        <span class="home-section-chevron" aria-hidden="true"></span>
+
+        <span class="visually-hidden">
+          {{
+          openExternalSection() === 'stack-overflow'
+          ? 'Domande Stack Overflow aperte'
+          : 'Mostra domande Stack Overflow'
+          }}
+        </span>
+      </button>
     </div>
 
-    @switch (stackOverflowState().status) {
-    @case ('loading') {
-    <app-loading-indicator />
-    }
-
-    @case ('empty') {
-    <p>Nessuna domanda disponibile.</p>
-    }
-
-    @case ('error') {
-    <p role="status">
-      Impossibile caricare le domande Stack Overflow.
-    </p>
-    }
-
-    @case ('ready') {
-    <ul class="stack-overflow-list">
-      @for (
-      question of stackOverflowState().questions;
-      track question.id
-      ) {
-      <li>
-        <a [href]="question.url" target="_blank" rel="noopener noreferrer">
-          {{ question.title }}
-          <span class="visually-hidden">
-            (si apre in una nuova scheda)
-          </span>
-        </a>
-        <!-- <div class="stack-overflow-meta">
-          <span>
-            Score: {{ question.score }}
-          </span>
-
-          <span>
-            Risposte: {{ question.answerCount }}
-          </span>
-        </div> -->
-
-        <ul class="stack-overflow-tags">
-          @for (
-          tag of question.tags;
-          track tag
-          ) {
-          <li>{{ tag }}</li>
-          }
-        </ul>
-      </li>
+    <div id="stack-overflow-content" class="home-section-content">
+      @switch (stackOverflowState().status) {
+      @case ('loading') {
+      <app-loading-indicator />
       }
-    </ul>
-    }
-    }
+
+      @case ('empty') {
+      <p>Nessuna domanda disponibile.</p>
+      }
+
+      @case ('error') {
+      <p role="status">
+        Impossibile caricare le domande Stack Overflow.
+      </p>
+      }
+
+      @case ('ready') {
+      <ul class="stack-overflow-list">
+        @for (
+        question of stackOverflowState().questions;
+        track question.id
+        ) {
+        <li>
+          <a [href]="question.url" target="_blank" rel="noopener noreferrer">
+            <span class="item-title">
+              {{ question.title }}
+            </span>
+
+            <span class="visually-hidden">
+              (si apre in una nuova scheda)
+            </span>
+
+            <ul class="stack-overflow-tags">
+              @for (
+              tag of question.tags;
+              track tag
+              ) {
+              <li>{{ tag }}</li>
+              }
+            </ul>
+
+
+          </a>
+        </li>
+        }
+      </ul>
+      }
+      }
+    </div>
   </section>
-  <section class="home-section home-github" aria-labelledby="github-title"
-    [attr.aria-busy]="gitHubState().status === 'loading' ? 'true' : 'false'">
+  <!-- ------------------ SEZIONE GITHUB --------------------------- -->
+  <section class="home-section home-github" aria-labelledby="github-title" [attr.aria-busy]="
+    gitHubState().status === 'loading'
+      ? 'true'
+      : 'false'
+  " [class.home-section--open]="
+    openExternalSection() === 'github'
+  ">
     <div class="home-section-header">
       <h2 id="github-title">
-        <i class="icon-app-github" aria-hidden="true"></i> GitHub starred
+        <i class="icon-app-github" aria-hidden="true"></i>
+        GitHub starred
       </h2>
 
       @if (gitHubState().status === 'error') {
       <button type="button" class="home-section-retry" (click)="retryGitHubStarred()">
         Riprova
+
         <span class="visually-hidden">
           il caricamento dei repository GitHub starred
         </span>
       </button>
       }
+
+      <button type="button" class="home-section-toggle" aria-controls="github-content" [attr.aria-expanded]="
+        openExternalSection() === 'github'
+      " (click)="
+        toggleExternalSectionPanel('github')
+      ">
+        <span class="home-section-chevron" aria-hidden="true"></span>
+
+        <span class="visually-hidden">
+          {{
+          openExternalSection() === 'github'
+          ? 'Repository GitHub aperti'
+          : 'Mostra repository GitHub'
+          }}
+        </span>
+      </button>
     </div>
 
-    @switch (gitHubState().status) {
-    @case ('loading') {
-    <app-loading-indicator />
-    }
-
-    @case ('empty') {
-    <p>Nessun repository disponibile.</p>
-    }
-
-    @case ('error') {
-    <p role="status">
-      Impossibile caricare i repository GitHub starred.
-    </p>
-    }
-
-    @case ('ready') {
-    <ul class="github-list">
-      @for (
-      repository of gitHubState().repositories;
-      track repository.id
-      ) {
-      <li>
-        <a [href]="repository.url" target="_blank" rel="noopener noreferrer">
-          {{ repository.name }}
-          <span class="visually-hidden">
-            (si apre in una nuova scheda)
-          </span>
-        </a>
-
-        <div class="repository-meta">
-
-          <span>
-            Descrizione: {{ repository.description }}
-          </span>
-        </div>
-
-      <!-- <span>
-        Linguaggio: {{ repository.language }}
-      </span> -->
-
-        <ul class="github-topics">
-          @for (
-          topic of repository.topics;
-          track topic
-          ) {
-          <li>{{ topic }}</li>
-          }
-        </ul>
-      </li>
+    <div id="github-content" class="home-section-content">
+      @switch (gitHubState().status) {
+      @case ('loading') {
+      <app-loading-indicator />
       }
-    </ul>
-    }
-    }
+
+      @case ('empty') {
+      <p>Nessun repository disponibile.</p>
+      }
+
+      @case ('error') {
+      <p role="status">
+        Impossibile caricare i repository GitHub starred.
+      </p>
+      }
+
+      @case ('ready') {
+      <ul class="github-list">
+        @for (
+        repository of gitHubState().repositories;
+        track repository.id
+        ) {
+        <li>
+          <a [href]="repository.url" target="_blank" rel="noopener noreferrer">
+            <span class="item-title">
+              {{ repository.name }}
+            </span>
+
+            <span class="visually-hidden">
+              (si apre in una nuova scheda)
+            </span>
+
+            <div class="repository-meta">
+              <span>
+                <em>Descrizione:</em>
+                {{ repository.description }}
+              </span>
+            </div>
+
+            <ul class="github-topics">
+              @for (
+              topic of repository.topics;
+              track topic
+              ) {
+              <li>{{ topic }}</li>
+              }
+            </ul>
+
+
+          </a>
+        </li>
+        }
+      </ul>
+      }
+      }
+    </div>
   </section>
-  <section class="home-section home-saved-resources" aria-labelledby="saved-resources-title"
-    [attr.aria-busy]="savedResourcesState().status === 'loading' ? 'true' : 'false'">
+  <!-- ------------------ SEZIONE RISORSE SALVATE --------------------------- -->
+  <section class="home-section home-saved-resources" aria-labelledby="saved-resources-title" [attr.aria-busy]="
+    savedResourcesState().status === 'loading'
+      ? 'true'
+      : 'false'
+  " [class.home-section--open]="
+    openExternalSection() === 'saved-resources'
+  ">
     <div class="home-section-header">
       <h2 id="saved-resources-title">
-        <i class="icon-app-saved-resources" aria-hidden="true"></i> Risorse salvate
+        <i class="icon-app-saved-resources" aria-hidden="true"></i>
+        Risorse salvate
       </h2>
 
       @if (savedResourcesState().status === 'error') {
       <button type="button" class="home-section-retry" (click)="retrySavedResources()">
         Riprova
+
         <span class="visually-hidden">
           il caricamento delle risorse salvate
         </span>
       </button>
       }
+
+      <button type="button" class="home-section-toggle" aria-controls="saved-resources-content" [attr.aria-expanded]="
+        openExternalSection() === 'saved-resources'
+      " (click)="
+        toggleExternalSectionPanel('saved-resources')
+      ">
+        <span class="home-section-chevron" aria-hidden="true"></span>
+
+        <span class="visually-hidden">
+          {{
+          openExternalSection() === 'saved-resources'
+          ? 'Risorse salvate aperte'
+          : 'Mostra Risorse salvate'
+          }}
+        </span>
+      </button>
     </div>
 
-    @switch (savedResourcesState().status) {
-    @case ('loading') {
-    <app-loading-indicator />
-    }
-
-    @case ('empty') {
-    <p>Nessuna risorsa salvata.</p>
-    }
-
-    @case ('error') {
-    <p role="status">
-      Impossibile caricare le risorse salvate.
-    </p>
-    }
-
-    @case ('ready') {
-    <ul class="saved-resources-list">
-      @for (
-      resource of savedResourcesState().resources;
-      track resource.id
-      ) {
-      <li>
-        <a [href]="resource.url" target="_blank" rel="noopener noreferrer">
-          {{ resource.title }}
-          <span class="visually-hidden">
-            (si apre in una nuova scheda)
-          </span>
-        </a>
-
-        <p class="saved-resource-url">
-          {{ resource.url }}
-        </p>
-
-        @if (resource.tags.length > 0) {
-        <ul class="saved-resource-tags">
-          @for (
-          tag of resource.tags;
-          track tag
-          ) {
-          <li>{{ tag }}</li>
-          }
-        </ul>
-        }
-      </li>
+    <div id="saved-resources-content" class="home-section-content">
+      @switch (savedResourcesState().status) {
+      @case ('loading') {
+      <app-loading-indicator />
       }
-    </ul>
-    }
-    }
+
+      @case ('empty') {
+      <p>Nessuna risorsa salvata.</p>
+      }
+
+      @case ('error') {
+      <p role="status">
+        Impossibile caricare le risorse salvate.
+      </p>
+      }
+
+      @case ('ready') {
+      <ul class="saved-resources-list">
+        @for (
+        resource of savedResourcesState().resources;
+        track resource.id
+        ) {
+        <li>
+          <a [href]="resource.url" target="_blank" rel="noopener noreferrer">
+            <span class="item-title">
+              {{ resource.title }}
+            </span>
+
+            <span class="visually-hidden">
+              (si apre in una nuova scheda)
+            </span>
+
+            @if (resource.tags.length > 0) {
+            <ul class="saved-resource-tags">
+              @for (
+              tag of resource.tags;
+              track tag
+              ) {
+              <li>{{ tag }}</li>
+              }
+            </ul>
+            }
+
+
+          </a>
+        </li>
+        }
+      </ul>
+      }
+      }
+    </div>
   </section>
 </div>

@@ -3,11 +3,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SearchService } from '../../services/search.service';
+import {
+  Area
+} from '../../../../core/models/area.model';
 
 /**
  * Presenta lo stato e i risultati della ricerca globale.
@@ -59,6 +63,21 @@ export class SearchResults {
         `${this.search.articleCount()} articoli`
       );
     });
+
+  readonly areas =
+    input.required<Area[]>();
+
+  protected readonly areasById =
+    computed(() =>
+      new Map(
+        this.areas().map(
+          area => [
+            area.id,
+            area
+          ]
+        )
+      )
+    );
 
   protected closeResultsAndFocusSearch(): void {
     this.search.closeResults();

@@ -29,12 +29,11 @@
 }
 
 ::highlight(search-occurrence) {
-  background-color: var(--color-highlight);
-  color: inherit;
+  background-color: rgba(237, 150, 63, 0.7);
 }
 
 ::highlight(selected-search-occurrence) {
-  background-color: var(--color-highlight-selected);
+  background-color: rgba(237, 150, 63, 0.9);
   color: inherit;
   text-decoration: underline;
   text-decoration-thickness: 2px;
@@ -85,7 +84,7 @@ body {
   letter-spacing: .0179em;
   line-height: 1.5;
   color: var(--color-text);
-  background-image:  url('/assets/images/stelline.png'), url('/assets/images/sfondo-appunti.jpg');
+  background-image: url('/assets/images/stelline.png'), url('/assets/images/sfondo-appunti.jpg');
 }
 
 img,
@@ -119,6 +118,22 @@ a {
 
 /* -------------------------- Fine mini reset.css -------------------------  */
 
+h1,
+h2 {
+  color: var(--color-primary);
+}
+
+h3 {
+  color: var(--color-accent-green);
+}
+
+h4,
+h5,
+h6 {
+  border-left: solid 3px var(--color-accent-pink);
+  padding-left: 0.5rem;
+}
+
 .article-body {
   min-width: 0;
   max-width: 100%;
@@ -127,16 +142,72 @@ a {
 .article-body pre {
   box-sizing: border-box;
   max-width: 100%;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  //overflow-x: hidden;
+}
+
+.article-body pre code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.article-body .codepen-demo {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .article-body img {
   max-width: 100%;
   height: auto;
+  margin: auto;
 }
 
 .article-body table {
   max-width: 100%;
+  border: 2px solid #FFFFFF;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  table-layout: fixed;
+}
+
+.article-body table td,
+.article-body table th {
+  border: 1px solid #FFFFFF;
+  padding: 0.25rem 0.5rem;
+  word-break: break-word;
+}
+
+.article-body table tr:nth-child(even) {
+  background: var(--text-primary-color);
+}
+
+.article-body table thead {
+  background: #FFFFFF;
+  border-bottom: 4px solid #333333;
+}
+
+.article-body table thead th {
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  border-left: 2px solid #333333;
+}
+
+.article-body table thead th:first-child {
+  border-left: none;
+}
+
+.article-body table tfoot td {
+  font-size: 14px;
+}
+
+.article-body table .cell-true {
+  background-color: #c9e1bd;
 }
 
 .app-header :focus-visible {
@@ -157,4 +228,40 @@ a {
 
   white-space: nowrap;
   border: 0;
+}
+
+mark {
+  background: linear-gradient(104deg, rgba(130, 255, 173, 0) .9%, #82ffad 2.4%, rgba(130, 255, 173, .5) 5.8%, rgba(130, 255, 173, .1) 93%, rgba(130, 255, 173, .7) 96%, rgba(130, 255, 255, 0) 98%), linear-gradient(183deg, rgba(130, 255, 173, 0) 0, rgba(130, 255, 173, .3) 7.9%, rgba(130, 255, 173, 0) 15%);
+  padding: .1rem .5rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  border-radius: .5rem;
+  text-shadow: -12px 12px 9.8px rgba(130, 255, 173, .7), 21px -18.1px 7.3px #fff, -18.1px -27.3px 30px #fff
+}
+
+mark.match {
+  background:
+    linear-gradient(104deg,
+      rgb(255 179 71 / 0%) 0.9%,
+      #ed963fb3 2.4%,
+      rgb(255 179 71 / 50%) 5.8%,
+      rgb(255 179 71 / 10%) 93%,
+      rgb(255 179 71 / 70%) 96%,
+      rgb(255 179 71 / 0%) 98%),
+    linear-gradient(183deg,
+      rgb(255 179 71 / 0%) 0,
+      rgb(255 179 71 / 30%) 7.9%,
+      rgb(255 179 71 / 0%) 15%);
+
+  padding: 0.1rem 0.5rem;
+
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+
+  border-radius: 0.5rem;
+
+  text-shadow:
+    -12px 12px 9.8px rgb(255 179 71 / 70%),
+    21px -18.1px 7.3px #fff,
+    -18.1px -27.3px 30px #fff;
 }

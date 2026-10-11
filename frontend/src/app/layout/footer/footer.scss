@@ -1,20 +1,31 @@
 .app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  box-sizing: border-box;
+
+  width: 100%;
   height: 64px;
-  background-color: color-mix(in srgb,
+  padding: 0 16px;
+
+  background-color:
+    color-mix(in srgb,
       var(--color-background) 85%,
       var(--color-primary));
-  display: flex;
-  box-sizing: border-box;
-  padding: 0 16px;
-  width: 100%;
-  flex-direction: row;
-  align-items: center;
-  white-space: nowrap;
 }
 
-.footer-content {
+.footer-left {
   display: flex;
+  align-items: center;
   gap: 1rem;
+
+  min-width: 0;
+}
+
+.footer-right {
+  flex: 0 0 auto;
 }
 
 .footer-tech {
@@ -25,22 +36,92 @@
   content: attr(data-tooltip);
 
   position: absolute;
-  top: -1.3rem;
-  left: -50%;
-  background-color: color-mix(in srgb,
+  z-index: 2;
+
+  inset-block-end: calc(100% + 0.5rem);
+  inset-inline-start: 50%;
+
+  transform: translateX(-50%);
+
+  padding: 0.2rem 0.35rem;
+
+  white-space: nowrap;
+
+  background-color:
+    color-mix(in srgb,
       var(--color-text) 35%,
       var(--color-primary));
+
   color: #fff;
-  padding: 0.2rem;
-  font-size: .7rem;
+
   border-radius: 5px;
 
+  font-size: 0.7rem;
+
   opacity: 0;
-  pointer-events: auto;
-  transition: all 0.5s ease;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
 }
 
-.footer-tech:hover::after {
+.footer-tech::before {
+  content: '';
+
+  position: absolute;
+  z-index: 1;
+
+  inset-block-end: calc(100% + 0.11rem);
+  inset-inline-start: 50%;
+
+  width: 0;
+  height: 0;
+
+  transform: translateX(-50%);
+
+  border-inline:
+    0.4rem solid transparent;
+
+  border-block-start:
+    0.4rem solid color-mix(in srgb,
+      var(--color-text) 35%,
+      var(--color-primary));
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.footer-tech:hover::after,
+.footer-tech:hover::before {
   opacity: 1;
-  transition: all 0.5s ease;
+  visibility: visible;
+}
+
+@media (max-width: 580px) {
+  .app-footer {
+    height: auto;
+    min-height: 64px;
+
+    flex-wrap: wrap;
+
+    padding: 0.75rem 1rem;
+  }
+
+  .footer-left {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .footer-right {
+    margin-left: auto;
+  }
 }

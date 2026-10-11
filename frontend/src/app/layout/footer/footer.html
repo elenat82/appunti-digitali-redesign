@@ -1,9 +1,10 @@
 <footer class="app-footer">
-  <div class="footer-content">
+  <div class="footer-left">
     <span>Made with</span>
 
     <span class="footer-tech" data-tooltip="Drupal">
       <i class="icon-app-drupal" aria-hidden="true"></i>
+
       <span class="visually-hidden">
         Drupal
       </span>
@@ -13,6 +14,7 @@
 
     <span class="footer-tech" data-tooltip="Angular">
       <i class="icon-app-angular" aria-hidden="true"></i>
+
       <span class="visually-hidden">
         Angular
       </span>
@@ -22,19 +24,20 @@
 
     <span class="footer-tech" data-tooltip="Love">
       <i class="icon-app-heart" aria-hidden="true"></i>
+
       <span class="visually-hidden">
         Love
       </span>
     </span>
 
     @if (email(); as email) {
-    by
+    <span>by</span>
+
     <app-email-actions [email]="email" />
     }
-    <span aria-hidden="true">
-      ·
-    </span>
+  </div>
 
+  <div class="footer-right">
     <app-privacy-actions />
   </div>
 </footer>

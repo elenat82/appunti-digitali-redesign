@@ -1,6 +1,7 @@
 .profile-email-wrapper {
   position: relative;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .profile-email-actions {
@@ -21,8 +22,7 @@
   background: #fff;
   border-radius: 0.5rem;
   box-shadow:
-    0 0.25rem 0.75rem
-    rgba(0, 0, 0, 0.2);
+    0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
 }
 
 .profile-email-action {
@@ -36,7 +36,14 @@
   border: 0;
 
   text-align: start;
+  text-decoration: none;
   cursor: pointer;
+}
+
+.profile-email-action:hover {
+  background-color: color-mix(in srgb,
+      var(--color-background) 5%,
+      #ddd);
 }
 
 .profile-email-actions::after {
@@ -66,6 +73,14 @@
   cursor: pointer;
 }
 
+.profile-email i::before {
+  color: var(--color-accent-green-light);
+}
+
+.profile-email-actions i::before {
+  color: var(--color-primary);
+}
+
 .profile-email-stroke {
   position: absolute;
 
@@ -88,15 +103,11 @@
   stroke-dashoffset: 1;
 
   transition:
-    stroke-dashoffset
-    800ms
-    ease-out;
+    stroke-dashoffset 800ms ease-out;
 }
 
-.profile-email:hover
-.profile-email-stroke__path,
-.profile-email:focus-visible
-.profile-email-stroke__path {
+.profile-email:hover .profile-email-stroke__path,
+.profile-email:focus-visible .profile-email-stroke__path {
   stroke-dashoffset: 0;
 }
 
