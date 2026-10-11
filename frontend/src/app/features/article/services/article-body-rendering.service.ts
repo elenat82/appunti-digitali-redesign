@@ -83,7 +83,10 @@ const ALLOWED_STYLES: Record<
     ]),
     margin: new Set([
       'auto'
-    ])
+    ]),
+    cursor: new Set([
+      "url('/images/examples/zampina.png'), auto"
+    ]),
   },
 
   caption: {

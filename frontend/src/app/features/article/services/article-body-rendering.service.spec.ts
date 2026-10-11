@@ -140,5 +140,37 @@ describe(
       expect(result)
         .toContain('alt="Test"');
     });
+
+    it('ripristina il cursore custom consentito', () => {
+      const renderedBody =
+        document.createElement('div');
+
+      renderedBody.innerHTML =
+        '<div>Test</div>';
+
+      const rawBody = `
+      <div
+        style="cursor:url('/images/examples/zampina.png'), auto"
+      >
+        Test
+      </div>
+    `;
+
+      service.restoreAllowedStyles(
+        renderedBody,
+        rawBody
+      );
+
+      const element =
+        renderedBody.querySelector<HTMLElement>(
+          'div'
+        );
+
+      expect(
+        element?.style.cursor
+      ).toContain(
+        "url('/images/examples/zampina.png')"
+      );
+    });
   }
 );
