@@ -10,10 +10,6 @@ import {
   environment
 } from './environments/environment';
 
-import {
-  buildSitemapXml
-} from './server/sitemap';
-
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
@@ -30,10 +26,6 @@ const angularApp = new AngularNodeAppEngine({
   allowedHosts
 });
 
-interface SitemapResponse {
-  paths: string[];
-}
-
 /**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.
@@ -45,39 +37,6 @@ interface SitemapResponse {
  * });
  * ```
  */
-
-app.get(
-  '/sitemap.xml',
-  async (_req, res, next) => {
-    try {
-      const response = await fetch(
-        `${environment.apiBaseUrl}/api/sitemap`
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `Sitemap API returned ${response.status}`
-        );
-      }
-
-      const data =
-        await response.json() as SitemapResponse;
-
-      const xml = buildSitemapXml(
-        data.paths,
-        environment.siteBaseUrl
-      );
-
-      res
-        .status(200)
-        .type('application/xml')
-        .send(xml);
-    }
-    catch (error) {
-      next(error);
-    }
-  }
-);
 
 app.get(
   '/appunti/:area/:slug',
