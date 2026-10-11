@@ -1,0 +1,25 @@
+RewriteEngine On
+
+# Redirect legacy Drupal 8.
+RewriteRule ^varie/xmlhttprequest-api/?$ /appunti/varie/xmlhttprequest-proprieta [R=301,L]
+RewriteRule ^css/display-flex/?$ /appunti/css/flexbox [R=301,L]
+RewriteRule ^javascript/metodi-i-numeri/?$ /appunti/javascript/i-numeri [R=301,L]
+RewriteRule ^varie/formati-delle-immagini/?$ /appunti/varie/formati-delle-immagini-dei-video-e-dei-suoni [R=301,L]
+RewriteRule ^varie/le-reti-parte-ii/?$ /appunti/varie/le-reti-i-protocolli [R=301,L]
+RewriteRule ^varie/architettura-degli-elaboratori/?$ /appunti/varie/architettura-degli-elaboratori-hardware [R=301,L]
+RewriteRule ^varie/i-sistemi-operativi/?$ /appunti/varie/il-sistema-operativo [R=301,L]
+RewriteRule ^varie/progettazione-del-software/?$ /appunti/varie/progettazione-database [R=301,L]
+RewriteRule ^varie/salesforce/?$ /appunti/varie/salesforce-glossario [R=301,L]
+RewriteRule ^varie/riga-di-comando-shell/?$ /appunti/varie/riga-di-comando-e-shell [R=301,L]
+RewriteRule ^varie/composer/?$ /appunti/varie/composer-e-drush [R=301,L]
+
+RewriteRule ^php/concetti-di-base/?$ /appunti/php/introduzione [R=301,L]
+RewriteRule ^php/oop-parte-i/?$ /appunti/php/oop-parte-i-concetti-base [R=301,L]
+RewriteRule ^php/oop-parte-iii/?$ /appunti/php/oop-parte-iii-magic-methods [R=301,L]
+RewriteRule ^php/oop-parte-ii/?$ /appunti/php/oop-parte-ii-encapsulation-abstraction-inheritance-polymorphism [R=301,L]
+RewriteRule ^php/oop-parte-iv-confronto-tra-oggetti/?$ /appunti/php/oop-parte-iv-le-eccezioni [R=301,L]
+RewriteRule ^php/oop-parte-vi-accesso-al-database/?$ /appunti/php/oop-parte-vi-il-database [R=301,L]
+
+RewriteRule ^drupal/introduzione/?$ /appunti/drupal/theming-parte-i [R=301,L]
+RewriteRule ^drupal/theming/?$ /appunti/drupal/theming-parte-i [R=301,L]
+RewriteRule ^drupal/theming-creazione-di-tema-e-regioni/?$ /appunti/drupal/theming-creazione-del-tema-e-regioni [R=301,L]

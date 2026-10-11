@@ -8,7 +8,6 @@
     "postbuild": "node scripts/generate-sitemap.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:frontend": "node dist/frontend/server/server.mjs",
     "docs": "compodoc -p tsconfig.doc.json -d documentation -n \"Appunti Digitali\" --language it-IT",
     "docs:serve": "compodoc -p tsconfig.doc.json -d documentation -n \"Appunti Digitali\" --language it-IT -s"
   },
@@ -23,7 +22,6 @@
     "@angular/platform-server": "^22.1.0",
     "@angular/router": "^22.1.0",
     "@angular/ssr": "^22.1.8",
-    "express": "^5.1.0",
     "prismjs": "^1.30.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
@@ -33,7 +31,6 @@
     "@angular/cli": "^22.1.8",
     "@angular/compiler-cli": "^22.1.0",
     "@compodoc/compodoc": "^2.0.0",
-    "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "@types/prismjs": "^1.26.6",
     "fake-indexeddb": "^6.2.5",
