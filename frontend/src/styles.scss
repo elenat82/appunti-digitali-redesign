@@ -8,7 +8,6 @@
   --color-primary: #284283;
   --color-accent-green: #008b8b;
   --color-accent-green-light: #66cdaa;
-  ;
   --color-accent-pink: #ffbdde;
   --color-highlight:
     color-mix(in srgb,
@@ -117,6 +116,13 @@ a {
 }
 
 /* -------------------------- Fine mini reset.css -------------------------  */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    var(--color-accent-green-light)
+    var(--color-background);
+}
 
 h1,
 h2 {
