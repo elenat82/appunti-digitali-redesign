@@ -1,0 +1,17 @@
+parameters:
+  cors.config:
+    enabled: true
+    allowedHeaders:
+      - 'accept'
+      - 'content-type'
+      - 'origin'
+    allowedMethods:
+      - 'GET'
+      - 'OPTIONS'
+    allowedOrigins:
+      - 'https://www.appunti-digitali.it'
+      - 'https://appunti-digitali.it'
+    allowedOriginsPatterns: []
+    exposedHeaders: false
+    maxAge: 3600
+    supportsCredentials: false
