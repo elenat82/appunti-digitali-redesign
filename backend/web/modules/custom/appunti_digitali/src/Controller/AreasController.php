@@ -86,6 +86,10 @@ final class AreasController implements ContainerInjectionInterface {
 
     $response = new CacheableJsonResponse($areas);
 
+    $response->getCacheableMetadata()->addCacheContexts([
+      'url.site',
+    ]);
+
     foreach ($node_types as $node_type) {
       $response->addCacheableDependency($node_type);
     }
