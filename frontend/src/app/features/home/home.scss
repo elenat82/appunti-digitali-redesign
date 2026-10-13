@@ -675,6 +675,21 @@
 }
 
 @container main-content (max-width: 750px) {
+
+  :host {
+    grid-template-rows:
+      auto auto;
+
+    height: auto;
+    min-height: 100%;
+
+    overflow: visible;
+  }
+
+  .external-resources-container > .home-section--open {
+    flex: 0 0 auto;
+  }
+  
   .home-contact {
     display: flex;
     flex-direction: column;
