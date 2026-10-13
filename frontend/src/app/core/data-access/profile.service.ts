@@ -5,8 +5,7 @@ import {
 } from '@angular/core';
 import {
   map,
-  Observable,
-  shareReplay
+  Observable
 } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -18,25 +17,22 @@ import { Profile } from '../models/profile.model';
 export class ProfileService {
   private readonly http = inject(HttpClient);
 
-  private readonly profile$ = this.http
-    .get<Profile[]>(
-      `${environment.apiBaseUrl}/api/profile?_format=json`
-    )
-    .pipe(
-      map(
-        (profiles) =>
-          profiles[0] ?? null
-      ),
-      shareReplay({
-        bufferSize: 1,
-        refCount: false
-      })
-    );
-
   /**
-   * Recupera il profilo pubblico condiviso dalle diverse sezioni dell'applicazione.
-   */
+ * Recupera il profilo pubblico condiviso dalle diverse sezioni dell'applicazione.
+ */
   getProfile(): Observable<Profile | null> {
-    return this.profile$;
+    return this.http
+      .get<Profile[]>(
+        `${environment.apiBaseUrl}/api/profile?_format=json`,
+        {
+          transferCache: false
+        }
+      )
+      .pipe(
+        map(
+          (profiles) =>
+            profiles[0] ?? null
+        )
+      );
   }
 }

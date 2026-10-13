@@ -56,6 +56,8 @@ describe('ProfileService', () => {
 
     expect(request.request.method).toBe('GET');
 
+    expect(request.request.transferCache).toBe(false);
+
     request.flush([mockProfile]);
   });
 
