@@ -40,10 +40,7 @@ summary {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.sidebar--collapsed summary {
-  //justify-content: center;
+  list-style: none;
 }
 
 .sidebar-toggle {
@@ -69,10 +66,6 @@ summary {
   border-radius: 50%;
 
   cursor: pointer;
-}
-
-summary {
-  list-style: none;
 }
 
 summary::-webkit-details-marker {
@@ -228,6 +221,39 @@ summary::-webkit-details-marker {
   color: var(--color-primary);
 }
 
+.sidebar-hamburger {
+  display: none;
+  position: relative;
+
+  width: 1.5rem;
+  height: 2px;
+
+  background-color: currentColor;
+}
+
+.sidebar-hamburger::before,
+.sidebar-hamburger::after {
+  content: '';
+
+  position: absolute;
+  left: 0;
+
+  display: block;
+
+  width: 1.5rem;
+  height: 2px;
+
+  background-color: currentColor;
+}
+
+.sidebar-hamburger::before {
+  top: -0.45rem;
+}
+
+.sidebar-hamburger::after {
+  top: 0.45rem;
+}
+
 @media (max-width: 870px) {
   :host {
     position: fixed;
@@ -281,38 +307,14 @@ summary::-webkit-details-marker {
     right: auto;
     z-index: 30;
   }
-}
 
-.sidebar-hamburger,
-.sidebar-hamburger::before,
-.sidebar-hamburger::after {
-  display: block;
+  .sidebar-toggle .icon-app-open-sidebar {
+    display: none;
+  }
 
-  width: 1.5rem;
-  height: 2px;
-
-  background-color:
-    currentColor;
-}
-
-.sidebar-hamburger {
-  position: relative;
-}
-
-.sidebar-hamburger::before,
-.sidebar-hamburger::after {
-  content: '';
-
-  position: absolute;
-  left: 0;
-}
-
-.sidebar-hamburger::before {
-  top: -0.45rem;
-}
-
-.sidebar-hamburger::after {
-  top: 0.45rem;
+  .sidebar-hamburger {
+    display: block;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
