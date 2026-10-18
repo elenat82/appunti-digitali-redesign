@@ -1,6 +1,8 @@
 import {
   Component,
   ElementRef,
+  HostListener,
+  inject,
   input,
   signal,
   viewChild
@@ -15,6 +17,8 @@ let nextEmailActionsId = 0;
   styleUrl: './email-actions.scss'
 })
 export class EmailActions {
+  private readonly hostElement = inject(ElementRef<HTMLElement>);
+
   readonly email = input.required<string>();
 
   readonly isEmailActionsOpen = signal(false);
@@ -69,57 +73,110 @@ export class EmailActions {
  */
 
   scheduleEmailActionsClose(): void {
-  if (this.emailActionsCloseTimeout) {
-    clearTimeout(
-      this.emailActionsCloseTimeout
-    );
+    if (this.emailActionsCloseTimeout) {
+      clearTimeout(
+        this.emailActionsCloseTimeout
+      );
+    }
+
+    this.emailActionsCloseTimeout =
+      setTimeout(() => {
+        this.hideEmailActions();
+
+        this.emailActionsCloseTimeout = null;
+      }, EMAIL_ACTIONS_CLOSE_DELAY_MS);
   }
-
-  this.emailActionsCloseTimeout =
-    setTimeout(() => {
-      this.hideEmailActions();
-
-      this.emailActionsCloseTimeout = null;
-    }, EMAIL_ACTIONS_CLOSE_DELAY_MS);
-}
 
   /**
  * Chiude subito il pannello quando l'utente lo dismette esplicitamente, ad esempio premendo Escape.
  * Annulla anche un'eventuale chiusura ritardata già programmata, perché il pannello non deve più restare aperto.
  */
   closeEmailActions(): void {
-  if (this.emailActionsCloseTimeout) {
-    clearTimeout(
-      this.emailActionsCloseTimeout
-    );
+    if (this.emailActionsCloseTimeout) {
+      clearTimeout(
+        this.emailActionsCloseTimeout
+      );
 
-    this.emailActionsCloseTimeout = null;
+      this.emailActionsCloseTimeout = null;
+    }
+
+    this.hideEmailActions();
   }
-
-  this.hideEmailActions();
-}
 
   /**
  * Chiude il pannello e ripristina il focus sul trigger se il focus si trova ancora in una delle azioni email.
  */
-private hideEmailActions(): void {
-  const panel =
-    this.actionsPanel()?.nativeElement;
+  private hideEmailActions(
+    restoreFocus = true
+  ): void {
+    const panel =
+      this.actionsPanel()?.nativeElement;
 
-  const shouldRestoreFocus =
-    panel !== undefined &&
-    document.activeElement !== null &&
-    panel.contains(document.activeElement);
+    const shouldRestoreFocus =
+      restoreFocus &&
+      panel !== undefined &&
+      document.activeElement !== null &&
+      panel.contains(document.activeElement);
 
-  this.isEmailActionsOpen.set(false);
-  this.emailCopyStatus.set('idle');
+    this.isEmailActionsOpen.set(false);
+    this.emailCopyStatus.set('idle');
 
-  if (shouldRestoreFocus) {
-    this.emailTrigger()
-      ?.nativeElement
-      .focus();
+    if (shouldRestoreFocus) {
+      this.emailTrigger()
+        ?.nativeElement
+        .focus();
+    }
   }
-}
 
+  /**
+   * Chiude il pannello quando l'utente clicca fuori dal componente.
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.isEmailActionsOpen()) {
+      return;
+    }
 
+    const target = event.target;
+
+    if (
+      !(target instanceof Node) ||
+      this.hostElement.nativeElement.contains(target)
+    ) {
+      return;
+    }
+
+    this.dismissEmailActions();
+  }
+
+  /**
+   * Chiude il pannello quando il focus si sposta fuori dal componente.
+   */
+  onFocusOut(event: FocusEvent): void {
+    const nextFocusedElement =
+      event.relatedTarget;
+
+    if (
+      nextFocusedElement instanceof Node &&
+      this.hostElement.nativeElement.contains(
+        nextFocusedElement
+      )
+    ) {
+      return;
+    }
+
+    this.dismissEmailActions();
+  }
+
+  private dismissEmailActions(): void {
+    if (this.emailActionsCloseTimeout) {
+      clearTimeout(
+        this.emailActionsCloseTimeout
+      );
+
+      this.emailActionsCloseTimeout = null;
+    }
+
+    this.hideEmailActions(false);
+  }
 }

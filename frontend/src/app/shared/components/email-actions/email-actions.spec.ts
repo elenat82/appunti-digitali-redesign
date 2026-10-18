@@ -356,4 +356,86 @@ describe('EmailActions', () => {
 
     externalButton.remove();
   });
+
+  it('closes email actions when clicking outside', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const emailButton =
+      element.querySelector<HTMLButtonElement>(
+        '.profile-email'
+      );
+
+    emailButton?.click();
+    fixture.detectChanges();
+
+    const externalElement =
+      document.createElement('div');
+
+    document.body.appendChild(
+      externalElement
+    );
+
+    externalElement.dispatchEvent(
+      new MouseEvent(
+        'click',
+        {
+          bubbles: true
+        }
+      )
+    );
+
+    fixture.detectChanges();
+
+    expect(
+      element.querySelector(
+        '.profile-email-actions'
+      )
+    ).toBeNull();
+
+    externalElement.remove();
+  });
+
+  it('closes email actions when focus moves outside', () => {
+    const element: HTMLElement =
+      fixture.nativeElement;
+
+    const emailButton =
+      element.querySelector<HTMLButtonElement>(
+        '.profile-email'
+      );
+
+    emailButton?.click();
+    fixture.detectChanges();
+
+    const copyButton =
+      element.querySelector<HTMLButtonElement>(
+        '.profile-email-actions button'
+      );
+
+    const externalButton =
+      document.createElement('button');
+
+    document.body.appendChild(
+      externalButton
+    );
+
+    copyButton?.focus();
+    externalButton.focus();
+
+    fixture.detectChanges();
+
+    expect(
+      element.querySelector(
+        '.profile-email-actions'
+      )
+    ).toBeNull();
+
+    expect(document.activeElement).toBe(
+      externalButton
+    );
+
+    externalButton.remove();
+  });
+
 });
