@@ -1,5 +1,5 @@
 <aside class="sidebar" [class.sidebar--collapsed]="!isOpen()">
-  <a class="sidebar-logo" routerLink="/" aria-label="Vai alla home">
+  <a class="sidebar-logo" routerLink="/" aria-label="Vai alla home" title="Vai alla home">
     <img class="sidebar-logo-image" src="/assets/images/logo.svg" alt="">
   </a>
 
@@ -7,7 +7,15 @@
     @for (area of areas(); track area.id) {
     <details #areaDetails [class.sidebar-area--active]="activeAreaId() === area.id">
       <summary class="sidebar-area-summary" [attr.aria-label]="isOpen() ? null : area.label"
-        [attr.data-tooltip]="isOpen() ? null : area.label" (click)="openAreaIfCollapsed($event, areaDetails)">
+        [attr.data-tooltip]="isOpen() ? null : area.label" [attr.title]="
+    isOpen()
+      ? (
+          areaDetails.open
+            ? 'Chiudi area ' + area.label
+            : 'Espandi area ' + area.label
+        )
+      : null
+  " (click)="openAreaIfCollapsed($event, areaDetails)">
         <img [src]="area.iconUrl" alt="" width="26" height="26">
 
         @if (isOpen()) {
@@ -45,7 +53,11 @@
       isOpen()
         ? 'Chiudi barra laterale'
         : 'Apri barra laterale'
-    " (click)="toggle()">
+    " [attr.title]="
+    isOpen()
+      ? 'Chiudi barra laterale'
+      : 'Apri barra laterale'
+  " (click)="toggle()">
     @if (isOpen()) {
     <span class="icon-app-close-sidebar" aria-hidden="true"></span>
     } @else {
