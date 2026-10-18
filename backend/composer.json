@@ -21,8 +21,6 @@
         "drupal/core-project-message": "^11.4",
         "drupal/core-recipe-unpack": "^11.4",
         "drupal/core-recommended": "^11.4",
-        "drupal/migrate_plus": "^6.0",
-        "drupal/migrate_tools": "^6.1",
         "drupal/pathauto": "^1.15",
         "drupal/redirect": "^1.13",
         "drupal/weight": "^3.6",
@@ -113,6 +111,8 @@
     },
     "require-dev": {
         "drupal/coder": "^8.3.30",
-        "drupal/core-dev": "^11.4"
+        "drupal/core-dev": "^11.4",
+        "drupal/migrate_plus": "^6.0",
+        "drupal/migrate_tools": "^6.1"
     }
 }
