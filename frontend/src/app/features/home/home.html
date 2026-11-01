@@ -19,7 +19,7 @@
     </p>
 
     <button type="button" class="home-section-retry" (click)="retryProfile()">
-      Riprova
+      <i class="icon-app-retry"></i> Riprova
       <span class="visually-hidden">
         il caricamento del profilo
       </span>
@@ -98,16 +98,6 @@
         Notizie
       </h2>
 
-      @if (newsState().status === 'error') {
-      <button type="button" class="home-section-retry" (click)="retryNews()">
-        Riprova
-
-        <span class="visually-hidden">
-          il caricamento delle notizie
-        </span>
-      </button>
-      }
-
       <button type="button" class="home-section-toggle" aria-controls="news-content" [attr.aria-expanded]="
         openExternalSection() === 'news'
       " (click)="
@@ -136,9 +126,18 @@
       }
 
       @case ('error') {
-      <p role="status">
+      <p role="status" class="error-external-resource">
         Impossibile caricare le notizie.
       </p>
+
+      <button type="button" class="home-section-retry" (click)="retryNews()">
+        <i class="icon-app-retry" aria-hidden="true"></i>
+        Riprova
+
+        <span class="visually-hidden">
+          il caricamento delle notizie
+        </span>
+      </button>
       }
 
       @case ('ready') {
@@ -200,16 +199,6 @@
         Ultime domande da Stack Overflow
       </h2>
 
-      @if (stackOverflowState().status === 'error') {
-      <button type="button" class="home-section-retry" (click)="retryStackOverflow()">
-        Riprova
-
-        <span class="visually-hidden">
-          il caricamento delle domande Stack Overflow
-        </span>
-      </button>
-      }
-
       <button type="button" class="home-section-toggle" aria-controls="stack-overflow-content" [attr.aria-expanded]="
         openExternalSection() === 'stack-overflow'
       " (click)="
@@ -238,9 +227,18 @@
       }
 
       @case ('error') {
-      <p role="status">
+      <p role="status" class="error-external-resource">
         Impossibile caricare le domande Stack Overflow.
       </p>
+
+      <button type="button" class="home-section-retry" (click)="retryStackOverflow()">
+        <i class="icon-app-retry" aria-hidden="true"></i>
+        Riprova
+
+        <span class="visually-hidden">
+          il caricamento delle domande Stack Overflow
+        </span>
+      </button>
       }
 
       @case ('ready') {
@@ -291,16 +289,6 @@
         GitHub starred
       </h2>
 
-      @if (gitHubState().status === 'error') {
-      <button type="button" class="home-section-retry" (click)="retryGitHubStarred()">
-        Riprova
-
-        <span class="visually-hidden">
-          il caricamento dei repository GitHub starred
-        </span>
-      </button>
-      }
-
       <button type="button" class="home-section-toggle" aria-controls="github-content" [attr.aria-expanded]="
         openExternalSection() === 'github'
       " (click)="
@@ -329,10 +317,23 @@
       }
 
       @case ('error') {
-      <p role="status">
-        Impossibile caricare i repository GitHub starred.
-      </p>
-      }
+  <p role="status" class="error-external-resource">
+    Impossibile caricare i repository GitHub starred.
+  </p>
+
+  <button
+    type="button"
+    class="home-section-retry"
+    (click)="retryGitHubStarred()"
+  >
+    <i class="icon-app-retry" aria-hidden="true"></i>
+    Riprova
+
+    <span class="visually-hidden">
+      il caricamento dei repository GitHub starred
+    </span>
+  </button>
+}
 
       @case ('ready') {
       <ul class="github-list">
@@ -389,16 +390,6 @@
         Risorse salvate
       </h2>
 
-      @if (savedResourcesState().status === 'error') {
-      <button type="button" class="home-section-retry" (click)="retrySavedResources()">
-        Riprova
-
-        <span class="visually-hidden">
-          il caricamento delle risorse salvate
-        </span>
-      </button>
-      }
-
       <button type="button" class="home-section-toggle" aria-controls="saved-resources-content" [attr.aria-expanded]="
         openExternalSection() === 'saved-resources'
       " (click)="
@@ -427,10 +418,23 @@
       }
 
       @case ('error') {
-      <p role="status">
-        Impossibile caricare le risorse salvate.
-      </p>
-      }
+  <p role="status" class="error-external-resource">
+    Impossibile caricare le risorse salvate.
+  </p>
+
+  <button
+    type="button"
+    class="home-section-retry"
+    (click)="retrySavedResources()"
+  >
+    <i class="icon-app-retry" aria-hidden="true"></i>
+    Riprova
+
+    <span class="visually-hidden">
+      il caricamento delle risorse salvate
+    </span>
+  </button>
+}
 
       @case ('ready') {
       <ul class="saved-resources-list">

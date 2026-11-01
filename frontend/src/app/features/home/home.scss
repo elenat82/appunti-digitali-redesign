@@ -103,6 +103,28 @@
   background-color: #bfc6da;
 }
 
+.error-external-resource {
+  text-align: center;
+}
+
+.home-section-retry {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 0.4rem;
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.home-section-retry .icon-app-retry::before {
+  color: var(--color-accent-green-light);
+}
+
 
 /* =========================================================
    PROFILO
@@ -210,6 +232,14 @@
 .profile-cv:focus {
   box-shadow:
     0.084em 0.334em 0.167em -0.25em rgba(51, 51, 51, 0.54);
+}
+
+.home-profile-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
 }
 
 
@@ -432,11 +462,6 @@
   .home-section--open .home-section-chevron {
     transform:
       translateY(-50%) rotate(225deg);
-  }
-
-  .home-section-retry {
-    position: relative;
-    z-index: 2;
   }
 
   .home-section-content {
@@ -698,6 +723,7 @@
   .external-resources-container>.home-section--open {
     flex: 0 0 auto;
   }
+
   .home-contact {
     display: flex;
     flex-direction: column;
