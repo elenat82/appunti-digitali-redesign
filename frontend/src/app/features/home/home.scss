@@ -100,7 +100,7 @@
 
 .external-resources-container>.home-section:nth-child(2) .home-section-header,
 .external-resources-container>.home-section:nth-child(3) .home-section-header {
-  background-color: #bfc6da;
+  background-color: var(--color-primary-light);
 }
 
 .error-external-resource {
@@ -215,10 +215,10 @@
     10.625em 0.625em 9.375em 0.625em / 0.625em 9.375em 0.625em 9.375em;
 
   background-color: rgba(51, 51, 51, 0.14);
-  color: rgba(51, 51, 51, 0.54);
+  color: var(--color-text-muted);
 
   box-shadow:
-    0.24em 0.284em 0.42em -0.184em rgba(51, 51, 51, 0.54);
+    0.24em 0.284em 0.42em -0.184em var(--color-text-muted);
 
   font-family: 'Rock Salt', cursive;
   font-size: 1.2rem;
@@ -231,7 +231,7 @@
 .profile-cv:hover,
 .profile-cv:focus {
   box-shadow:
-    0.084em 0.334em 0.167em -0.25em rgba(51, 51, 51, 0.54);
+    0.084em 0.334em 0.167em -0.25em var(--color-text-muted);
 }
 
 .home-profile-error {
@@ -409,7 +409,7 @@
   }
 
   .external-resources-container>.home-section:nth-child(even) .home-section-header {
-    background-color: #bfc6da;
+    background-color: var(--color-primary-light);
   }
 
   .home-section-header {

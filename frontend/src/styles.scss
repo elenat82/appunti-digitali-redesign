@@ -6,20 +6,18 @@
 
 :root {
   --color-primary: #284283;
+  --color-primary-light: #bfc6da;
   --color-accent-green: #008b8b;
   --color-accent-green-light: #66cdaa;
   --color-accent-pink: #ffbdde;
-  --color-highlight:
-    color-mix(in srgb,
-      var(--color-accent-pink) 30%,
-      transparent);
-  --color-highlight-selected:
-    color-mix(in srgb,
-      var(--color-accent-pink) 75%,
-      transparent);
+  --color-search-highlight: rgb(237 150 63 / 70%);
+  --color-search-highlight-selected: rgb(237 150 63 / 90%);
 
   --color-text: rgba(51, 51, 51, .87);
+  --color-text-muted: rgba(51, 51, 51, .54);
   --color-background: #f5f6f7;
+  --color-surface: #fff;
+  --color-border: rgba(51, 51, 51, .12);
 
   --font-primary: 'Lato', sans-serif;
   --font-decorative: 'Rock Salt', cursive;
@@ -28,11 +26,11 @@
 }
 
 ::highlight(search-occurrence) {
-  background-color: rgba(237, 150, 63, 0.7);
+  background-color: var(--color-search-highlight);
 }
 
 ::highlight(selected-search-occurrence) {
-  background-color: rgba(237, 150, 63, 0.9);
+  background-color: var(--color-search-highlight-selected);
   color: inherit;
   text-decoration: underline;
   text-decoration-thickness: 2px;
@@ -172,7 +170,7 @@ h6 {
 
 .article-body table {
   max-width: 100%;
-  border: 2px solid #FFFFFF;
+  border: 2px solid var(--color-surface);
   width: 100%;
   text-align: left;
   border-collapse: collapse;
@@ -183,7 +181,7 @@ h6 {
 
 .article-body table td,
 .article-body table th {
-  border: 1px solid #FFFFFF;
+  border: 1px solid var(--color-surface);
   padding: 0.25rem 0.5rem;
   word-break: break-word;
 }
@@ -193,15 +191,15 @@ h6 {
 }
 
 .article-body table thead {
-  background: #FFFFFF;
-  border-bottom: 4px solid #333333;
+  background: var(--color-surface);
+  border-bottom: 4px solid var(--color-text);
 }
 
 .article-body table thead th {
   font-weight: bold;
-  color: #333333;
+  color: var(--color-text);
   text-align: center;
-  border-left: 2px solid #333333;
+  border-left: 2px solid var(--color-text);
 }
 
 .article-body table thead th:first-child {
@@ -217,7 +215,7 @@ h6 {
 }
 
 .app-header :focus-visible {
-  outline-color: #ffffff;
+  outline-color: var(--color-surface);
 }
 
 .visually-hidden {

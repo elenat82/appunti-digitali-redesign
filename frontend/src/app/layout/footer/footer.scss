@@ -52,7 +52,7 @@
       var(--color-text) 35%,
       var(--color-primary));
 
-  color: #fff;
+  color: var(--color-surface);
 
   border-radius: 5px;
 

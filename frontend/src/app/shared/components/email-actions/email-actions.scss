@@ -19,7 +19,7 @@
   min-inline-size: 12rem;
   padding: 1rem;
 
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 0.5rem;
   box-shadow:
     0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
@@ -56,7 +56,7 @@
   transform: translateX(-50%);
 
   border: 0.5rem solid transparent;
-  border-block-start-color: #fff;
+  border-block-start-color: var(--color-surface);
 }
 
 .profile-email {

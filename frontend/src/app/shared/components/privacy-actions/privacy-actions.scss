@@ -29,7 +29,7 @@
   min-inline-size: 15rem;
   padding: 1rem;
 
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 0.5rem;
 
   box-shadow:
@@ -47,7 +47,7 @@
     0.5rem solid transparent;
 
   border-block-start-color:
-    #fff;
+    var(--color-surface);
 }
 
 .privacy-action {
